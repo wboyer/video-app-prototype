@@ -1,4 +1,4 @@
-var ProgramController = {program: null, currentBlockIndex: 0, currentItemIndex: 0, synchronized: true};
+var ProgramController = {program: null, currentBlockIndex: 0, currentItemIndex: 0};
 
 ProgramController.loadProgram = function (program)
 {

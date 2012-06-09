@@ -54,18 +54,6 @@ Arrangement.computeScore = function (region)
 };
 
 
-var Region = {left: 0, top: 0, right: 0, bottom: 0, axis: "LCUC", bias: 0};
-
-Region.construct = function (left, top, right, bottom, axis, bias)
-{
-	this.left = left;
-	this.top = top;
-	this.right = right;
-	this.bottom = bottom;
-	this.axis = axis;
-	this.bias = bias;
-};
-
 var Placement = {overlay: null, region: null, left: 0, top: 0, right: 0, bottom: 0, layer: 0};
 
 Placement.computeScore = function (region)
@@ -86,6 +74,18 @@ Placement.overlaps = function (left, top, right, bottom)
 			(left < this.right) && (right > this.left));
 };
 
+
+var Region = {left: 0, top: 0, right: 0, bottom: 0, axis: "LCUC", bias: 0};
+
+Region.construct = function (left, top, right, bottom, axis, bias)
+{
+	this.left = left;
+	this.top = top;
+	this.right = right;
+	this.bottom = bottom;
+	this.axis = axis;
+	this.bias = bias;
+};
 
 var Overlay = {id: "none", width: 90, height: 90, style: "overlay", color: "#FFFF00", allowedRegions: null, enabled: true};
 
