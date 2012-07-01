@@ -23,49 +23,38 @@ function init()
 	// Just for testing, compute our own current time,
 	// and pull the program forward to be closer to now.
 	var now = new Date().getTime();
-	while (ProgramController.program.startOffset + 3600000 < now)
-		ProgramController.program.startOffset += 3600000;
+	while (ProgramController.program.startTime + 3600000 < now)
+		ProgramController.program.startTime += 3600000;
 	
 	var programDiv = document.getElementById("program");
 	UI.drawProgram(ProgramController.program, programDiv);
 
-	Player.stepCallback = function () {	
-		ProgramController.stepForward(new Date().getTime(),
-				function (program, b, i) {
-					var item = program.blocks[b].items[i];
-					Player.play(item.uri, item.config, item.duration, 0);
-				});
-	};
-	
-	ProgramController.findLaunchOffset(new Date().getTime(),
-		function (program, b, i, offset) {
-			ProgramController.launch(b, i);
-			var item = program.blocks[b].items[i];
-			Player.play(item.uri, item.config, item.duration, offset);
-		});
+	App.init(ProgramController);
 	
 	window.setInterval(
 		function () {
 			now = new Date().getTime();
 			
-			ProgramController.findLaunchOffset(now,
-				function (program, b, i, offset) {
-					var item = program.blocks[b].items[i];
-					UI.markProgramOffset(programDiv, "t_m_l", "marker_launch", b, i, item.duration, offset);
-				});
+			var programStatus = Object.create(ProgramStatus);
+			ProgramController.sync(new Date().getTime(), programStatus);
+			var item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
+			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, item.duration, programStatus.offset);
+
+			programStatus = App.programStatus;
+			item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, item.duration, Math.floor(Player.offset / 1000));
 
 			var playerDiv = document.getElementById("player");
 			var videoDiv = document.getElementById("video");
 
-			Player.updateOffset(now);
+			Player.onInterval(now);
 			UI.updatePlayer(Player, videoDiv);
 
-			ProgramController.getCurrentItem(
-				function (program, b, i) {
-					var item = program.blocks[b].items[i];
-					UI.markProgramOffset(programDiv, "t_m_c", "marker_current", b, i, item.duration, Math.floor(Player.offset / 1000));
-				});
-
+			App.onInterval(now);
+			UI.displayWait(App, document.getElementById("wait"));
+			UI.displayNextUp(App, document.getElementById("nextUp"));
+			UI.displayNextAppt(App, document.getElementById("nextAppt"));
+			
 			var overlays = [];
 			var overlay;
 			var region;

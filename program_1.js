@@ -7,27 +7,27 @@ ProgramController.loadProgram(
 
 	blocks: [
 		{
-			start: 0, dsl: false, dfe: true,
+			start: 0, dll: false, dfe: false, msse: 0, mssl: 0, appt: false,
 			items: [
-				{duration: 120,  uri: "uri1", config: "a=b", dsl: false, dfe: true},
-				{duration: 120,  uri: "uri2", config: "a=b", dsl: false, dfe: true},
-				{duration: 60,   uri: "uri3", config: "",    dsl: false, dfe: true}
+				{duration: 300,  uri: "uri1", playlistUri: "playlist1", dll: false},
+				{duration: 300,  uri: "uri2", playlistUri: "playlist1", dll: false},
+				{duration: 60,   uri: "uri3", playlistUri: null,        dll: false}
 			],
 		},
 		{
-			start: 900, dsl: false, dfe: true,
+			start: 900, dll: false, dfe: false, msse: 120, mssl: 0, appt: false,
 			items: [
-				{duration: 180,  uri: "uri4", config: "c=d", dsl: false, dfe: true},
-				{duration: 180,  uri: "uri5", config: "",    dsl: false, dfe: true},
-				{duration: 60,   uri: "uri6", config: "e=f", dsl: true,  dfe: true}
+				{duration: 480,  uri: "uri4", playlistUri: null,        dll: false},
+				{duration: 300,  uri: "uri5", playlistUri: "playlist2", dll: false},
+				{duration: 60,   uri: "uri6", playlistUri: "playlist2", dll: false}
 			],
 		},
 		{
-			start: 3600, dsl: false, dfe: true,
+			start: 3600, dll: false, dfe: false, msse: 0, mssl: 0, appt: true,
 			items: [
-				{duration: 1800, uri: "uri7", config: "",    dsl: false, dfe: true},
-				{duration: 120,  uri: "uri8", config: "",    dsl: false, dfe: true},
-				{duration: 900,  uri: "uri9", config: "",    dsl: false, dfe: true}
+				{duration: 60,   uri: "uri7", playlistUri: null,        dll: false},
+				{duration: 360,  uri: "uri8", playlistUri: null,        dll: false},
+				{duration: 900,  uri: "uri9", playlistUri: null,        dll: false}
 			],
 		}
 	]

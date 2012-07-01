@@ -5,13 +5,17 @@ body {font: 10px Arial, Helvetica, sans-serif; color: white; margin: 0}
 .block {background-color: #666666; border-top-width: 1px; border-top-style: solid; border-top-color: blue;}
 .item {background-color: gray; text-align: right; border-top-width: 1px; border-top-style: solid; border-top-color: black}
 
-.marker_launch {position: absolute; z-index: 1; left: 1; width: 280; height: 1; border-top-width: 1px; border-top-style: solid; border-top-color: green}
+.marker_sync {position: absolute; z-index: 1; left: 1; width: 280; height: 1; border-top-width: 1px; border-top-style: solid; border-top-color: green}
 .marker_current {position: absolute; z-index: 0; left: 1; width: 280; height: 1; border-top-width: 1px; border-top-style: solid; border-top-color: red}
 
-.player {position: absolute; left: 300; top: 120; background-color: gray; text-align: center; width: 318; height: 238; border: 1px solid black}
-.video {font:30px Arial, Helvetica, sans-serif; position: absolute; left: 10%; top: 10%; background-color: #999999; background-alpha: 0.5; text-align: center; width: 80%; height: 80%; border: 1px solid black}
-.controls {font-size:8px; position: absolute; left: 300; top: 370; background-color: gray; text-align: center; width: 318; height: 10; border: 1px solid black}
-.overlays {font-size:8px; position: absolute; left: 300; top: 10; padding: 5; background-color: gray; text-align: left; width: 550; height: 90; border: 1px solid black}
+.player {position: absolute; left: 300; top: 180; background-color: gray; text-align: center; width: 318; height: 238; border: 1px solid black}
+.video {font:20px Arial, Helvetica, sans-serif; position: absolute; left: 10%; top: 10%; background-color: #999999; text-align: center; width: 80%; height: 80%; border: 1px solid black}
+.controls {font-size:8px; position: absolute; left: 300; top: 430; background-color: gray; text-align: center; width: 318; height: 10; border: 1px solid black}
+.overlays {font-size:8px; position: absolute; left: 300; top: 10; padding: 5; background-color: gray; text-align: left; width: 600; height: 140; border: 1px solid black}
+
+.nextUp {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 310; top: 376; background-color: #008800; text-align: center; width: 200; height: 50; border: 1px solid black; visibility: hidden}
+.nextAppt {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 520; top: 376; background-color: #000088; text-align: center; width: 200; height: 50; border: 1px solid black; visibility: hidden}
+.wait {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 480; top: 280; background-color: #880000; text-align: center; width: 160; height: 50; border: 1px solid black; visibility: hidden}
 
 .overlay {position: absolute; z-index: 1; opacity: 0.4}
 

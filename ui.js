@@ -20,16 +20,31 @@ UI.drawProgram = function (program, programDiv)
 	var innerHTML = "";
 	
 	for (var b = 0; b < blocks.length; b++) {
+		var block = blocks[b];
+		
 		innerHTML += "<div id=\"t_b" + b + "\" class=\"block\">";
-		innerHTML += "<div id=\"t_b" + b + "_info\">" + new Date(program.startOffset + blocks[b].start*1000).toString() + "</div>";
 
-		var items = blocks[b].items;
+		innerHTML += "<div id=\"t_b" + b + "_info\">";
+		innerHTML += new Date(program.startTime + block.start * 1000).toString() + "<br/>";
+		innerHTML += "dll: " + block.dll + ", ";
+		innerHTML += "dfe: " + block.dfe + ", ";
+		innerHTML += "msse: " + block.msse + ", ";
+		innerHTML += "mssl: " + block.mssl + ", ";
+		innerHTML += "appt: " + block.appt;
+		innerHTML += "</div>";
+		
+		var items = block.items;
 		
 		for (var i = 0; i < items.length; i++) {
-			var duration = items[i].duration;
-			var uri = items[i].uri;
-			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/10) + "px;\">" + UI.mmss(duration) + " " + uri + "</div>";
+			var item = items[i];
+			var duration = item.duration;
+			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/8) + "px;\">";
+			innerHTML += "uri: " + item.uri + ", ";
+			innerHTML += "dll: " + item.dll + ", ";
+			innerHTML += "dur: " + UI.mmss(duration);
+			innerHTML += "</div>";
 		}
+		
 		innerHTML += "</div>";
 	}
 
@@ -50,11 +65,43 @@ UI.markProgramOffset = function (programDiv, markerId, markerClass, b, i, durati
 
 UI.updatePlayer = function (player, videoDiv)
 {
-	var config = player.config;
-	if (config == "")
-		config = "(empty)";
+	if (player.uri) {
+		var playlistUri = player.playlistUri;
+		if (!playlistUri)
+			playlistUri = "(none)";
 	
-	videoDiv.innerHTML = "uri: " + player.uri + "<br/>" + "config: " + config + "<br/>" + UI.mmss(Math.floor(player.offset / 1000));
+		videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "uri: " + player.uri + "<br/>" + UI.mmss(Math.floor(player.offset / 1000));
+	}
+	else
+		videoDiv.innerHTML = "not playing";
+};
+
+UI.displayWait = function(app, waitDiv) {
+	if (app.programActive && (app.programStatus.wait > 0)) {
+		waitDiv.style["visibility"] = "visible";
+		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
+	}
+	else
+		waitDiv.style["visibility"] = "hidden";
+};
+
+UI.displayNextUp = function(app, nextUpDiv) {
+	if (app.programActive && app.nextUpItem) {
+		nextUpDiv.style["visibility"] = "visible";
+		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.uri;
+	}
+	else
+		nextUpDiv.style["visibility"] = "hidden";
+};
+
+UI.displayNextAppt = function(app, nextApptDiv) {
+	if (app.nextApptBlock) {
+		nextApptDiv.style["visibility"] = "visible";
+		var nextApptStartTime = app.programController.blockStartTime(app.nextApptBlock);
+		nextApptDiv.innerHTML = "Next Live: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " at " + (new Date(nextApptStartTime)).toString();
+	}
+	else
+		nextApptDiv.style["visibility"] = "hidden";
 };
 
 UI.displayOverlay = function (playerDiv, placement, overlayClass)
@@ -77,7 +124,7 @@ UI.displayOverlays = function (playerDiv, overlays, arrangement, overlayClass)
 {
 	var removeOverlays = overlays.slice();
 	
-	if (arrangement != null)
+	if (arrangement)
 		for (var i = 0; i < arrangement.placements.length; i++) {
 			UI.displayOverlay(playerDiv, arrangement.placements[i], overlayClass);
 			var removeIndex = removeOverlays.indexOf(arrangement.placements[i].overlay);

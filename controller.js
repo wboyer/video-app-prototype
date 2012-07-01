@@ -1,101 +1,181 @@
-var ProgramController = {program: null, currentBlockIndex: 0, currentItemIndex: 0};
+var ProgramStatus = {blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, hasLoopedBlock: false};
+
+ProgramStatus.init = function ()
+{
+	this.blockIndex = 0;
+	this.itemIndex = 0;
+	this.wait = 0;
+	this.offset = 0;
+	this.hasLoopedBlock = false;
+};
+
+ProgramStatus.clone = function (programStatus)
+{
+	this.blockIndex = programStatus.blockIndex;
+	this.itemIndex = programStatus.itemIndex;
+	this.wait = programStatus.wait;
+	this.offset = programStatus.offset;
+	this.hasLoopedBlock = programStatus.hasLoopedBlock;
+};
+
+var ProgramController = {program: null, apptBlocks: null};
 
 ProgramController.loadProgram = function (program)
 {
 	this.program = program;
-	program.startOffset = Date.parse(program.start);
+	program.startTime = Date.parse(program.start);
+	
+	this.apptBlocks = [];
+	for (var b = 0; b < program.blocks.length; b++)
+		if (program.blocks[b].appt)
+			this.apptBlocks[this.apptBlocks.length] = b;
 };
 
-ProgramController.findLaunchOffset = function (now, func)
+ProgramController.blockStartTime = function (b)
 {
 	var program = this.program;
+	return program.startTime + program.blocks[b].start * 1000;
+};
+
+ProgramController.sync = function (now, status)
+{
+	status.init();
+
+	var program = this.program;
 	
-	var nowOffset = Math.floor((now - program.startOffset) / 1000);
-	var launchOffset = 0;
-	var blocks = program.blocks;
+	if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
+		return false;
 	
-	for (var b = 0; ; b++)
-		if ((b + 1 == blocks.length) || (blocks[b + 1].start > nowOffset))
-		{
-			var block = blocks[b];
-			launchOffset = block.start;
+	var time = this.blockStartTime(0);
 
-			for (var i = 0; ; ) {
-				var item = block.items[i];
-				var duration = item.duration;
+	var done = false;
+	
+	while (!done) {
+		this.syncToTime(time, status);
+		
+		time += status.wait * 1000;
 
-				if (block.dsl || (launchOffset + duration > nowOffset)) {
-					if (block.dsl || item.dsl)
-						launchOffset = 0;
-					else
-						launchOffset = nowOffset - launchOffset;
+		if (time > now) {
+			status.wait = Math.floor((time - now) / 1000);
+			time = now;
+			done = true;
+		}
+		else {
+			status.wait = 0;
+			
+			var block = program.blocks[status.blockIndex];
+			var item = block.items[status.itemIndex];
+			
+			time += item.duration * 1000;
 
-					func(program, b, i, launchOffset);
-
-					return;
-				}
-
-				launchOffset += duration;
-
-				i += 1;
-				if (i == block.items.length)
-					i = 0;
+			if (time > now) {
+				done = true;				
+				if (block.dll || item.dll)
+					time -= item.duration * 1000;
+				else
+					status.offset = item.duration - Math.floor((time - now) / 1000);
 			}
 		}
-};
-
-ProgramController.getCurrentItem = function (func)
-{
-	func(this.program, this.currentBlockIndex, this.currentItemIndex);
-};
-
-ProgramController.launch = function (b, i)
-{
-	this.currentBlockIndex = b;
-	this.currentItemIndex = i;
-};
-
-ProgramController.stepForward = function (now, func)
-{
-	var program = this.program;
-	var nowOffset = Math.floor((now - program.startOffset) / 1000);
-
-	var b = this.currentBlockIndex;
-	var i = this.currentItemIndex;
-
-	var blocks = program.blocks;
-	var block = blocks[b];
-
-	i += 1;
-	if (i >= block.items.length)
-		i = 0;
-
-	if (b + 1 < blocks.length) {
-		var timeUntilNextBlockStart = blocks[b + 1].start - nowOffset;
 		
-		if ((timeUntilNextBlockStart < 0) || (timeUntilNextBlockStart < block.items[i].duration)) {
-			b += 1;
-			i = 0;
-		}
-	} 
-	
-	this.currentBlockIndex = b;
-	this.currentItemIndex = i;
+		if (!done)
+			status.itemIndex += 1;
+	}
 
-	func(program, b, i);
+	return true;
 };
 
-ProgramController.skipForward = function (now, func)
+// private
+ProgramController.syncToTime = function (time, status)
 {
 	var program = this.program;
+	var timeOffset = Math.floor((time - program.startTime) / 1000);
 
-	var b = this.currentBlockIndex;
-	var i = this.currentItemIndex;
+	var b = status.blockIndex;
+	var i = status.itemIndex;
 
 	var blocks = program.blocks;
 	var block = blocks[b];
 
-	i += 1;
+	var hasLoopedBlock = status.hasLoopedBlock;
+
+	var done = false;
+	
+	while (!done)
+	{
+		done = true;
+
+		if (i >= block.items.length) {
+			i = 0;
+			hasLoopedBlock = true;
+		}
+
+		if (b + 1 < blocks.length) {
+			var nextBlock = blocks[b + 1];
+			var timeUntilBlockStart = nextBlock.start - timeOffset;
+		
+			var mssl = block.mssl;
+			if (block.appt)
+				mssl = 0;
+
+			if ((mssl >= 0) && (block.items[i].duration - timeUntilBlockStart > mssl) && (hasLoopedBlock || !block.dfe)) {
+				b += 1;
+				i = 0;
+				block = blocks[b];
+				hasLoopedBlock = false;
+				done = false;
+			}
+		}
+	}
+
+	status.wait = 0;
+	status.offset = 0;
+	
+	if (b != status.blockIndex) {
+		var timeUntilBlockStart = block.start - timeOffset;
+		
+		var msse = block.msse;
+		if (block.appt)
+			msse = 0;
+		
+		if ((msse >= 0) && (timeUntilBlockStart > msse))
+			status.wait = timeUntilBlockStart - msse;
+
+		status.blockIndex = b;
+		status.hasLoopedBlock = false;
+	}
+	else
+		if (hasLoopedBlock)
+			status.hasLoopedBlock = true;
+	
+	status.itemIndex = i;
+};
+
+ProgramController.stepForward = function (now, status)
+{
+	status.itemIndex += 1;
+	this.syncToTime(now, status);
+};
+
+ProgramController.skipForward = function (now, status)
+{
+	var program = this.program;
+
+	var b = status.blockIndex;
+	var i = status.itemIndex;
+
+	var blocks = program.blocks;
+	var block = blocks[b];
+
+	if (status.wait > 0)
+		if (block.appt)
+			i = block.items.length;
+		else {
+			status.wait = 0;
+			return;
+		}
+	else
+		i += 1;
+
 	if (i >= block.items.length) {
 		i = 0;
 		if (b + 1 < blocks.length)
@@ -104,22 +184,23 @@ ProgramController.skipForward = function (now, func)
 			b = 0;
 	}
 
-	this.currentBlockIndex = b;
-	this.currentItemIndex = i;
-
-	func(program, b, i);
+	this.skip(now, status, b, i);
 };
 
-ProgramController.skipBackward = function (now, func)
+ProgramController.skipBackward = function (now, status)
 {
 	var program = this.program;
 
-	var b = this.currentBlockIndex;
-	var i = this.currentItemIndex;
+	var b = status.blockIndex;
+	var i = status.itemIndex;
 
 	var blocks = program.blocks;
 
-	i -= 1;
+	if (status.wait > 0)
+		i = -1;
+	else
+		i -= 1;
+
 	if (i < 0) {
 		if (b > 0)
 			b -= 1;
@@ -128,8 +209,38 @@ ProgramController.skipBackward = function (now, func)
 		i = blocks[b].items.length - 1;
 	}
 
-	this.currentBlockIndex = b;
-	this.currentItemIndex = i;
-
-	func(program, b, i);
+	this.skip(now, status, b, i);
 };
+
+// private
+ProgramController.skip = function (now, status, b, i)
+{
+	var program = this.program;
+
+	block = program.blocks[b];
+
+	if (b != status.blockIndex)
+		status.hasLoopedBlock = false;
+
+	status.wait = 0;
+	status.offset = 0;
+
+	if (block.appt) {
+		var nowOffset = Math.floor((now - program.startTime) / 1000);
+	
+		if (block.start > nowOffset) {
+			status.wait = block.start - nowOffset;
+			i = 0;
+		}
+	}
+
+	status.blockIndex = b;
+	status.itemIndex = i;
+};
+
+ProgramController.playProgram = function (player, status, b, i)
+{
+	var item = this.program.blocks[status.blockIndex].items[status.itemIndex];
+	player.play(item.uri, item.playlistUri, item.duration, status.offset);
+};
+

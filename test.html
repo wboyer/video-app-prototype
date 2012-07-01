@@ -4,6 +4,7 @@
 		<script src="controller.js" type="text/javascript"></script>
 		<script src="controls.js" type="text/javascript"></script>
 		<script src="overlays.js" type="text/javascript"></script>
+		<script src="app.js" type="text/javascript"></script>
 
 		<link type="text/css" rel="stylesheet" href="ui.css" />
 		<script src="ui.js" type="text/javascript"></script>
@@ -22,8 +23,13 @@
 		<div id="controls" class="controls">
 			<a onclick="Controls.skipBackward();">Skip Backward</a> |
 			<a onclick="Controls.playPause(this);">Pause</a> |
-			<a onclick="Controls.skipForward();">Skip Forward</a>
+			<a onclick="Controls.skipForward();">Skip Forward</a> |
+			<a onclick="Controls.sync();">Go Live</a>
 		</div>
+
+		<div id="wait" class="wait"></div>
+		<div id="nextUp" class="nextUp"></div>
+		<div id="nextAppt" class="nextAppt"></div>
 
 		<div id="overlays" class="overlays">
 			Overlay 0: <input id="overlay0enabled" type="checkbox" class="overlay_checkbox" />

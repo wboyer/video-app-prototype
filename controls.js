@@ -12,13 +12,14 @@ Controls.playPause = function (button)
 	}
 };
 
+Controls.sync = function ()
+{
+	App.sync();
+};
+
 Controls.skipForward = function ()
 {
-	ProgramController.skipForward(new Date().getTime(),
-		function (program, b, i) {
-			var item = program.blocks[b].items[i];
-			Player.play(item.uri, item.config, item.duration, 0);
-		});
+	App.skipForward();
 };
 
 Controls.skipBackward = function ()
@@ -26,11 +27,7 @@ Controls.skipBackward = function ()
 	if (Player.offset >= 2000)
 		Player.offset = 0;
 	else
-		ProgramController.skipBackward(new Date().getTime(),
-			function (program, b, i) {
-				var item = program.blocks[b].items[i];
-				Player.play(item.uri, item.config, item.duration, 0);
-			});
+		App.skipBackward();
 };
 
 
