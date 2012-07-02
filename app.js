@@ -99,13 +99,14 @@ App.onInterval = function (now)
 			this.nextApptBlock = null;
 		}
 	}
-	else {
-		if (this.programController.apptBlocks.length > 0) {
-			var blockIndex = this.programController.apptBlocks[0];
+	else
+		for (var a = 0; a < this.programController.apptBlocks.length; a++)
+		{
+			var blockIndex = this.programController.apptBlocks[a];
 			var secondsUntilAppt = Math.floor((this.programController.blockStartTime(blockIndex) - now) / 1000);
 			if (
 					((secondsUntilAppt <= 2640) && (secondsUntilAppt >= 2639)) ||
-					((secondsUntilAppt <= 1800) && (secondsUntilAppt >= 1799)) ||
+					((secondsUntilAppt <= 1440) && (secondsUntilAppt >= 1439)) ||
 					((secondsUntilAppt <= 360) && (secondsUntilAppt >= 359)) ||
 					((secondsUntilAppt <= 300) && (secondsUntilAppt >= 299)) ||
 					((secondsUntilAppt <= 60) && (secondsUntilAppt >= 59)) ||
@@ -113,8 +114,8 @@ App.onInterval = function (now)
 				) {
 				this.nextApptBlock = blockIndex;
 				this.nextApptMsgStart = now;
+				break;
 			}
 		}
-	}
 };
 
