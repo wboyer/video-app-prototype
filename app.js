@@ -1,4 +1,4 @@
-var App = {programController: null, programStatus: null, programActive: false, waitStart: 0, waitRemaining: 0, nextUpItem: null, nextUpMsgStart: 0, nextApptBlock: null, nextApptMsgStart: 0};
+var App = {programController: null, programStatus: null, programIsPlaying: false, waitStart: 0, waitRemaining: 0, nextUpItem: null, nextUpMsgStart: 0, nextApptBlock: null, nextApptMsgStart: 0};
 
 App.init = function (programController)
 {
@@ -53,14 +53,14 @@ App.playProgram = function (now)
 	else
 		this.programController.playProgram(Player, programStatus);
 	
-	this.programActive = true;
+	this.programIsPlaying = true;
 	this.nextUpItem = null;
 	this.nextApptBlock = null;
 };
 
 App.onInterval = function (now)
 {
-	if (this.programActive) {
+	if (this.programIsPlaying) {
 		var programStatus = this.programStatus;
 		
 		// display a "waiting" message
@@ -103,19 +103,19 @@ App.onInterval = function (now)
 		for (var a = 0; a < this.programController.apptBlocks.length; a++)
 		{
 			var blockIndex = this.programController.apptBlocks[a];
-			var secondsUntilAppt = Math.floor((this.programController.blockStartTime(blockIndex) - now) / 1000);
+			var secondsUntilAppt = this.programController.secondsUntilBlockStart(now, blockIndex);
 			if (
-					((secondsUntilAppt <= 2640) && (secondsUntilAppt >= 2639)) ||
-					((secondsUntilAppt <= 1440) && (secondsUntilAppt >= 1439)) ||
-					((secondsUntilAppt <= 360) && (secondsUntilAppt >= 359)) ||
-					((secondsUntilAppt <= 300) && (secondsUntilAppt >= 299)) ||
-					((secondsUntilAppt <= 60) && (secondsUntilAppt >= 59)) ||
-					((secondsUntilAppt <= 1) && (secondsUntilAppt >= -30))
-				) {
-				this.nextApptBlock = blockIndex;
-				this.nextApptMsgStart = now;
-				break;
-			}
+					((secondsUntilAppt < 2640) && (secondsUntilAppt >= 2639)) ||
+					((secondsUntilAppt < 1440) && (secondsUntilAppt >= 1439)) ||
+					((secondsUntilAppt < 360) && (secondsUntilAppt >= 359)) ||
+					((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
+					((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
+					((secondsUntilAppt < 0) && (secondsUntilAppt >= -1))
+				)
+				if (!this.nextApptBlock || (secondsUntilAppt < 0)) {
+					this.nextApptBlock = blockIndex;
+					this.nextApptMsgStart = now;
+					break;
+				}
 		}
 };
-

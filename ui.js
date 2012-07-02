@@ -77,7 +77,7 @@ UI.updatePlayer = function (player, videoDiv)
 };
 
 UI.displayWait = function(app, waitDiv) {
-	if (app.programActive && (app.programStatus.wait > 0)) {
+	if (app.programIsPlaying && (app.programStatus.wait > 0)) {
 		waitDiv.style["visibility"] = "visible";
 		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
 	}
@@ -86,7 +86,7 @@ UI.displayWait = function(app, waitDiv) {
 };
 
 UI.displayNextUp = function(app, nextUpDiv) {
-	if (app.programActive && app.nextUpItem) {
+	if (app.programIsPlaying && app.nextUpItem) {
 		nextUpDiv.style["visibility"] = "visible";
 		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.uri;
 	}
@@ -94,11 +94,15 @@ UI.displayNextUp = function(app, nextUpDiv) {
 		nextUpDiv.style["visibility"] = "hidden";
 };
 
-UI.displayNextAppt = function(app, nextApptDiv) {
+UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
-		var nextApptStartTime = app.programController.blockStartTime(app.nextApptBlock);
-		nextApptDiv.innerHTML = "Next Live: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " at " + (new Date(nextApptStartTime)).toString();
+		var secondsUntilApptStart = app.programController.secondsUntilBlockStart(now, app.nextApptBlock);
+		
+		if (secondsUntilApptStart < 0)
+			nextApptDiv.innerHTML = "Live Now: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri;
+		else
+			nextApptDiv.innerHTML = "Live Soon: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(secondsUntilApptStart);
 	}
 	else
 		nextApptDiv.style["visibility"] = "hidden";

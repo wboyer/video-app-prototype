@@ -20,6 +20,18 @@ ProgramStatus.clone = function (programStatus)
 
 var ProgramController = {program: null, apptBlocks: null};
 
+ProgramController.blockStartTime = function (b)
+{
+	var program = this.program;
+	return program.startTime + program.blocks[b].start * 1000;
+};
+
+ProgramController.secondsUntilBlockStart = function (now, b)
+{
+	var program = this.program;
+	return Math.floor((program.startTime + program.blocks[b].start * 1000 - now) / 1000);
+};
+
 ProgramController.loadProgram = function (program)
 {
 	this.program = program;
@@ -29,12 +41,6 @@ ProgramController.loadProgram = function (program)
 	for (var b = 0; b < program.blocks.length; b++)
 		if (program.blocks[b].appt)
 			this.apptBlocks[this.apptBlocks.length] = b;
-};
-
-ProgramController.blockStartTime = function (b)
-{
-	var program = this.program;
-	return program.startTime + program.blocks[b].start * 1000;
 };
 
 ProgramController.sync = function (now, status)
@@ -240,7 +246,6 @@ ProgramController.skipToItem = function (now, status, b, i)
 ProgramController.playProgram = function (player, status)
 {
 	var item = this.program.blocks[status.blockIndex].items[status.itemIndex];
-	//player.play(item.uri, item.playlistUri, item.duration, status.offset);
 
 	var uri = item.uri;
 	var playlistUri = item.playlistUri;

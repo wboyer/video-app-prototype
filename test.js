@@ -53,7 +53,7 @@ function init()
 			App.onInterval(now);
 			UI.displayWait(App, document.getElementById("wait"));
 			UI.displayNextUp(App, document.getElementById("nextUp"));
-			UI.displayNextAppt(App, document.getElementById("nextAppt"));
+			UI.displayNextAppt(App, document.getElementById("nextAppt"), now);
 			
 			var overlays = [];
 			var overlay;
