@@ -184,7 +184,7 @@ ProgramController.skipForward = function (now, status)
 			b = 0;
 	}
 
-	this.skip(now, status, b, i);
+	this.skipToItem(now, status, b, i);
 };
 
 ProgramController.skipBackward = function (now, status)
@@ -209,11 +209,10 @@ ProgramController.skipBackward = function (now, status)
 		i = blocks[b].items.length - 1;
 	}
 
-	this.skip(now, status, b, i);
+	this.skipToItem(now, status, b, i);
 };
 
-// private
-ProgramController.skip = function (now, status, b, i)
+ProgramController.skipToItem = function (now, status, b, i)
 {
 	var program = this.program;
 

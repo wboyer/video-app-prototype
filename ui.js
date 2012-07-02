@@ -39,7 +39,7 @@ UI.drawProgram = function (program, programDiv)
 			var item = items[i];
 			var duration = item.duration;
 			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/8) + "px;\">";
-			innerHTML += "uri: " + item.uri + ", ";
+			innerHTML += "uri: <a onclick=\"App.skipToItem(" + b + "," + i + ");\">" + item.uri + "</a>, ";
 			innerHTML += "dll: " + item.dll + ", ";
 			innerHTML += "dur: " + UI.mmss(duration);
 			innerHTML += "</div>";

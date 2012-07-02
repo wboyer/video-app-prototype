@@ -35,6 +35,13 @@ App.skipBackward = function ()
 	this.playProgram(now);
 };
 
+App.skipToItem = function (blockIndex, itemIndex)
+{
+	var now = new Date().getTime();
+	this.programController.skipToItem(now, this.programStatus, blockIndex, itemIndex);
+	this.playProgram(now);
+};
+
 App.playProgram = function (now)
 {
 	var programStatus = this.programStatus;
