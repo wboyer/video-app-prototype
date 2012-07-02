@@ -237,9 +237,28 @@ ProgramController.skipToItem = function (now, status, b, i)
 	status.itemIndex = i;
 };
 
-ProgramController.playProgram = function (player, status, b, i)
+ProgramController.playProgram = function (player, status)
 {
 	var item = this.program.blocks[status.blockIndex].items[status.itemIndex];
-	player.play(item.uri, item.playlistUri, item.duration, status.offset);
-};
+	//player.play(item.uri, item.playlistUri, item.duration, status.offset);
 
+	var uri = item.uri;
+	var playlistUri = item.playlistUri;
+	var duration = item.duration;
+	
+	if (playlistUri) {
+		if (!player.playlistIsLoaded(playlistUri)) {
+			player.config(playlistUri);
+			player.loadPlaylist(playlistUri);
+		}
+		player.seekToPlaylistVideo(uri, duration);
+	}
+	else
+		if (!player.videoIsLoaded(uri)) {
+			player.config(uri);
+			player.loadVideo(uri, duration);
+		}
+
+	player.seekToOffset(status.offset);
+	player.play();
+};

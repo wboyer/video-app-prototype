@@ -10,23 +10,50 @@ Player.init = function ()
 	this.lastTick = 0;
 };
 
-Player.onInterval = function (now)
+Player.config = function (uri)
 {
-	if ((this.lastTick != 0) && this.playing)
-		this.offset += (now - this.lastTick);
-	this.lastTick = now;
-	if ((this.offset >= this.duration * 1000) && this.stepCallback && this.playing) {
-		this.stepCallback();
-	}
 };
 
-Player.play = function (uri, playlistUri, duration, offset)
+Player.loadPlaylist = function (uri)
 {
-	this.playing = true;
+	this.init();
+	this.playlistUri = uri;
+};
+
+Player.playlistIsLoaded = function (uri)
+{
+	return this.playlistUri == uri;
+};
+
+Player.seekToPlaylistVideo = function (uri, duration)
+{
+	this.playing = false;
 	this.uri = uri;
-	this.playlistUri = playlistUri;
 	this.duration = duration;
+	this.offset = 0;
+};
+
+Player.loadVideo = function (uri, duration)
+{
+	this.init();
+	this.uri = uri;
+	this.duration = duration;
+};
+
+Player.videoIsLoaded = function (uri)
+{
+	return !this.playlistUri && (this.uri == uri);
+};
+
+Player.seekToOffset = function (offset)
+{
 	this.offset = offset * 1000;
+};
+
+Player.play = function ()
+{
+	if (this.uri)
+		this.playing = true;
 };
 
 Player.pause = function ()
@@ -36,7 +63,17 @@ Player.pause = function ()
 
 Player.unpause = function ()
 {
-	this.playing = true;
+	if (this.uri)
+		this.playing = true;
 };
 
+Player.onInterval = function (now)
+{
+	if ((this.lastTick != 0) && this.playing)
+		this.offset += (now - this.lastTick);
 
+	this.lastTick = now;
+
+	if (this.playing && (this.offset >= this.duration * 1000) && this.stepCallback)
+		this.stepCallback();
+};
