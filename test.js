@@ -18,16 +18,24 @@ function addAllowedRegion(overlay, left, top, right, bottom)
 	overlay.addAllowedRegion(region);
 }
 
+function slideProgram(offset)
+{
+	ProgramController.program.startTime += offset;
+	var programDiv = document.getElementById("program");
+	UI.displayProgram(ProgramController.program, programDiv);
+	App.onAirNowStart = 0;
+}
+
 function init()
 {
 	// Just for testing, compute our own current time,
-	// and pull the program forward to be closer to now.
+	// and slide the program forward to be closer to now.
 	var now = new Date().getTime();
 	while (ProgramController.program.startTime + 3600000 < now)
 		ProgramController.program.startTime += 3600000;
-	
+
 	var programDiv = document.getElementById("program");
-	UI.drawProgram(ProgramController.program, programDiv);
+	UI.displayProgram(ProgramController.program, programDiv);
 
 	App.init(ProgramController);
 	
@@ -38,11 +46,11 @@ function init()
 			var programStatus = Object.create(ProgramStatus);
 			ProgramController.sync(new Date().getTime(), programStatus);
 			var item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, item.duration, programStatus.offset);
+			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, item.duration + item.adDuration, programStatus.offset);
 
 			programStatus = App.programStatus;
 			item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, item.duration, Math.floor(Player.offset / 1000));
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, item.duration + item.adDuration, Math.floor(Player.offset / 1000));
 
 			var playerDiv = document.getElementById("player");
 			var videoDiv = document.getElementById("video");
@@ -51,6 +59,7 @@ function init()
 			UI.updatePlayer(Player, videoDiv);
 
 			App.onInterval(now);
+			UI.displayOnAirNow(App, document.getElementById("onAirNow"));
 			UI.displayWait(App, document.getElementById("wait"));
 			UI.displayNextUp(App, document.getElementById("nextUp"));
 			UI.displayNextAppt(App, document.getElementById("nextAppt"), now);

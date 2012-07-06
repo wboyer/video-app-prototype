@@ -1,13 +1,22 @@
-var App = {programController: null, programStatus: null, programIsPlaying: false, waitStart: 0, waitRemaining: 0, nextUpItem: null, nextUpMsgStart: 0, nextApptBlock: null, nextApptMsgStart: 0};
+var App = {programController: null, programStatus: null, programIsPlaying: false, 
+			waitStart: 0, waitRemaining: 0, 
+			nextUpItem: null, nextUpMsgStart: 0, 
+			onAirNowItem: null, onAirNowStart: 0, 
+			nextApptBlock: null, nextApptMsgStart: 0};
 
 App.init = function (programController)
 {
 	this.programController = programController;
 	this.programStatus = Object.create(ProgramStatus);
 
+	Player.videoStartedCallback = function (uri) {
+		App.programController.onPlayerVideoStarted(uri, App.programStatus);
+		App.onAirNowStart = 0;
+	};
+
 	Player.stepCallback = function () {
 		var now = new Date().getTime();
-		App.programController.stepForward(now, App.programStatus);
+		App.programController.stepForward(now, App.programStatus, Player.canStepThroughPlaylist());
 		App.playProgram(now);
 	};
 
@@ -72,6 +81,15 @@ App.onInterval = function (now)
 			}
 		}
 		
+		// display an "on air now" message
+		if ((now - this.onAirNowStart) > 10000) {
+			var tmpProgramStatus = Object.create(ProgramStatus);
+			tmpProgramStatus.clone(programStatus);
+			this.programController.sync(now, tmpProgramStatus);
+			this.onAirNowItem = this.programController.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+			this.onAirNowStart = now;
+		}
+		
 		// display a "next up" message
 		if (this.nextUpItem) {
 			if ((now - this.nextUpMsgStart) > 6000) {
@@ -83,11 +101,14 @@ App.onInterval = function (now)
 			if (Player.playing) {
 				var secondsToPlay = Player.duration - Math.floor(Player.offset / 1000);
 				if ((secondsToPlay <= 10) && (secondsToPlay >= 9)) {
-					var trialProgramStatus = Object.create(ProgramStatus);
-					trialProgramStatus.clone(programStatus);
-					this.programController.stepForward(now, trialProgramStatus);
-					this.nextUpItem = this.programController.program.blocks[trialProgramStatus.blockIndex].items[trialProgramStatus.itemIndex];
-					this.nextUpMsgStart = now;
+					var tmpProgramStatus = Object.create(ProgramStatus);
+					tmpProgramStatus.clone(programStatus);
+					this.programController.stepForward(now, tmpProgramStatus);
+					var item = this.programController.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+					if (!item.hidden) {
+						this.nextUpItem = item;
+						this.nextUpMsgStart = now;
+					}
 				}
 			}
 	}
@@ -105,9 +126,8 @@ App.onInterval = function (now)
 			var blockIndex = this.programController.apptBlocks[a];
 			var secondsUntilAppt = this.programController.secondsUntilBlockStart(now, blockIndex);
 			if (
-					((secondsUntilAppt < 2640) && (secondsUntilAppt >= 2639)) ||
-					((secondsUntilAppt < 1440) && (secondsUntilAppt >= 1439)) ||
-					((secondsUntilAppt < 360) && (secondsUntilAppt >= 359)) ||
+					((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
+					((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
 					((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
 					((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
 					((secondsUntilAppt < 0) && (secondsUntilAppt >= -1))

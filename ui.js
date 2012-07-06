@@ -14,7 +14,7 @@ UI.mmss = function (duration)
 	return  minutes + ":" + seconds;
 };
 
-UI.drawProgram = function (program, programDiv)
+UI.displayProgram = function (program, programDiv)
 {
 	var blocks = program.blocks;
 	var innerHTML = "";
@@ -37,10 +37,14 @@ UI.drawProgram = function (program, programDiv)
 		
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			var duration = item.duration;
-			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/8) + "px;\">";
+			var duration = item.duration + item.adDuration;
+			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/6) + "px;\">";
 			innerHTML += "uri: <a onclick=\"App.skipToItem(" + b + "," + i + ");\">" + item.uri + "</a>, ";
 			innerHTML += "dll: " + item.dll + ", ";
+			innerHTML += "plUri: " + item.playlistUri + ", ";
+			innerHTML += "auto: " + item.auto + ", ";
+			innerHTML += "hidden: " + item.hidden + ", ";
+			innerHTML += "ad: " + UI.mmss(item.adDuration) + ", ";
 			innerHTML += "dur: " + UI.mmss(duration);
 			innerHTML += "</div>";
 		}
@@ -69,11 +73,18 @@ UI.updatePlayer = function (player, videoDiv)
 		var playlistUri = player.playlistUri;
 		if (!playlistUri)
 			playlistUri = "(none)";
-	
-		videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "uri: " + player.uri + "<br/>" + UI.mmss(Math.floor(player.offset / 1000));
+
+		var offset = Math.floor(player.offset / 1000);
+		videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "uri: " + player.uri + "<br/>" + UI.mmss(offset);
+		if (offset < player.adDuration)
+			videoDiv.innerHTML += "<br/>ad playing";
 	}
 	else
 		videoDiv.innerHTML = "not playing";
+};
+
+UI.displayOnAirNow = function(app, onAirNowDiv) {
+	onAirNowDiv.innerHTML = "On Air Now: " + app.onAirNowItem.uri;
 };
 
 UI.displayWait = function(app, waitDiv) {

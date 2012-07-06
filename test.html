@@ -14,6 +14,10 @@
 	</head>
 	
 	<body onload="init();">
+		<div class="slide">
+			<a onclick="slideProgram(-60000);">Slide Backward / </a><a onclick="slideProgram(60000);">Forward</a>
+		</div>
+		
 		<div id="program" class="program"></div>
 
 		<div id="player" class="player">
@@ -30,6 +34,7 @@
 		<div id="wait" class="wait"></div>
 		<div id="nextUp" class="nextUp"></div>
 		<div id="nextAppt" class="nextAppt"></div>
+		<div id="onAirNow" class="onAirNow"></div>
 
 		<div id="overlays" class="overlays">
 			Overlay 0: <input id="overlay0enabled" type="checkbox" class="overlay_checkbox" />
