@@ -74,7 +74,7 @@ App.onInterval = function (now)
 		
 		// display a "waiting" message
 		if (programStatus.wait > 0) {
-			this.waitRemaining = Math.floor(programStatus.wait - (now - this.waitStart) / 1000);
+			this.waitRemaining = this.waitStart + programStatus.wait - now;
 			if (this.waitRemaining <= 0) {
 				programStatus.wait = 0;
 				this.playProgram(now);

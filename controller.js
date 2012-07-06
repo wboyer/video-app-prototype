@@ -59,10 +59,10 @@ ProgramController.sync = function (now, status)
 	while (true) {
 		this.stepToTime(time, status);
 		
-		time += status.wait * 1000;
+		time += status.wait;
 
 		if (time > now) {
-			status.wait = Math.floor((time - now) / 1000);
+			status.wait = time - now;
 			return true;
 		}
 		else {
@@ -83,7 +83,7 @@ ProgramController.sync = function (now, status)
 						status.offset = duration - Math.floor((time - now) / 1000);
 						status.adsEnabled = false;
 						if (status.offset < item.adDuration) {
-							status.wait = item.adDuration - status.offset;
+							status.wait = (item.adDuration - status.offset) * 1000;
 							status.offset = item.adDuration;
 						}
 					}					
@@ -163,7 +163,7 @@ ProgramController.stepToTime = function (time, status)
 			msse = 0;
 		
 		if ((msse >= 0) && (timeUntilBlockStart > msse))
-			status.wait = timeUntilBlockStart - msse;
+			status.wait = (timeUntilBlockStart - msse) * 1000;
 
 		status.blockIndex = b;
 		status.hasLoopedBlock = false;
@@ -277,10 +277,10 @@ ProgramController.skipToItem = function (now, status, b, i)
 	status.adsEnabled = true;
 
 	if (block.appt) {
-		var nowOffset = Math.floor((now - program.startTime) / 1000);
+		var nowOffset = now - program.startTime;
 	
-		if (block.start > nowOffset) {
-			status.wait = block.start - nowOffset;
+		if (block.start * 1000 > nowOffset) {
+			status.wait = block.start * 1000 - nowOffset;
 			i = 0;
 		}
 	}

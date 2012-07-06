@@ -90,7 +90,7 @@ UI.displayOnAirNow = function(app, onAirNowDiv) {
 UI.displayWait = function(app, waitDiv) {
 	if (app.programIsPlaying && (app.programStatus.wait > 0)) {
 		waitDiv.style["visibility"] = "visible";
-		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
+		waitDiv.innerHTML = "Waiting for " + UI.mmss(Math.floor(app.waitRemaining / 1000));
 	}
 	else
 		waitDiv.style["visibility"] = "hidden";
