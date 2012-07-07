@@ -28,10 +28,10 @@ ProgramController.blockStartTime = function (b)
 	return program.startTime + program.blocks[b].start * 1000;
 };
 
-ProgramController.secondsUntilBlockStart = function (now, b)
+ProgramController.timeUntilBlockStart = function (now, b)
 {
 	var program = this.program;
-	return Math.floor((program.startTime + program.blocks[b].start * 1000 - now) / 1000);
+	return program.startTime + program.blocks[b].start * 1000 - now;
 };
 
 ProgramController.loadProgram = function (program)
@@ -72,19 +72,20 @@ ProgramController.sync = function (now, status)
 
 			while (true) {
 				var item = block.items[status.itemIndex];
-				var duration = item.duration + item.adDuration;
+				var duration = (item.duration + item.adDuration) * 1000;
+				var adDuration = item.adDuration * 1000;
 				
-				time += duration * 1000;
+				time += duration;
 
 				if (time > now) {
 					if (block.dll || item.dll)
-						time -= duration * 1000;
+						time -= duration;
 					else {
-						status.offset = duration - Math.floor((time - now) / 1000);
+						status.offset = now + duration - time;
 						status.adsEnabled = false;
-						if (status.offset < item.adDuration) {
-							status.wait = (item.adDuration - status.offset) * 1000;
-							status.offset = item.adDuration;
+						if (status.offset < adDuration) {
+							status.wait = adDuration - status.offset;
+							status.offset = adDuration;
 						}
 					}					
 					return true;
@@ -106,7 +107,7 @@ ProgramController.sync = function (now, status)
 ProgramController.stepToTime = function (time, status)
 {
 	var program = this.program;
-	var timeOffset = Math.floor((time - program.startTime) / 1000);
+	var timeOffset = time - program.startTime;
 
 	var b = status.blockIndex;
 	var i = status.itemIndex;
@@ -131,7 +132,7 @@ ProgramController.stepToTime = function (time, status)
 
 		if (b + 1 < blocks.length) {
 			var nextBlock = blocks[b + 1];
-			var timeUntilBlockStart = nextBlock.start - timeOffset;
+			var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 		
 			var mssl = nextBlock.mssl;
 			if (nextBlock.appt)
@@ -141,7 +142,7 @@ ProgramController.stepToTime = function (time, status)
 			for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++)
 				duration += items[j].duration + items[j].adDuration;
 			
-			if ((mssl >= 0) && (duration - timeUntilBlockStart > mssl) && (hasLoopedBlock || !block.dfe)) {
+			if ((mssl >= 0) && ((duration - mssl) * 1000 > timeUntilBlockStart) && (hasLoopedBlock || !block.dfe)) {
 				b += 1;
 				i = 0;
 				block = blocks[b];
@@ -156,14 +157,14 @@ ProgramController.stepToTime = function (time, status)
 	status.adsEnabled = true;
 	
 	if (b != status.blockIndex) {
-		var timeUntilBlockStart = block.start - timeOffset;
+		var timeUntilBlockStart = block.start * 1000 - timeOffset;
 		
-		var msse = block.msse;
+		var msse = block.msse * 1000;
 		if (block.appt)
 			msse = 0;
 		
 		if ((msse >= 0) && (timeUntilBlockStart > msse))
-			status.wait = (timeUntilBlockStart - msse) * 1000;
+			status.wait = timeUntilBlockStart - msse;
 
 		status.blockIndex = b;
 		status.hasLoopedBlock = false;
@@ -306,7 +307,8 @@ ProgramController.playProgram = function (player, status)
 
 	var uri = item.uri;
 	var playlistUri = item.playlistUri;
-	var duration = item.duration + item.adDuration;
+	var duration = (item.duration + item.adDuration) * 1000;
+	var adDuration = item.adDuration * 1000;
 	
 	if (playlistUri) {
 		player.config(playlistUri);
@@ -323,7 +325,7 @@ ProgramController.playProgram = function (player, status)
 	}
 
 	if (status.adsEnabled)
-		player.setAdDuration(item.adDuration);
+		player.setAdDuration(adDuration);
 	
 	player.seekToOffset(status.offset);
 	player.play();

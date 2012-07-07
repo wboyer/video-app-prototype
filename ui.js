@@ -2,8 +2,8 @@ var UI = {};
 
 UI.mmss = function (duration)
 {
-	var minutes = Math.floor(duration / 60);
-	var seconds = duration % 60;
+	var minutes = Math.floor(duration / 60000);
+	var seconds = Math.floor((duration % 60000) / 1000);
 	
 	if (minutes < 10)
 		minutes = "0" + minutes;
@@ -44,8 +44,8 @@ UI.displayProgram = function (program, programDiv)
 			innerHTML += "plUri: " + item.playlistUri + ", ";
 			innerHTML += "auto: " + item.auto + ", ";
 			innerHTML += "hidden: " + item.hidden + ", ";
-			innerHTML += "ad: " + UI.mmss(item.adDuration) + ", ";
-			innerHTML += "dur: " + UI.mmss(duration);
+			innerHTML += "ad: " + UI.mmss(item.adDuration * 1000) + ", ";
+			innerHTML += "dur: " + UI.mmss(duration * 1000);
 			innerHTML += "</div>";
 		}
 		
@@ -74,7 +74,7 @@ UI.updatePlayer = function (player, videoDiv)
 		if (!playlistUri)
 			playlistUri = "(none)";
 
-		var offset = Math.floor(player.offset / 1000);
+		var offset = player.offset;
 		videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "uri: " + player.uri + "<br/>" + UI.mmss(offset);
 		if (offset < player.adDuration)
 			videoDiv.innerHTML += "<br/>ad playing";
@@ -90,7 +90,7 @@ UI.displayOnAirNow = function(app, onAirNowDiv) {
 UI.displayWait = function(app, waitDiv) {
 	if (app.programIsPlaying && (app.programStatus.wait > 0)) {
 		waitDiv.style["visibility"] = "visible";
-		waitDiv.innerHTML = "Waiting for " + UI.mmss(Math.floor(app.waitRemaining / 1000));
+		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
 	}
 	else
 		waitDiv.style["visibility"] = "hidden";
@@ -108,12 +108,12 @@ UI.displayNextUp = function(app, nextUpDiv) {
 UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
-		var secondsUntilApptStart = app.programController.secondsUntilBlockStart(now, app.nextApptBlock);
+		var timeUntilApptStart = app.programController.timeUntilBlockStart(now, app.nextApptBlock);
 		
-		if (secondsUntilApptStart < 0)
+		if (timeUntilApptStart < 0)
 			nextApptDiv.innerHTML = "Live Now: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri;
 		else
-			nextApptDiv.innerHTML = "Live Soon: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(secondsUntilApptStart);
+			nextApptDiv.innerHTML = "Live Soon: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(timeUntilApptStart);
 	}
 	else
 		nextApptDiv.style["visibility"] = "hidden";

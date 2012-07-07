@@ -49,7 +49,7 @@ Player.setAdDuration = function (duration)
 
 Player.seekToOffset = function (offset)
 {
-	this.offset = offset * 1000;
+	this.offset = offset;
 };
 
 Player.play = function ()
@@ -79,6 +79,6 @@ Player.onInterval = function (now)
 
 	this.lastTick = now;
 
-	if (this.playing && (this.offset >= this.duration * 1000) && this.stepCallback)
+	if (this.playing && (this.offset >= this.duration) && this.stepCallback)
 		this.stepCallback();
 };

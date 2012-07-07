@@ -46,11 +46,11 @@ function init()
 			var programStatus = Object.create(ProgramStatus);
 			ProgramController.sync(new Date().getTime(), programStatus);
 			var item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, item.duration + item.adDuration, programStatus.offset);
+			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, programStatus.offset);
 
 			programStatus = App.programStatus;
 			item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, item.duration + item.adDuration, Math.floor(Player.offset / 1000));
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, Player.offset);
 
 			var playerDiv = document.getElementById("player");
 			var videoDiv = document.getElementById("video");

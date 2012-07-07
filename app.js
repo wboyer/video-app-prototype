@@ -99,7 +99,7 @@ App.onInterval = function (now)
 		}
 		else
 			if (Player.playing) {
-				var secondsToPlay = Player.duration - Math.floor(Player.offset / 1000);
+				var secondsToPlay = Math.floor((Player.duration - Player.offset) / 1000);
 				if ((secondsToPlay <= 10) && (secondsToPlay >= 9)) {
 					var tmpProgramStatus = Object.create(ProgramStatus);
 					tmpProgramStatus.clone(programStatus);
@@ -124,7 +124,7 @@ App.onInterval = function (now)
 		for (var a = 0; a < this.programController.apptBlocks.length; a++)
 		{
 			var blockIndex = this.programController.apptBlocks[a];
-			var secondsUntilAppt = this.programController.secondsUntilBlockStart(now, blockIndex);
+			var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(now, blockIndex) / 1000);
 			if (
 					((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
 					((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||

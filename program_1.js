@@ -48,16 +48,16 @@ ProgramController.loadProgram(
 				{duration: 90,   adDuration: 30, uri: "uri7",  playlistUri: "pl2", dll: false, auto: true,  hidden: true},
 				{duration: 90,   adDuration: 30, uri: "uri8",  playlistUri: "pl2", dll: false, auto: true,  hidden: true},
 				{duration: 90,   adDuration: 30, uri: "uri9",  playlistUri: "pl3", dll: false, auto: true,  hidden: false},
-				{duration: 210,  adDuration: 30, uri: "uri10", playlistUri: "pl3", dll: false, auto: true,  hidden: false},
+				{duration: 150,  adDuration: 30, uri: "uri10", playlistUri: "pl3", dll: false, auto: true,  hidden: false},
 				{duration: 150,  adDuration: 30, uri: "uri11", playlistUri: "pl3", dll: false, auto: true,  hidden: false}
 			],
 		},
 		{
 			start: 3600, dll: false, dfe: false, msse: 0, mssl: 0, appt: true,
 			items: [
-				{duration: 30,   adDuration: 30, uri: "uri7",  playlistUri: null,  dll: false, auto: false, hidden: false},
-				{duration: 210,  adDuration: 30, uri: "uri8",  playlistUri: null,  dll: false, auto: false, hidden: false},
-				{duration: 270,  adDuration: 30, uri: "uri9",  playlistUri: null,  dll: false, auto: false, hidden: false}
+				{duration: 30,   adDuration: 30, uri: "uri12", playlistUri: null,  dll: false, auto: false, hidden: false},
+				{duration: 210,  adDuration: 30, uri: "uri13", playlistUri: null,  dll: false, auto: false, hidden: false},
+				{duration: 270,  adDuration: 30, uri: "uri14", playlistUri: null,  dll: false, auto: false, hidden: false}
 			],
 		}
 	]
