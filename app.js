@@ -24,8 +24,8 @@ App.init = function ()
 
 App.loadProgram = function (program)
 {
-	this.player.stop();
 	this.programIsPlaying = false;
+	this.player.stop();
 	this.programStatus = this.programController.loadProgram(program);
 	this.sync();
 };
@@ -35,6 +35,22 @@ App.sync = function ()
 	var now = new Date().getTime();
 	this.programController.sync(now, this.programStatus);
 	this.playProgram(now);
+};
+
+App.playProgram = function (now)
+{
+	var programStatus = this.programStatus;
+	
+	if (programStatus.wait > 0) {
+		this.player.stop();
+		this.waitStart = now;
+	}
+	else
+		this.programController.playProgram(this.player, programStatus);
+	
+	this.programIsPlaying = true;
+	this.nextUpItem = null;
+	this.nextApptBlock = null;
 };
 
 App.skipForward = function ()
@@ -56,22 +72,6 @@ App.skipToItem = function (blockIndex, itemIndex)
 	var now = new Date().getTime();
 	this.programController.skipToItem(now, this.programStatus, blockIndex, itemIndex);
 	this.playProgram(now);
-};
-
-App.playProgram = function (now)
-{
-	var programStatus = this.programStatus;
-	
-	if (programStatus.wait > 0) {
-		this.player.stop();
-		this.waitStart = now;
-	}
-	else
-		this.programController.playProgram(this.player, programStatus);
-	
-	this.programIsPlaying = true;
-	this.nextUpItem = null;
-	this.nextApptBlock = null;
 };
 
 App.onInterval = function (now)

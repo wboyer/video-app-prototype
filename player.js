@@ -17,12 +17,6 @@ Player.config = function (uri)
 {
 };
 
-Player.canStepThroughPlaylist = function ()
-{
-	// a real Player will return true
-	return false;
-};
-
 Player.loadPlaylist = function (uri)
 {
 	this.stop();
@@ -83,4 +77,10 @@ Player.onInterval = function (now)
 
 	if (this.playing && (this.offset >= this.duration) && this.stepCallback)
 		this.stepCallback();
+};
+
+Player.canStepThroughPlaylist = function ()
+{
+	// a real Player will return true
+	return false;
 };

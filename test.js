@@ -1,31 +1,3 @@
-function createOverlay(id)
-{
-	overlay = Object.create(Overlay);
-	overlay.id = id;
-	overlay.enabled = document.getElementById(id + "enabled").checked;
-	overlay.width = +document.getElementById(id + "width").value;
-	overlay.height = +document.getElementById(id + "height").value;
-	overlay.color = document.getElementById(id + "color").value;
-	document.getElementById(id + "color").style["border"] = "1px solid " + overlay.color;
-
-	return overlay;
-}
-
-function addAllowedRegion(overlay, left, top, right, bottom)
-{
-	region = Object.create(Region);
-	region.construct(left, top, right, bottom, document.getElementById(overlay.id + "axis").value, +document.getElementById(overlay.id + "bias").value);			
-	overlay.addAllowedRegion(region);
-}
-
-function slideProgram(offset)
-{
-	App.programStatus.program.startTime += offset;
-	var programDiv = document.getElementById("program");
-	UI.displayProgram(App.programStatus.program, programDiv);
-	App.onAirNowStart = 0;
-}
-
 function init()
 {
 	App.init();
@@ -98,7 +70,33 @@ function init()
 			
 			//console.debug(new Date().getTime() - now);
 		},
-		250);
-
+		300);
 }
 
+function createOverlay(id)
+{
+	overlay = Object.create(Overlay);
+	overlay.id = id;
+	overlay.enabled = document.getElementById(id + "enabled").checked;
+	overlay.width = +document.getElementById(id + "width").value;
+	overlay.height = +document.getElementById(id + "height").value;
+	overlay.color = document.getElementById(id + "color").value;
+	document.getElementById(id + "color").style["border"] = "1px solid " + overlay.color;
+
+	return overlay;
+}
+
+function addAllowedRegion(overlay, left, top, right, bottom)
+{
+	region = Object.create(Region);
+	region.construct(left, top, right, bottom, document.getElementById(overlay.id + "axis").value, +document.getElementById(overlay.id + "bias").value);			
+	overlay.addAllowedRegion(region);
+}
+
+function slideProgram(offset)
+{
+	App.programStatus.program.startTime += offset;
+	var programDiv = document.getElementById("program");
+	UI.displayProgram(App.programStatus.program, programDiv);
+	App.onAirNowStart = 0;
+}

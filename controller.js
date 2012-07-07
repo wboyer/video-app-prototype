@@ -23,11 +23,6 @@ ProgramStatus.clone = function (status)
 
 var ProgramController = {};
 
-ProgramController.timeUntilBlockStart = function (program, now, b)
-{
-	return program.startTime + program.blocks[b].start * 1000 - now;
-};
-
 ProgramController.loadProgram = function (program)
 {
 	program.apptBlocks = [];
@@ -121,7 +116,6 @@ ProgramController.stepToTime = function (time, status)
 
 		if (i >= items.length) {
 			i = 0;
-
 			hasLoopedBlock = true;
 		}
 
@@ -325,3 +319,9 @@ ProgramController.playProgram = function (player, status)
 	player.seekToOffset(status.offset);
 	player.play();
 };
+
+ProgramController.timeUntilBlockStart = function (program, now, b)
+{
+	return program.startTime + program.blocks[b].start * 1000 - now;
+};
+
