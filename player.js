@@ -1,6 +1,8 @@
-var Player = {uri: null, playlistUri: null, duration: 0, offset: 0, playing: false, lastTick: 0, stepCallback: null, videoStartedCallback: true};
+var Player = {uri: null, playlistUri: null, duration: 0, offset: 0, playing: false,
+				stepCallback: null, videoStartedCallback: true,
+				lastTick: 0};
 
-Player.init = function ()
+Player.stop = function ()
 {
 	this.uri = null;
 	this.playlistUri = null;
@@ -23,7 +25,7 @@ Player.canStepThroughPlaylist = function ()
 
 Player.loadPlaylist = function (uri)
 {
-	this.init();
+	this.stop();
 	this.playlistUri = uri;
 };
 
@@ -37,7 +39,7 @@ Player.seekToPlaylistVideo = function (uri, duration)
 
 Player.loadVideo = function (uri, duration)
 {
-	this.init();
+	this.stop();
 	this.uri = uri;
 	this.duration = duration;
 };

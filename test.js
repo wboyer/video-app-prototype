@@ -20,43 +20,47 @@ function addAllowedRegion(overlay, left, top, right, bottom)
 
 function slideProgram(offset)
 {
-	ProgramController.program.startTime += offset;
+	App.programStatus.program.startTime += offset;
 	var programDiv = document.getElementById("program");
-	UI.displayProgram(ProgramController.program, programDiv);
+	UI.displayProgram(App.programStatus.program, programDiv);
 	App.onAirNowStart = 0;
 }
 
 function init()
 {
+	App.init();
+
 	// Just for testing, compute our own current time,
-	// and slide the program forward to be closer to now.
+	// and slide the test program forward to be closer to now.
 	var now = new Date().getTime();
-	while (ProgramController.program.startTime + 3600000 < now)
-		ProgramController.program.startTime += 3600000;
+	while (testProgram.startTime + 3600000 < now)
+		testProgram.startTime += 3600000;
+
+	App.loadProgram(testProgram);
 
 	var programDiv = document.getElementById("program");
-	UI.displayProgram(ProgramController.program, programDiv);
+	UI.displayProgram(App.programStatus.program, programDiv);
 
-	App.init(ProgramController);
-	
 	window.setInterval(
 		function () {
-			now = new Date().getTime();
-			
-			var programStatus = Object.create(ProgramStatus);
-			ProgramController.sync(new Date().getTime(), programStatus);
-			var item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, programStatus.offset);
+			var now = new Date().getTime();
+			var programStatus = App.programStatus;
+
+			var tmpProgramStatus = Object.create(ProgramStatus);
+			tmpProgramStatus.clone(programStatus);
+			App.programController.sync(now, tmpProgramStatus);
+			var item = tmpProgramStatus.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", tmpProgramStatus.blockIndex, tmpProgramStatus.itemIndex, (item.duration + item.adDuration) * 1000, tmpProgramStatus.offset);
 
 			programStatus = App.programStatus;
-			item = ProgramController.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
-			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, Player.offset);
+			item = programStatus.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
 			var playerDiv = document.getElementById("player");
 			var videoDiv = document.getElementById("video");
 
-			Player.onInterval(now);
-			UI.updatePlayer(Player, videoDiv);
+			App.player.onInterval(now);
+			UI.updatePlayer(App.player, videoDiv);
 
 			App.onInterval(now);
 			UI.displayOnAirNow(App, document.getElementById("onAirNow"));

@@ -1,6 +1,6 @@
-var ProgramStatus = {blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
+var ProgramStatus = {program: null, blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
 
-ProgramStatus.init = function ()
+ProgramStatus.reset = function ()
 {
 	this.blockIndex = 0;
 	this.itemIndex = 0;
@@ -10,51 +10,46 @@ ProgramStatus.init = function ()
 	this.hasLoopedBlock = false;
 };
 
-ProgramStatus.clone = function (programStatus)
+ProgramStatus.clone = function (status)
 {
-	this.blockIndex = programStatus.blockIndex;
-	this.itemIndex = programStatus.itemIndex;
-	this.wait = programStatus.wait;
-	this.offset = programStatus.offset;
-	this.adsEnabled = programStatus.adsEnabled;
-	this.hasLoopedBlock = programStatus.hasLoopedBlock;
+	this.program = status.program;
+	this.blockIndex = status.blockIndex;
+	this.itemIndex = status.itemIndex;
+	this.wait = status.wait;
+	this.offset = status.offset;
+	this.adsEnabled = status.adsEnabled;
+	this.hasLoopedBlock = status.hasLoopedBlock;
 };
 
-var ProgramController = {program: null, apptBlocks: null};
+var ProgramController = {};
 
-ProgramController.blockStartTime = function (b)
+ProgramController.timeUntilBlockStart = function (program, now, b)
 {
-	var program = this.program;
-	return program.startTime + program.blocks[b].start * 1000;
-};
-
-ProgramController.timeUntilBlockStart = function (now, b)
-{
-	var program = this.program;
 	return program.startTime + program.blocks[b].start * 1000 - now;
 };
 
 ProgramController.loadProgram = function (program)
 {
-	this.program = program;
-	program.startTime = Date.parse(program.start);
-	
-	this.apptBlocks = [];
+	program.apptBlocks = [];
 	for (var b = 0; b < program.blocks.length; b++)
 		if (program.blocks[b].appt)
-			this.apptBlocks[this.apptBlocks.length] = b;
+			program.apptBlocks[program.apptBlocks.length] = b;
+
+	var programStatus = Object.create(ProgramStatus);
+	programStatus.program = program;
+	return programStatus;
 };
 
 ProgramController.sync = function (now, status)
 {
-	status.init();
+	status.reset();
 
-	var program = this.program;
+	var program = status.program;
 	
 	if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
 		return false;
 	
-	var time = this.blockStartTime(0);
+	var time = program.startTime + program.blocks[0].start * 1000;
 
 	while (true) {
 		this.stepToTime(time, status);
@@ -106,7 +101,7 @@ ProgramController.sync = function (now, status)
 // private
 ProgramController.stepToTime = function (time, status)
 {
-	var program = this.program;
+	var program = status.program;
 	var timeOffset = time - program.startTime;
 
 	var b = status.blockIndex;
@@ -180,7 +175,7 @@ ProgramController.stepForward = function (now, status, playerCanStepThroughPlayl
 {
 	var i = status.itemIndex + 1;
 
-	var items = this.program.blocks[status.blockIndex].items;
+	var items = status.program.blocks[status.blockIndex].items;
 
 	if (playerCanStepThroughPlaylist)
 		while ((i < items.length) && (items[status.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
@@ -193,7 +188,7 @@ ProgramController.stepForward = function (now, status, playerCanStepThroughPlayl
 
 ProgramController.skipForward = function (now, status)
 {
-	var program = this.program;
+	var program = status.program;
 
 	var b = status.blockIndex;
 	var i = status.itemIndex;
@@ -229,7 +224,7 @@ ProgramController.skipForward = function (now, status)
 
 ProgramController.skipBackward = function (now, status)
 {
-	var program = this.program;
+	var program = status.program;
 
 	var b = status.blockIndex;
 	var i = status.itemIndex;
@@ -266,7 +261,7 @@ ProgramController.skipBackward = function (now, status)
 
 ProgramController.skipToItem = function (now, status, b, i)
 {
-	var program = this.program;
+	var program = status.program;
 
 	block = program.blocks[b];
 
@@ -292,7 +287,7 @@ ProgramController.skipToItem = function (now, status, b, i)
 
 ProgramController.onPlayerVideoStarted = function (uri, status)
 {
-	var items = this.program.blocks[status.blockIndex].items;
+	var items = status.program.blocks[status.blockIndex].items;
 	
 	for (var i = status.itemIndex; (i < items.length) && items[i].auto; i++)
 		if (items[i].uri == uri) {
@@ -303,7 +298,7 @@ ProgramController.onPlayerVideoStarted = function (uri, status)
 
 ProgramController.playProgram = function (player, status)
 {
-	var item = this.program.blocks[status.blockIndex].items[status.itemIndex];
+	var item = status.program.blocks[status.blockIndex].items[status.itemIndex];
 
 	var uri = item.uri;
 	var playlistUri = item.playlistUri;

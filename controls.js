@@ -2,12 +2,12 @@ var Controls = {};
 
 Controls.playPause = function (button)
 {
-	if (Player.playing) {
-		Player.pause();
+	if (App.player.playing) {
+		App.player.pause();
 		button.innerHTML = "Play";
 	}
 	else {
-		Player.unpause();
+		App.player.unpause();
 		button.innerHTML = "Pause";
 	}
 };
@@ -24,8 +24,8 @@ Controls.skipForward = function ()
 
 Controls.skipBackward = function ()
 {
-	if (Player.offset >= 2000)
-		Player.offset = 0;
+	if (App.player.offset >= 2000)
+		App.player.offset = 0;
 	else
 		App.skipBackward();
 };

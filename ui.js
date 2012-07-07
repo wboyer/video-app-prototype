@@ -108,12 +108,13 @@ UI.displayNextUp = function(app, nextUpDiv) {
 UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
-		var timeUntilApptStart = app.programController.timeUntilBlockStart(now, app.nextApptBlock);
+		var program = app.programStatus.program;
+		var timeUntilApptStart = app.programController.timeUntilBlockStart(program, now, app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
-			nextApptDiv.innerHTML = "Live Now: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri;
+			nextApptDiv.innerHTML = "Live Now: " + program.blocks[app.nextApptBlock].items[0].uri;
 		else
-			nextApptDiv.innerHTML = "Live Soon: " + app.programController.program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(timeUntilApptStart);
+			nextApptDiv.innerHTML = "Live Soon: " + program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(timeUntilApptStart);
 	}
 	else
 		nextApptDiv.style["visibility"] = "hidden";

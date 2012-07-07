@@ -23,12 +23,11 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
 *
 */
 
-ProgramController.loadProgram(
-{
+var testProgram = {
 	// For testing, these will be reset by the client.
 	// But they will be respected once there's a real server serving them.
-	start:	"7 Apr 2012 15:00:00 EDT",
-	now:	2400,
+	startTime: 1341666000000,
+	now: 1341666649762,
 
 	blocks: [
 		{
@@ -60,6 +59,8 @@ ProgramController.loadProgram(
 				{duration: 270,  adDuration: 30, uri: "uri14", playlistUri: null,  dll: false, auto: false, hidden: false}
 			],
 		}
-	]
-}
-);
+	],
+
+	// This will be computed on the client.
+	apptBlocks: null
+};
