@@ -93,7 +93,7 @@ App.onInterval = function (now)
 			var tmpProgramStatus = Object.create(ProgramStatus);
 			tmpProgramStatus.clone(programStatus);
 			this.programController.sync(now, tmpProgramStatus);
-			this.onAirNowItem = tmpProgramStatus.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+			this.onAirNowItem = tmpProgramStatus.currentItem();
 			this.onAirNowStart = now;
 		}
 		
@@ -111,7 +111,7 @@ App.onInterval = function (now)
 					var tmpProgramStatus = Object.create(ProgramStatus);
 					tmpProgramStatus.clone(programStatus);
 					this.programController.stepForward(now, tmpProgramStatus);
-					var item = tmpProgramStatus.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+					var item = tmpProgramStatus.currentItem();
 					if (!item.hidden) {
 						this.nextUpItem = item;
 						this.nextUpMsgStart = now;

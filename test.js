@@ -21,11 +21,11 @@ function init()
 			var tmpProgramStatus = Object.create(ProgramStatus);
 			tmpProgramStatus.clone(programStatus);
 			App.programController.sync(now, tmpProgramStatus);
-			var item = tmpProgramStatus.program.blocks[tmpProgramStatus.blockIndex].items[tmpProgramStatus.itemIndex];
+			var item = tmpProgramStatus.currentItem();
 			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", tmpProgramStatus.blockIndex, tmpProgramStatus.itemIndex, (item.duration + item.adDuration) * 1000, tmpProgramStatus.offset);
 
 			programStatus = App.programStatus;
-			item = programStatus.program.blocks[programStatus.blockIndex].items[programStatus.itemIndex];
+			item = programStatus.currentItem();
 			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
 			var playerDiv = document.getElementById("player");

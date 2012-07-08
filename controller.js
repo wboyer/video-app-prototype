@@ -21,6 +21,11 @@ ProgramStatus.clone = function (status)
 	this.hasLoopedBlock = status.hasLoopedBlock;
 };
 
+ProgramStatus.currentItem = function ()
+{
+	return this.program.blocks[this.blockIndex].items[this.itemIndex];
+};
+
 var ProgramController = {};
 
 ProgramController.loadProgram = function (program)
@@ -315,8 +320,9 @@ ProgramController.playProgram = function (player, status)
 
 	if (status.adsEnabled)
 		player.setAdDuration(adDuration);
-	
-	player.seekToOffset(status.offset);
+
+	if (status.offset > 0)
+		player.seekToOffset(status.offset);
 	player.play();
 };
 
