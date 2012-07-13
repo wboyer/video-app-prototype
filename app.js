@@ -7,8 +7,8 @@ var App = {programController: null, programStatus: null, player: null,
 
 App.init = function ()
 {
-	this.programController = Object.create(ProgramController);
-
+	//this.programController = Object.create(ProgramController);
+  this.programController = VIACOM.Schedule.Controller; 
 	this.player = Object.create(Player);
 	
 	this.player.videoStartedCallback = function (uri) {

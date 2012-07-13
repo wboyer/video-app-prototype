@@ -1,5 +1,35 @@
 // Testing collaborator access.
 // It works!  -benoitm
+//
+// // Create a VIACOM.Schedule "namespace" if it doesn't already exist
+
+var VIACOM = VIACOM || {};
+VIACOM.Schedule = {};
+
+//Turn trace for debugging
+VIACOM.enableTrace = true;
+
+// Common utility methods
+VIACOM.Util = ( function() {
+  // Writes trace output messages into a div named "trace-output" if the div exists and
+  // MTVN.enableTrace is true.
+  var trace = function(msg) {
+    if(VIACOM.enableTrace) {
+      if(window['console']) {
+        console.log('[TRACE] ' + new Date().toString() + ' - VIACOM.Schedule.Controller - ' + msg);
+      }
+      var t = document.getElementById('trace-output');
+      if(t) {
+        t.innerHTML += '=&gt; ' + msg + '<br>';
+      }
+    }
+  };
+  return {
+    'trace' : trace
+  };
+}());
+
+
 var ProgramStatus = {program: null, blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
 
 ProgramStatus.reset = function ()
@@ -28,9 +58,9 @@ ProgramStatus.currentItem = function ()
 	return this.program.blocks[this.blockIndex].items[this.itemIndex];
 };
 
-var ProgramController = {};
+VIACOM.Schedule.Controller = ( function () {
 
-ProgramController.loadProgram = function (program)
+var loadProgram = function (program)
 {
 	program.apptBlocks = [];
 	for (var b = 0; b < program.blocks.length; b++)
@@ -42,7 +72,7 @@ ProgramController.loadProgram = function (program)
 	return programStatus;
 };
 
-ProgramController.sync = function (now, status)
+var sync = function (now, status)
 {
 	status.reset();
 
@@ -101,7 +131,7 @@ ProgramController.sync = function (now, status)
 };
 
 // private
-ProgramController.stepToTime = function (time, status)
+var stepToTime = function (time, status)
 {
 	var program = status.program;
 	var timeOffset = time - program.startTime;
@@ -172,7 +202,7 @@ ProgramController.stepToTime = function (time, status)
 	status.itemIndex = i;
 };
 
-ProgramController.stepForward = function (now, status, playerCanStepThroughPlaylist)
+var stepForward = function (now, status, playerCanStepThroughPlaylist)
 {
 	var i = status.itemIndex + 1;
 
@@ -187,7 +217,7 @@ ProgramController.stepForward = function (now, status, playerCanStepThroughPlayl
 	this.stepToTime(now, status);
 };
 
-ProgramController.skipForward = function (now, status)
+var skipForward = function (now, status)
 {
 	var program = status.program;
 
@@ -223,7 +253,7 @@ ProgramController.skipForward = function (now, status)
 	this.skipToItem(now, status, b, i);
 };
 
-ProgramController.skipBackward = function (now, status)
+var skipBackward = function (now, status)
 {
 	var program = status.program;
 
@@ -260,7 +290,7 @@ ProgramController.skipBackward = function (now, status)
 	this.skipToItem(now, status, b, i);
 };
 
-ProgramController.skipToItem = function (now, status, b, i)
+var skipToItem = function (now, status, b, i)
 {
 	var program = status.program;
 
@@ -286,7 +316,7 @@ ProgramController.skipToItem = function (now, status, b, i)
 	status.itemIndex = i;
 };
 
-ProgramController.onPlayerVideoStarted = function (uri, status)
+var onPlayerVideoStarted = function (uri, status)
 {
 	var items = status.program.blocks[status.blockIndex].items;
 	
@@ -297,7 +327,7 @@ ProgramController.onPlayerVideoStarted = function (uri, status)
 		}
 };
 
-ProgramController.playProgram = function (player, status)
+var playProgram = function (player, status)
 {
 	var item = status.program.blocks[status.blockIndex].items[status.itemIndex];
 
@@ -328,8 +358,26 @@ ProgramController.playProgram = function (player, status)
 	player.play();
 };
 
-ProgramController.timeUntilBlockStart = function (program, now, b)
+var timeUntilBlockStart = function (program, now, b)
 {
 	return program.startTime + program.blocks[b].start * 1000 - now;
 };
+
+return {
+  'timeUntilBlockStart' : timeUntilBlockStart,
+  'playProgram' : playProgram,
+  'onPlayerVideoStarted' : onPlayerVideoStarted,
+  'skipToItem' : skipToItem,
+  'skipBackward' : skipBackward,
+  'skipForward' : skipForward,
+  'stepForward' : stepForward,
+  'stepToTime' : stepToTime,
+  'sync' : sync,
+  'loadProgram' : loadProgram
+ };
+
+
+}());
+
+  
 
