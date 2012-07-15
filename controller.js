@@ -1,3 +1,5 @@
+// Testing collaborator access.
+// It works!  -benoitm
 var ProgramStatus = {program: null, blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
 
 ProgramStatus.reset = function ()
