@@ -13,6 +13,15 @@ function init()
 	var programDiv = document.getElementById("program");
 	UI.displayProgram(App.programStatus.program, programDiv);
 
+	var playerDiv = document.getElementById("player");
+	var videoDiv = document.getElementById("video");
+
+	initOverlayAllowedRegion("overlay0", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);
+	initOverlayAllowedRegion("overlay1", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);
+	initOverlayAllowedRegion("overlay21", videoDiv.offsetLeft, videoDiv.offsetTop, videoDiv.offsetLeft + videoDiv.clientWidth + 2, videoDiv.offsetTop + videoDiv.clientHeight + 2);
+	initOverlayAllowedRegion("overlay22", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);
+	initOverlayAllowedRegion("overlay3", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2 + 40);
+	
 	window.setInterval(
 		function () {
 			var now = new Date().getTime();
@@ -28,9 +37,6 @@ function init()
 			item = programStatus.currentItem();
 			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
-			var playerDiv = document.getElementById("player");
-			var videoDiv = document.getElementById("video");
-
 			App.player.onInterval(now);
 			UI.updatePlayer(App.player, videoDiv);
 
@@ -41,37 +47,28 @@ function init()
 			UI.displayNextAppt(App, document.getElementById("nextAppt"), now);
 			
 			var overlays = [];
-			var overlay;
-			var region;
-
-			overlay = createOverlay("overlay0");
-			addAllowedRegion(overlay, 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-			overlays[overlays.length] = overlay;
+			overlays[overlays.length] = createOverlay("overlay0");
+			overlays[overlays.length] = createOverlay("overlay1");
+			overlays[overlays.length] = createOverlay("overlay2");			
+			overlays[overlays.length] = createOverlay("overlay3");
 			
-			overlay = createOverlay("overlay1");
-			addAllowedRegion(overlay, 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-			overlays[overlays.length] = overlay;
-			
-			overlay = createOverlay("overlay2");
-			addAllowedRegion(overlay, videoDiv.offsetLeft, videoDiv.offsetTop, videoDiv.offsetLeft + videoDiv.clientWidth + 2, videoDiv.offsetTop + videoDiv.clientHeight + 2);
-			//addAllowedRegion(overlay, 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-			overlays[overlays.length] = overlay;
-			
-			overlay = createOverlay("overlay3");
-			addAllowedRegion(overlay, 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2 + 40);			
-			overlays[overlays.length] = overlay;
-			
-			if (overlays.length > 0) {
-				region = Object.create(Region);
-				region.construct(0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-				var arrangement = Arrangement.findBest(overlays, region);
-				UI.displayOverlays(playerDiv, overlays, arrangement, "overlay");
-			}
+			var region = Object.create(Region);
+			region.construct(0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
+			var arrangement = Arrangement.findBest(overlays, region);
+			UI.displayOverlays(playerDiv, overlays, arrangement, "overlay");
 			
 			//console.debug(new Date().getTime() - now);
 		},
 		300);
 }
+
+function initOverlayAllowedRegion(id, left, top, right, bottom)
+{
+	document.getElementById(id + "left").value = left;
+	document.getElementById(id + "top").value = top;
+	document.getElementById(id + "right").value = right;
+	document.getElementById(id + "bottom").value = bottom;
+};
 
 function createOverlay(id)
 {
@@ -81,15 +78,26 @@ function createOverlay(id)
 	overlay.width = +document.getElementById(id + "width").value;
 	overlay.height = +document.getElementById(id + "height").value;
 	overlay.color = document.getElementById(id + "color").value;
+	overlay.canBeCovered = document.getElementById(id + "covered").checked;
 	document.getElementById(id + "color").style["border"] = "1px solid " + overlay.color;
+
+	if (id == "overlay2")
+		id = "overlay21";
+
+	addOverlayAllowedRegion(overlay, id);			
+
+	if (id == "overlay21") {
+		id = "overlay22";
+		addOverlayAllowedRegion(overlay, id);			
+	}
 
 	return overlay;
 }
 
-function addAllowedRegion(overlay, left, top, right, bottom)
+function addOverlayAllowedRegion(overlay, id)
 {
-	region = Object.create(Region);
-	region.construct(left, top, right, bottom, document.getElementById(overlay.id + "axis").value, +document.getElementById(overlay.id + "bias").value);			
+	var region = Object.create(Region);
+	region.construct(+document.getElementById(id + "left").value, +document.getElementById(id + "top").value, +document.getElementById(id + "right").value, +document.getElementById(id + "bottom").value, document.getElementById(id + "axis").value, +document.getElementById(id + "bias").value);			
 	overlay.addAllowedRegion(region);
 }
 

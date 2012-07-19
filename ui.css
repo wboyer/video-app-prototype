@@ -13,7 +13,9 @@ a {color: blue; cursor: pointer}
 .video {font:20px Arial, Helvetica, sans-serif; position: absolute; left: 10%; top: 10%; background-color: #999999; text-align: center; width: 80%; height: 80%; border: 1px solid black}
 .controls {font-size:8px; position: absolute; left: 400; top: 440; background-color: gray; text-align: center; width: 318; height: 10; border: 1px solid black}
 .slide {position: absolute; left: 10; top: 3; text-align: right; background-color: gray; width: 360; border: 1px solid black}
-.overlays {font-size:8px; position: absolute; left: 400; top: 20; padding: 5; background-color: gray; text-align: left; width: 600; height: 140; border: 1px solid black}
+.overlays {font-size:6px; position: absolute; left: 400; top: 20; padding: 5; background-color: gray; text-align: left; border: 1px solid black; overflow: auto}
+
+td {font:8px Arial, Helvetica, sans-serif; vertical-align: top}
 
 .nextUp {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 410; top: 386; background-color: #008800; text-align: center; width: 200; height: 50; border: 1px solid black; visibility: hidden}
 .nextAppt {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 620; top: 386; background-color: #000088; text-align: center; width: 200; height: 50; border: 1px solid black; visibility: hidden}

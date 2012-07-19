@@ -37,57 +37,88 @@
 		<div id="onAirNow" class="onAirNow"></div>
 
 		<div id="overlays" class="overlays">
-			Overlay 0: <input id="overlay0enabled" type="checkbox" class="overlay_checkbox" />
-			Width: <input id="overlay0width" type="number" value="100" />
-			Height: <input id="overlay0height" type="number" value="20" />
-			Color: <input id="overlay0color" type="color" class="color" value="#FFFF00" />
-			Can be covered: <input id="overlay1convered" type="checkbox" class="overlay_checkbox" disabled />
-			Axis:
-				<select id="overlay0axis">
-				  <option value="LCUC" selected>LC-UC</option>
-				  <option value="ULUR">UL-UR</option>
-				</select> 
-			Bias: <input id="overlay0bias" type="number" value="-1" />
-			<br/>
-
-			Overlay 1: <input id="overlay1enabled" type="checkbox" class="overlay_checkbox" />
-			Width: <input id="overlay1width" type="number" value="100" />
-			Height: <input id="overlay1height" type="number" value="20" />
-			Color: <input id="overlay1color" type="color" class="color" value="#00FFFF" />
-			Can be covered: <input id="overlay1convered" type="checkbox" class="overlay_checkbox" disabled />
- 			Axis:
-				<select id="overlay1axis">
-				  <option value="LCUC" selected>LC-UC</option>
-				  <option value="ULUR">UL-UR</option>
-				</select> 
-			Bias: <input id="overlay1bias" type="number" value="-1" />
-			<br/>
-
-			Overlay 2: <input id="overlay2enabled" type="checkbox" class="overlay_checkbox" />
-			Width: <input id="overlay2width" type="number" value="50" />
-			Height: <input id="overlay2height" type="number" value="50" />
-			Color: <input id="overlay2color" type="color" class="color" value="#FF00FF" />
-			Can be covered: <input id="overlay3convered" type="checkbox" class="overlay_checkbox" disabled />
-			Axis:
-				<select id="overlay2axis">
-				  <option value="LCUC">LC-UC</option>
-				  <option value="ULUR" selected>UL-UR</option>
-				</select> 
-			Bias: <input id="overlay2bias" type="number" value="10" />
-			<br/>
-
-			Overlay 3: <input id="overlay3enabled" type="checkbox" class="overlay_checkbox" />
-			Width: <input id="overlay3width" type="number" value="200" />
-			Height: <input id="overlay3height" type="number" value="80" />
-			Color: <input id="overlay3color" type="color" class="color" value="#0000FF" />
-			Can be covered: <input id="overlay3convered" type="checkbox" class="overlay_checkbox" disabled />
-			Axis:
-				<select id="overlay3axis">
-				  <option value="LCUC" selected>LC-UC</option>
-				  <option value="ULUR">UL-UR</option>
-				</select> 
-			Bias: <input id="overlay3bias" type="number" value="-10" />
-			<br/>
+			<table>
+				<tr>
+					<td>Overlay 0: <input id="overlay0enabled" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Width: <input id="overlay0width" type="number" value="100" /></td>
+					<td>Height: <input id="overlay0height" type="number" value="20" /></td>
+					<td>Color: <input id="overlay0color" type="color" class="color" value="#FFFF00" /></td>
+					<td>Can be covered: <input id="overlay0covered" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Left: <input id="overlay0left" type="number"/></td>
+					<td>Top: <input id="overlay0top" type="number"/></td>
+					<td>Right: <input id="overlay0right" type="number"/></td>
+					<td>Bottom: <input id="overlay0bottom" type="number"/></td>
+					<td>Axis:
+						<select id="overlay0axis">
+						  <option value="LCUC" selected>LC-UC</option>
+						  <option value="ULUR">UL-UR</option>
+						</select></td>
+					<td>Bias: <input id="overlay0bias" type="number" value="-1" /></td>
+				</tr>
+				<tr>
+					<td>Overlay 1: <input id="overlay1enabled" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Width: <input id="overlay1width" type="number" value="100" /></td>
+					<td>Height: <input id="overlay1height" type="number" value="20" /></td>
+					<td>Color: <input id="overlay1color" type="color" class="color" value="#00FFFF" /></td>
+					<td>Can be covered: <input id="overlay1covered" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Left: <input id="overlay1left" type="number"/></td>
+					<td>Top: <input id="overlay1top" type="number"/></td>
+					<td>Right: <input id="overlay1right" type="number"/></td>
+					<td>Bottom: <input id="overlay1bottom" type="number"/></td>
+		 			<td>Axis:
+						<select id="overlay1axis">
+						  <option value="LCUC" selected>LC-UC</option>
+						  <option value="ULUR">UL-UR</option>
+						</select></td>
+					<td>Bias: <input id="overlay1bias" type="number" value="-1" /></td>
+				</tr>
+				<tr>
+					<td rowspan="2">Overlay 2: <input id="overlay2enabled" type="checkbox" class="overlay_checkbox" /></td>
+					<td rowspan="2">Width: <input id="overlay2width" type="number" value="50" /></td>
+					<td rowspan="2">Height: <input id="overlay2height" type="number" value="50" /></td>
+					<td rowspan="2">Color: <input id="overlay2color" type="color" class="color" value="#FF00FF" /></td>
+					<td rowspan="2">Can be covered: <input id="overlay2covered" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Left: <input id="overlay21left" type="number"/></td>
+					<td>Top: <input id="overlay21top" type="number"/></td>
+					<td>Right: <input id="overlay21right" type="number"/></td>
+					<td>Bottom: <input id="overlay21bottom" type="number"/></td>
+					<td>Axis:
+						<select id="overlay21axis">
+						  <option value="LCUC">LC-UC</option>
+						  <option value="ULUR" selected>UL-UR</option>
+						</select></td>
+					<td>Bias: <input id="overlay21bias" type="number" value="10" /></td>
+				</tr>
+				<tr>
+					<td>Left: <input id="overlay22left" type="number"/></td>
+					<td>Top: <input id="overlay22top" type="number"/></td>
+					<td>Right: <input id="overlay22right" type="number"/></td>
+					<td>Bottom: <input id="overlay22bottom" type="number"/></td>
+					<td>Axis:
+						<select id="overlay22axis">
+						  <option value="LCUC">LC-UC</option>
+						  <option value="ULUR" selected>UL-UR</option>
+						</select></td>
+					<td>Bias: <input id="overlay22bias" type="number" value="10" /></td>
+				</tr>
+				<tr>
+					<td>Overlay 3: <input id="overlay3enabled" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Width: <input id="overlay3width" type="number" value="200" /></td>
+					<td>Height: <input id="overlay3height" type="number" value="80" /></td>
+					<td>Color: <input id="overlay3color" type="color" class="color" value="#0000FF" /></td>
+					<td>Can be covered: <input id="overlay3covered" type="checkbox" class="overlay_checkbox" /></td>
+					<td>Left: <input id="overlay3left" type="number"/></td>
+					<td>Top: <input id="overlay3top" type="number"/></td>
+					<td>Right: <input id="overlay3right" type="number"/></td>
+					<td>Bottom: <input id="overlay3bottom" type="number"/></td>
+					<td>Axis:
+						<select id="overlay3axis">
+						  <option value="LCUC" selected>LC-UC</option>
+						  <option value="ULUR">UL-UR</option>
+						</select></td>
+					<td>Bias: <input id="overlay3bias" type="number" value="-10" /></td>
+				</tr>
+			</table>
 		</div>
 	</body>
 </html>

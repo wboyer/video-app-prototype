@@ -34,8 +34,8 @@ var testProgram = {
 			start: 0, dll: false, dfe: false, msse: 0, mssl: 0, appt: false,
 			items: [
 				{duration: 180,  adDuration:  0, uri: "uri1",  playlistUri: "pl1", dll: false, auto: false, hidden: false},
-				{duration: 300,  adDuration: 60, uri: "uri2",  playlistUri: "pl1", dll: false, auto: false, hidden: false},
-				{duration: 60,   adDuration:  0, uri: "uri3",  playlistUri: null,  dll: false, auto: false, hidden: false}
+				{duration: 180,  adDuration: 60, uri: "uri2",  playlistUri: "pl1", dll: false, auto: false, hidden: false},
+				{duration: 60,   adDuration:  0, uri: "uri3",  playlistUri: null,  dll: true,  auto: false, hidden: false}
 			],
 		},
 		{
