@@ -18,7 +18,7 @@ function init()
 			var now = new Date().getTime();
 			var programStatus = App.programStatus;
 
-			var tmpProgramStatus = Object.create(ProgramStatus);
+			var tmpProgramStatus = Object.create(programStatus);
 			tmpProgramStatus.clone(programStatus);
 			App.programController.sync(now, tmpProgramStatus);
 			var item = tmpProgramStatus.currentItem();

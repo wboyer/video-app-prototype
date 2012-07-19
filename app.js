@@ -90,7 +90,7 @@ App.onInterval = function (now)
 		
 		// display an "on air now" message
 		if ((now - this.onAirNowStart) > 10000) {
-			var tmpProgramStatus = Object.create(ProgramStatus);
+			var tmpProgramStatus = Object.create(programStatus);
 			tmpProgramStatus.clone(programStatus);
 			this.programController.sync(now, tmpProgramStatus);
 			this.onAirNowItem = tmpProgramStatus.currentItem();
