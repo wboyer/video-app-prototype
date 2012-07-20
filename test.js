@@ -2,13 +2,7 @@ function init()
 {
 	App.init();
 
-	// Just for testing, compute our own current time,
-	// and slide the test program forward to be closer to now.
-	var now = new Date().getTime();
-	while (testProgram.startTime + 3600000 < now)
-		testProgram.startTime += 3600000;
-
-	App.loadProgram(testProgram);
+	App.loadProgram(VIACOM.Schedule.ScheduleService.getSchedule());
 
 	var programDiv = document.getElementById("program");
 	UI.displayProgram(App.programStatus.program, programDiv);
@@ -29,7 +23,7 @@ function init()
 
 			var tmpProgramStatus = Object.create(programStatus);
 			tmpProgramStatus.clone(programStatus);
-			App.programController.sync(now, tmpProgramStatus);
+			App.programController.goLive(tmpProgramStatus);
 			var item = tmpProgramStatus.currentItem();
 			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", tmpProgramStatus.blockIndex, tmpProgramStatus.itemIndex, (item.duration + item.adDuration) * 1000, tmpProgramStatus.offset);
 

@@ -18,7 +18,7 @@ App.init = function ()
 	this.player.stepCallback = function () {
 		var now = new Date().getTime();
 		App.programController.stepForward(now, App.programStatus, App.player.canStepThroughPlaylist());
-		App.playProgram(now);
+		App.play(now);
 	};
 };
 
@@ -26,14 +26,14 @@ App.loadProgram = function (program)
 {
 	this.programIsPlaying = false;
 	this.player.stop();
-	this.programStatus = this.programController.loadProgram(program);
+	this.programStatus = this.programController.start(program);
 	this.sync();
 };
 
 App.sync = function ()
 {
 	var now = new Date().getTime();
-	this.programController.sync(now, this.programStatus);
+	this.programController.goLive(this.programStatus);
 	this.playProgram(now);
 };
 
@@ -46,7 +46,7 @@ App.playProgram = function (now)
 		this.waitStart = now;
 	}
 	else
-		this.programController.playProgram(this.player, programStatus);
+		this.programController.play(this.player, programStatus);
 	
 	this.programIsPlaying = true;
 	this.nextUpItem = null;
@@ -70,7 +70,7 @@ App.skipBackward = function ()
 App.skipToItem = function (blockIndex, itemIndex)
 {
 	var now = new Date().getTime();
-	this.programController.skipToItem(now, this.programStatus, blockIndex, itemIndex);
+	this.programController.jump(now, this.programStatus, blockIndex, itemIndex);
 	this.playProgram(now);
 };
 
@@ -92,7 +92,7 @@ App.onInterval = function (now)
 		if ((now - this.onAirNowStart) > 10000) {
 			var tmpProgramStatus = Object.create(programStatus);
 			tmpProgramStatus.clone(programStatus);
-			this.programController.sync(now, tmpProgramStatus);
+			this.programController.goLive(tmpProgramStatus);
 			this.onAirNowItem = tmpProgramStatus.currentItem();
 			this.onAirNowStart = now;
 		}
@@ -108,7 +108,7 @@ App.onInterval = function (now)
 			if (this.player.playing) {
 				var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
 				if ((secondsToPlay <= 10) && (secondsToPlay >= 9)) {
-					var tmpProgramStatus = Object.create(ProgramStatus);
+					var tmpProgramStatus = Object.create(programStatus);
 					tmpProgramStatus.clone(programStatus);
 					this.programController.stepForward(now, tmpProgramStatus);
 					var item = tmpProgramStatus.currentItem();

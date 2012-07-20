@@ -33,15 +33,16 @@ VIACOM.Util = ( function() {
 
 
 
-
 VIACOM.Schedule.Controller = ( function () {
 
-  
+  var trace = VIACOM.Util.trace;
+
   var ProgramStatus = {program: null, blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
 
 
   ProgramStatus.reset = function ()
   {
+    //trace('ProgramStatus.reset called');
     this.blockIndex = 0;
     this.itemIndex = 0;
     this.wait = 0;
@@ -52,6 +53,9 @@ VIACOM.Schedule.Controller = ( function () {
 
   ProgramStatus.clone = function (status)
   {
+    
+    //trace('ProgramStatus.clone called');
+
     this.program = status.program;
     this.blockIndex = status.blockIndex;
     this.itemIndex = status.itemIndex;
@@ -64,16 +68,17 @@ VIACOM.Schedule.Controller = ( function () {
 
   ProgramStatus.currentItem = function ()
   {
+    
+    //trace('ProgramStatus.currentItem caled');
+
     return this.program.blocks[this.blockIndex].items[this.itemIndex];
   };
-  
-  
-  var newProgramStatus = function () {
-    return Object.create(ProgramStatus);
-  }
-  
-  var loadProgram = function (program)
+
+  var start = function (program)
   {
+    
+    trace('start');
+
     program.apptBlocks = [];
     for (var b = 0; b < program.blocks.length; b++)
     if (program.blocks[b].appt)
@@ -84,10 +89,13 @@ VIACOM.Schedule.Controller = ( function () {
     return programStatus;
   };
 
-  var sync = function (now, status)
+  var goLive = function (status)
   {
-    status.reset();
+    
+    //trace('goLive');
 
+    status.reset();
+    var now = new Date().getTime();
     var program = status.program;
 
     if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
@@ -145,6 +153,9 @@ VIACOM.Schedule.Controller = ( function () {
   // private
   var stepToTime = function (time, status)
   {
+    
+    //trace('stepToTime called');
+
     var program = status.program;
     var timeOffset = time - program.startTime;
 
@@ -216,6 +227,9 @@ VIACOM.Schedule.Controller = ( function () {
 
   var stepForward = function (now, status, playerCanStepThroughPlaylist)
   {
+    
+    trace('stepForward');
+
     var i = status.itemIndex + 1;
 
     var items = status.program.blocks[status.blockIndex].items;
@@ -231,6 +245,9 @@ VIACOM.Schedule.Controller = ( function () {
 
   var skipForward = function (now, status)
   {
+    
+    trace('skipForward');
+
     var program = status.program;
 
     var b = status.blockIndex;
@@ -262,11 +279,14 @@ VIACOM.Schedule.Controller = ( function () {
         b = 0;
     }
 
-    this.skipToItem(now, status, b, i);
+    this.jump(now, status, b, i);
   };
 
   var skipBackward = function (now, status)
   {
+        trace('skipBackward');
+
+
     var program = status.program;
 
     var b = status.blockIndex;
@@ -299,11 +319,13 @@ VIACOM.Schedule.Controller = ( function () {
         i -= 1;
     }
 
-    this.skipToItem(now, status, b, i);
+    this.jump(now, status, b, i);
   };
 
-  var skipToItem = function (now, status, b, i)
+  var jump = function (now, status, b, i)
   {
+        trace('jump(' + b + ',' + i + ')');
+
     var program = status.program;
 
     block = program.blocks[b];
@@ -330,6 +352,8 @@ VIACOM.Schedule.Controller = ( function () {
 
   var onPlayerVideoStarted = function (uri, status)
   {
+        trace('onPlayerVideoStarted');
+
     var items = status.program.blocks[status.blockIndex].items;
 
     for (var i = status.itemIndex; (i < items.length) && items[i].auto; i++)
@@ -339,8 +363,10 @@ VIACOM.Schedule.Controller = ( function () {
     }
   };
 
-  var playProgram = function (player, status)
+  var play = function (player, status)
   {
+        trace('play');
+
     var item = status.program.blocks[status.blockIndex].items[status.itemIndex];
 
     var uri = item.uri;
@@ -372,21 +398,34 @@ VIACOM.Schedule.Controller = ( function () {
 
   var timeUntilBlockStart = function (program, now, b)
   {
+        //trace('timeUntilBlockStart called');
+
     return program.startTime + program.blocks[b].start * 1000 - now;
   };
 
+  var addListener = function (eventName, callback) 
+  {
+    trace('Added Listener [ ' + eventName  + ' ]');
+  }
+
+ var pause = function () 
+ {
+    trace('pause');
+ }
+
   return {
-    'sync' : sync,
-    'loadProgram' : loadProgram,
-    'playProgram' : playProgram,
-    'newProgramStatus' : newProgramStatus,
+    'goLive' : goLive,
+    'start' : start,
+    'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'timeUntilBlockStart' : timeUntilBlockStart,
     'stepForward' : stepForward,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
-    'skipToItem' : skipToItem
-
+    'jump' : jump,
+    'stepToTime' : stepToTime,
+    'addListener' : addListener,
+    'pause' : pause
   };
 
 
