@@ -19,7 +19,7 @@ auto
 The Player will be told to play a playlist containing this item, and will thus step to it automatically.
 
 hidden
-Implies auto=true, and additionally means that the item can't be skipped to, and shouldn't be shown in the EPG.
+This item can't be skipped to, and shouldn't be shown in the EPG.  Should be accompanied by auto=true.
 *
 */
 

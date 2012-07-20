@@ -22,7 +22,7 @@ td {font:8px Arial, Helvetica, sans-serif; vertical-align: top}
 .wait {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 580; top: 290; background-color: #880000; text-align: center; width: 160; height: 50; border: 1px solid black; visibility: hidden}
 .onAirNow {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 400; top: 462; background-color: #880088; text-align: center; width: 160; height: 50; border: 1px solid black}
 
-.overlay {position: absolute; z-index: 1; opacity: 0.4}
+.overlay {position: absolute; z-index: 1; opacity: 0.9}
 
 input {width: 40}
 .color {width: 70}

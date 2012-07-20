@@ -132,6 +132,7 @@ UI.displayOverlay = function (playerDiv, placement, overlayClass)
 	overlayDiv.style["top"] = placement.top - 1;
 	overlayDiv.style["width"] = placement.right - placement.left;
 	overlayDiv.style["height"] = placement.bottom - placement.top;
+	overlayDiv.style["z-index"] = 1 + (placement.coveredPlacements ? placement.coveredPlacements.length : 0);
 
 	overlayDiv.style["backgroundColor"] = placement.overlay.color;
 };
