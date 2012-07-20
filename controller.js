@@ -53,7 +53,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   ProgramStatus.clone = function (status)
   {
-    
+
     //trace('ProgramStatus.clone called');
 
     this.program = status.program;
@@ -68,7 +68,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   ProgramStatus.currentItem = function ()
   {
-    
+
     //trace('ProgramStatus.currentItem caled');
 
     return this.program.blocks[this.blockIndex].items[this.itemIndex];
@@ -76,7 +76,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var start = function (program)
   {
-    
+
     trace('start');
 
     program.apptBlocks = [];
@@ -91,7 +91,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var goLive = function (status)
   {
-    
+
     //trace('goLive');
 
     status.reset();
@@ -153,7 +153,7 @@ VIACOM.Schedule.Controller = ( function () {
   // private
   var stepToTime = function (time, status)
   {
-    
+
     //trace('stepToTime called');
 
     var program = status.program;
@@ -225,10 +225,12 @@ VIACOM.Schedule.Controller = ( function () {
       status.itemIndex = i;
   };
 
-  var stepForward = function (now, status, playerCanStepThroughPlaylist)
+  var stepForward = function (status, playerCanStepThroughPlaylist)
   {
-    
+
     trace('stepForward');
+
+    var now = new Date().getTime();
 
     var i = status.itemIndex + 1;
 
@@ -243,10 +245,12 @@ VIACOM.Schedule.Controller = ( function () {
     this.stepToTime(now, status);
   };
 
-  var skipForward = function (now, status)
+  var skipForward = function (status)
   {
-    
+
     trace('skipForward');
+
+    var now = new Date().getTime();
 
     var program = status.program;
 
@@ -279,13 +283,12 @@ VIACOM.Schedule.Controller = ( function () {
         b = 0;
     }
 
-    this.jump(now, status, b, i);
+    this.jump(status, b, i);
   };
 
-  var skipBackward = function (now, status)
+  var skipBackward = function (status)
   {
-        trace('skipBackward');
-
+    trace('skipBackward');
 
     var program = status.program;
 
@@ -319,12 +322,14 @@ VIACOM.Schedule.Controller = ( function () {
         i -= 1;
     }
 
-    this.jump(now, status, b, i);
+    this.jump(status, b, i);
   };
 
-  var jump = function (now, status, b, i)
+  var jump = function (status, b, i)
   {
-        trace('jump(' + b + ',' + i + ')');
+    trace('jump(' + b + ',' + i + ')');
+
+    var now = new Date().getTime();
 
     var program = status.program;
 
@@ -352,7 +357,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var onPlayerVideoStarted = function (uri, status)
   {
-        trace('onPlayerVideoStarted');
+    trace('onPlayerVideoStarted');
 
     var items = status.program.blocks[status.blockIndex].items;
 
@@ -365,7 +370,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var play = function (player, status)
   {
-        trace('play');
+    trace('play');
 
     var item = status.program.blocks[status.blockIndex].items[status.itemIndex];
 
@@ -396,10 +401,11 @@ VIACOM.Schedule.Controller = ( function () {
     player.play();
   };
 
-  var timeUntilBlockStart = function (program, now, b)
+  var timeUntilBlockStart = function (program, b)
   {
-        //trace('timeUntilBlockStart called');
+    //trace('timeUntilBlockStart called');
 
+    var now = new Date().getTime();
     return program.startTime + program.blocks[b].start * 1000 - now;
   };
 
@@ -408,10 +414,10 @@ VIACOM.Schedule.Controller = ( function () {
     trace('Added Listener [ ' + eventName  + ' ]');
   }
 
- var pause = function () 
- {
+  var pause = function () 
+  {
     trace('pause');
- }
+  }
 
   return {
     'goLive' : goLive,
