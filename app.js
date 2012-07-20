@@ -18,7 +18,7 @@ App.init = function ()
 	this.player.stepCallback = function () {
 		var now = new Date().getTime();
 		App.programController.stepForward(now, App.programStatus, App.player.canStepThroughPlaylist());
-		App.play(now);
+		App.playProgram(now);
 	};
 };
 
