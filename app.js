@@ -107,7 +107,7 @@ App.onInterval = function (now)
 		else
 			if (this.player.playing) {
 				var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
-				if ((secondsToPlay <= 10) && (secondsToPlay >= 9)) {
+				if (secondsToPlay == 9) {
 					var tmpProgramStatus = Object.create(programStatus);
 					tmpProgramStatus.clone(programStatus);
 					this.programController.stepForward(tmpProgramStatus);
