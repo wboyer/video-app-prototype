@@ -69,7 +69,13 @@ VIACOM.Schedule.Controller = ( function () {
     return this.program.blocks[this.blockIndex].items[this.itemIndex];
   };
 
-  var start = function (program)
+  var now = function () {
+    // will need to base this on server time eventually.
+    return new Date().getTime();
+    //
+  }
+
+  var loadProgram = function (program)
   {
 
     trace('start');
@@ -84,69 +90,8 @@ VIACOM.Schedule.Controller = ( function () {
     return programStatus;
   };
 
-  var goLive = function (status)
-  {
-
-    //trace('goLive');
-
-    status.reset();
-    var now = new Date().getTime();
-    var program = status.program;
-
-    if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
-      return false;
-
-    var time = program.startTime + program.blocks[0].start * 1000;
-
-    while (true) {
-      stepToTime(time, status);
-
-      time += status.wait;
-
-      if (time > now) {
-        status.wait = time - now;
-        return true;
-      }
-      else {
-        status.wait = 0;
-
-        var block = program.blocks[status.blockIndex];			
-
-        while (true) {
-          var item = block.items[status.itemIndex];
-          var duration = (item.duration + item.adDuration) * 1000;
-          var adDuration = item.adDuration * 1000;
-
-          time += duration;
-
-          if (time > now) {
-            if (block.dll || item.dll)
-              time -= duration;
-            else {
-              status.offset = now + duration - time;
-              status.adsEnabled = false;
-              if (status.offset < adDuration) {
-                status.wait = adDuration - status.offset;
-                status.offset = adDuration;
-              }
-            }					
-            return true;
-          }
-
-          var i = status.itemIndex + 1;
-          if ((i < block.items.length) && (item.playlistUri == block.items[i].playlistUri) && block.items[i].auto)
-            status.itemIndex = i;
-          else
-            break;
-        }
-      }
-
-      status.itemIndex += 1;
-    }
-  };
-
   // private
-  var stepToTime = function (time, status)
+  stepToTime = function (time, status)
   {
 
     //trace('stepToTime called');
@@ -220,12 +165,75 @@ VIACOM.Schedule.Controller = ( function () {
       status.itemIndex = i;
   };
 
+
+  var goLive = function (status)
+  {
+
+    //trace('goLive');
+
+    status.reset();
+    var now = this.now();
+    var program = status.program;
+
+    if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
+      return false;
+
+    var time = program.startTime + program.blocks[0].start * 1000;
+
+    while (true) {
+      stepToTime(time, status);
+
+      time += status.wait;
+
+      if (time > now) {
+        status.wait = time - now;
+        return true;
+      }
+      else {
+        status.wait = 0;
+
+        var block = program.blocks[status.blockIndex];			
+
+        while (true) {
+          var item = block.items[status.itemIndex];
+          var duration = (item.duration + item.adDuration) * 1000;
+          var adDuration = item.adDuration * 1000;
+
+          time += duration;
+
+          if (time > now) {
+            if (block.dll || item.dll)
+              time -= duration;
+            else {
+              status.offset = now + duration - time;
+              status.adsEnabled = false;
+              if (status.offset < adDuration) {
+                status.wait = adDuration - status.offset;
+                status.offset = adDuration;
+              }
+            }					
+            return true;
+          }
+
+          var i = status.itemIndex + 1;
+          if ((i < block.items.length) && (item.playlistUri == block.items[i].playlistUri) && block.items[i].auto)
+            status.itemIndex = i;
+          else
+            break;
+        }
+      }
+
+      status.itemIndex += 1;
+    }
+  };
+
+  
   var stepForward = function (status, playerCanStepThroughPlaylist)
   {
 
     trace('stepForward');
 
-    var now = new Date().getTime();
+    var now = this.now();
 
     var i = status.itemIndex + 1;
 
@@ -237,7 +245,7 @@ VIACOM.Schedule.Controller = ( function () {
 
     status.itemIndex = i;
 
-    this.stepToTime(now, status);
+    stepToTime(now, status);
   };
 
   var skipForward = function (status)
@@ -245,7 +253,7 @@ VIACOM.Schedule.Controller = ( function () {
 
     trace('skipForward');
 
-    var now = new Date().getTime();
+    var now = this.now();
 
     var program = status.program;
 
@@ -320,18 +328,19 @@ VIACOM.Schedule.Controller = ( function () {
     this.jump(status, b, i);
   };
 
-  var jump = function (status, b, i)
+  var jump = function (status, blockIndex, itemIndex)
   {
-    trace('jump(' + b + ',' + i + ')');
+    trace('jump(' + blockIndex + ',' + itemIndex + ')');
 
-    var now = new Date().getTime();
+    var now = this.now();
 
     var program = status.program;
 
-    block = program.blocks[b];
+    block = program.blocks[blockIndex];
 
-    if (b != status.blockIndex)
+    if (blockIndex != status.blockIndex) {
       status.hasLoopedBlock = false;
+    }
 
     status.wait = 0;
     status.offset = 0;
@@ -346,8 +355,8 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    status.blockIndex = b;
-    status.itemIndex = i;
+    status.blockIndex = blockIndex;
+    status.itemIndex = itemIndex;
   };
 
   var onPlayerVideoStarted = function (uri, status)
@@ -400,7 +409,8 @@ VIACOM.Schedule.Controller = ( function () {
   {
     //trace('timeUntilBlockStart called');
 
-    var now = new Date().getTime();
+    var now = this.now();
+
     return program.startTime + program.blocks[b].start * 1000 - now;
   };
 
@@ -409,14 +419,10 @@ VIACOM.Schedule.Controller = ( function () {
     trace('Added Listener [ ' + eventName  + ' ]');
   }
 
-  var pause = function () 
-  {
-    trace('pause');
-  }
 
   return {
     'goLive' : goLive,
-    'start' : start,
+    'loadProgram' : loadProgram,
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'timeUntilBlockStart' : timeUntilBlockStart,
@@ -424,9 +430,8 @@ VIACOM.Schedule.Controller = ( function () {
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
-    'stepToTime' : stepToTime,
     'addListener' : addListener,
-    'pause' : pause
+    'now' : now
   };
 
 

@@ -26,7 +26,7 @@ App.loadProgram = function (program)
 {
 	this.programIsPlaying = false;
 	this.player.stop();
-	this.programStatus = this.programController.start(program);
+	this.programStatus = this.programController.loadProgram(program);
 	this.sync();
 };
 
@@ -45,9 +45,9 @@ App.playProgram = function (now)
 		this.player.stop();
 		this.waitStart = now;
 	}
-	else
-		this.programController.play(this.player, programStatus);
-	
+  else {
+    this.programController.play(this.player, programStatus);
+  }
 	this.programIsPlaying = true;
 	this.nextUpItem = null;
 	this.nextApptBlock = null;
