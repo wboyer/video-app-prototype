@@ -1,8 +1,3 @@
-// Testing collaborator access.
-// It works!  -benoitm
-//
-// // Create a VIACOM.Schedule "namespace" if it doesn't already exist
-//
 // TODO add Object.create fallback
 
 var VIACOM = VIACOM || {};
