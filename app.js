@@ -105,6 +105,7 @@ App.onInterval = function (now)
 			}
 		}
 		else
+      //TODO This is going to break.
 			if (this.player.playing) {
 				var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
 				if (secondsToPlay == 9) {

@@ -32,7 +32,64 @@ VIACOM.Schedule.Controller = ( function () {
 
   var trace = VIACOM.Util.trace;
 
-  var ProgramStatus = {program: null, blockIndex: 0, itemIndex: 0, wait: 0, offset: 0, adsEnabled: true, hasLoopedBlock: false};
+  var schedule = VIACOM.Schedule.ScheduleService.getSchedule();
+
+  var ProgramStatus = {
+    program: null, 
+    blockIndex: 0,
+    itemIndex: 0, 
+    wait: 0, 
+    offset: 0, 
+    adsEnabled: true, 
+    hasLoopedBlock: false
+  };
+
+  ///private
+  viewerStatusState = {
+    blockIndex: 0, 
+    itemIndex: 0, 
+    offset: 0, 
+    time : 0, 
+    hasLoopedBlock: false,
+    wait: 0
+  };
+
+  viewerStatus = function (spec) {
+
+    that  = {};
+
+    var blockIndex = function ()  {
+      return  spec.blockIndex;
+    }
+    var itemIndex = function ()  {
+      return  spec.itemIndex;
+    }
+    var offset = function ()  {
+      return  spec.offset;
+    }
+    var time = function ()  {
+      return  spec.timex;
+    }
+    var hasLookedBlock = function ()  {
+      return  spec.hasLoopedBack;
+    }
+    var wait = function ()  {
+      return  spec.wait;
+    }
+
+
+
+    that.blockIndex =  blockIndex;
+    that.itemIndex = itemIndex;
+    that.offset = offset;
+    that.time = time;
+    that.hasLoopedBlock = hasLoopedBlock;
+
+    return that;
+
+
+  }
+
 
 
   ProgramStatus.reset = function ()
