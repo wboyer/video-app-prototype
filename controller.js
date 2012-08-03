@@ -51,94 +51,95 @@ VIACOM.Util = ( function() {
  * - withCredentials is not supported, so cookies and auth headers will not be included
  *   in the request.
  */
-var Cors = ( function() {
+VIACOM.Cors = (function() {
   
-	// Check if XDomainRequest exists (for IE)
-	var useXdr = (window.XDomainRequest != null);
-	
-	// Gets a URL via AJAX using the provided options. See above for a description of
-	// available options.
-	var get = function(url, options) {
-		if (useXdr) {
-			getWithXdr(url, options);
-		}
-		else {
-			getWithXhr(url, options	);
-		}
-	};
-	
-	// Uses the XDomainRequest object (IE's cross-domain XHR implementation)
-	var getWithXdr = function(url, options) {
-		var xdr = new XDomainRequest();
-		xdr.timeout = (options['timeoutSeconds'] ? options.timeoutSeconds * 1000 : 0);
-		xdr.onerror = (options['failure'] ? options.failure : null);
-		xdr.ontimeout = (options['timeout'] ? options.timeout : null);
-		xdr.onload = function() {
-			handleSuccess(xdr.responseText, options);
-		};
-		xdr.open("get", url);
-		xdr.send();
-	};
-	
-	// Uses the standard XMLHttpRequest Level 2 object to make a cross-domain AJAX
-	// request.
-	var getWithXhr = function(url, options) {
-		var xhr = new XMLHttpRequest();
-		// Not all browsers support the timeout property on XHR natively, so
-		// we need to do this instead
-		var timeoutId = 0;
-		if (options['timeoutSeconds']) {
-			timeoutId = window.setTimeout(function() {
-				xhr.abort();
-				if (options['timeout']) {
-					options.timeout();
-				}
-			}, options.timeoutSeconds * 1000);
-		}
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) { // DONE
-				if (timeoutId > 0) {
-					window.clearTimeout(timeoutId);
-				}
-				if (xhr.status == 200) {
-					handleSuccess(xhr.responseText, options);
-				}
-				else if (xhr.status >= 400) {
-					if (options['failure']) {
-						options.failure();
-					}					
-				}
-			}
-		};
-		xhr.open("get", url);
-		xhr.send();
-	};
-	
-	// Helper function to handle a successful response. It will automatically
-	// evaluate a JSON document in the body of the response, if the parseJson
-	// option is true.
-	var handleSuccess = function(response, options) {
-		if (options['parseJson'] && options.parseJson == true) {
-			try {
-				response = eval('(' + response + ')');
-			}
-			catch (e) {
-				if (options['failure']) {
-					options.failure();
-					return;
-				}
-			}
-		}
-		if (options['success']) {
-			options.success(response);
-		}
-	};
+  // Check if XDomainRequest exists (for IE)
+  var useXdr = (window.XDomainRequest != null);
+  
+  // Gets a URL via AJAX using the provided options. See above for a description of
+  // available options.
+  var get = function(url, options) {
+    if (useXdr) {
+      getWithXdr(url, options);
+    }
+    else {
+      getWithXhr(url, options  );
+    }
+  };
+  
+  // Uses the XDomainRequest object (IE's cross-domain XHR implementation)
+  var getWithXdr = function(url, options) {
+    var xdr = new XDomainRequest();
+    xdr.timeout = (options['timeoutSeconds'] ? options.timeoutSeconds * 1000 : 0);
+    xdr.onerror = (options['failure'] ? options.failure : null);
+    xdr.ontimeout = (options['timeout'] ? options.timeout : null);
+    xdr.onload = function() {
+      handleSuccess(xdr.responseText, options);
+    };
+    xdr.open("get", url);
+    xdr.send();
+  };
+  
+  // Uses the standard XMLHttpRequest Level 2 object to make a cross-domain AJAX
+  // request.
+  var getWithXhr = function(url, options) {
+    var xhr = new XMLHttpRequest();
+    // Not all browsers support the timeout property on XHR natively, so
+    // we need to do this instead
+    var timeoutId = 0;
+    if (options['timeoutSeconds']) {
+      timeoutId = window.setTimeout(function() {
+        xhr.abort();
+        if (options['timeout']) {
+          options.timeout();
+        }
+      }, options.timeoutSeconds * 1000);
+    }
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) { // DONE
+        if (timeoutId > 0) {
+          window.clearTimeout(timeoutId);
+        }
+        if (xhr.status == 200) {
+          handleSuccess(xhr.responseText, options);
+        }
+        else if (xhr.status >= 400) {
+          if (options['failure']) {
+            options.failure();
+          }          
+        }
+      }
+    };
+    xhr.open("get", url);
+    xhr.send();
+  };
+  
+  // Helper function to handle a successful response. It will automatically
+  // evaluate a JSON document in the body of the response, if the parseJson
+  // option is true.
+  var handleSuccess = function(response, options) {
+    if (options['parseJson'] && options.parseJson == true) {
+      try {
+        response = eval('(' + response + ')');
+      }
+      catch (e) {
+        if (options['failure']) {
+          options.failure();
+          return;
+        }
+      }
+    }
+    if (options['success']) {
+      options.success(response);
+    }
+  };
 
-	// Return object with "public" functions
-	return {
-		"get": get
-	};
+  // Return object with "public" functions
+  return {
+    "get": get
+  };
 }());
+
 
 VIACOM.Schedule.Controller = ( function () {
 
