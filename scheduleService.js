@@ -2,9 +2,14 @@
 // it is just an encapsulation of the program/schedule data that
 // will eventually be returned by the web service
 //
+
+var VIACOM = VIACOM || {};
+VIACOM.Schedule = VIACOM.Schedule || {};
+
+
 VIACOM.Schedule.ScheduleService =  ( function () {
 
-  var trace = VIACOM.Util.trace;
+ // var trace = VIACOM.Util.trace;
 
 
     /*
@@ -75,7 +80,7 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
   }; 
 
   var getSchedule = function () {
-    trace('getSchedule');
+    //trace('getSchedule');
 
     // Just for testing, compute our own current time,
     // and slide the test program forward to be closer to now.

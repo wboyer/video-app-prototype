@@ -1,7 +1,7 @@
 // TODO add Object.create fallback
 
 var VIACOM = VIACOM || {};
-VIACOM.Schedule = {};
+VIACOM.Schedule = VIACOM.Schedule || {};
 
 //Turn trace for debugging
 VIACOM.enableTrace = true;
@@ -30,9 +30,16 @@ VIACOM.Util = ( function() {
 
 VIACOM.Schedule.Controller = ( function () {
 
-  var trace = VIACOM.Util.trace;
+  trace = VIACOM.Util.trace;
 
-  var schedule = VIACOM.Schedule.ScheduleService.getSchedule();
+  schedule = VIACOM.Schedule.ScheduleService.getSchedule();
+  schedule.apptBlocks = [];
+  for (var b = 0; b < schedule.blocks.length; b++) {
+    if (schedule.blocks[b].appt) {
+      schedule.apptBlocks[schedule.apptBlocks.length] = b; 
+    }
+  }
+
 
   var ProgramStatus = {
     program: null, 
@@ -44,15 +51,6 @@ VIACOM.Schedule.Controller = ( function () {
     hasLoopedBlock: false
   };
 
-  ///private
-  viewerStatusState = {
-    blockIndex: 0, 
-    itemIndex: 0, 
-    offset: 0, 
-    time : 0, 
-    hasLoopedBlock: false,
-    wait: 0
-  };
 
   viewerStatus = function (spec) {
 
@@ -70,13 +68,12 @@ VIACOM.Schedule.Controller = ( function () {
     var time = function ()  {
       return  spec.timex;
     }
-    var hasLookedBlock = function ()  {
-      return  spec.hasLoopedBack;
+    var hasLoopedBlock = function ()  {
+      return  spec.hasLoopedBlock;
     }
     var wait = function ()  {
       return  spec.wait;
     }
-
 
 
     that.blockIndex =  blockIndex;
@@ -84,11 +81,32 @@ VIACOM.Schedule.Controller = ( function () {
     that.offset = offset;
     that.time = time;
     that.hasLoopedBlock = hasLoopedBlock;
+    that.wait = wait;
 
     return that;
 
 
   }
+
+  viewerStatusState = {
+    blockIndex: 0, 
+    itemIndex: 0, 
+    offset: 0, 
+    time : 0, 
+    hasLoopedBlock: false,
+    wait: 0
+  }
+
+  liveStatusState = {
+    blockIndex: 0, 
+    itemIndex: 0, 
+    offset: 0, 
+    time : 0, 
+    hasLoopedBlock: false,
+    wait: 0
+  }
+
+
 
 
 
@@ -132,28 +150,15 @@ VIACOM.Schedule.Controller = ( function () {
     //
   }
 
-  var loadProgram = function (program)
-  {
 
-    trace('start');
-
-    program.apptBlocks = [];
-    for (var b = 0; b < program.blocks.length; b++)
-    if (program.blocks[b].appt)
-      program.apptBlocks[program.apptBlocks.length] = b;
-
-    var programStatus = Object.create(ProgramStatus);
-    programStatus.program = program;
-    return programStatus;
-  };
 
   // private
+  // TODO done
   stepToTime = function (time, status)
   {
 
-    //trace('stepToTime called');
 
-    var program = status.program;
+    var program = schedule;
     var timeOffset = time - program.startTime;
 
     var b = status.blockIndex;
@@ -206,37 +211,55 @@ VIACOM.Schedule.Controller = ( function () {
         var timeUntilBlockStart = block.start * 1000 - timeOffset;
 
         var msse = block.msse * 1000;
-        if (block.appt)
+        if (block.appt) {
           msse = 0;
-
-        if ((msse >= 0) && (timeUntilBlockStart > msse))
+        }
+        if ((msse >= 0) && (timeUntilBlockStart > msse)) {
           status.wait = timeUntilBlockStart - msse;
-
+        }
         status.blockIndex = b;
         status.hasLoopedBlock = false;
       }
-      else
-        if (hasLoopedBlock)
+      else {
+        if (hasLoopedBlock) {
           status.hasLoopedBlock = true;
-
+        }
+      }
       status.itemIndex = i;
   };
-
-
-  var goLive = function (status)
+  //TODO figure out what to do with the boolean return values
+  sync = function (status, now)
   {
 
-    //trace('goLive');
+    //trace('it is now: ' + now);
 
-    status.reset();
-    var now = this.now();
-    var program = status.program;
+    //status.reset();
+    //this could be a method, right?
+    //statusState = {
+    //  blockIndex: 0, 
+    //  itemIndex: 0, 
+    //  offset: 0, 
+    //  time : 0, 
+    //  hasLoopedBlock: false,
+    //  wait: 0
+    //};
 
-    if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0))
+    status.blockIndex = 0;
+    status.itemIndex = 0;
+    status.offset = 0;
+    status.time = 0;
+    status.hasLoopedBlock = false;
+    status.wait = 0;
+
+
+    var program = schedule;
+
+
+    if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0)) {
       return false;
+    }
 
     var time = program.startTime + program.blocks[0].start * 1000;
-
     while (true) {
       stepToTime(time, status);
 
@@ -282,158 +305,184 @@ VIACOM.Schedule.Controller = ( function () {
 
       status.itemIndex += 1;
     }
+    return viewerStatus(statusState);
   };
 
-  
-  var stepForward = function (status, playerCanStepThroughPlaylist)
+
+  var goLive = function () {
+    trace("go live");
+    return sync(viewerStatusState, this.now());
+  }
+
+
+
+  var stepForward = function (playerCanStepThroughPlaylist)
   {
 
     trace('stepForward');
 
     var now = this.now();
 
-    var i = status.itemIndex + 1;
+    var i = viewerStatusState.itemIndex + 1;
 
-    var items = status.program.blocks[status.blockIndex].items;
+    var items = schedule.blocks[viewerStatusState.blockIndex].items;
 
-    if (playerCanStepThroughPlaylist)
-      while ((i < items.length) && (items[status.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
+    if (playerCanStepThroughPlaylist) {
+      while ((i < items.length) && (items[viewerStatusState.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto) {
         i += 1;
+      }
+    }
 
-    status.itemIndex = i;
+    viewerStatusState.itemIndex = i;
 
-    stepToTime(now, status);
+    return stepToTime(now, viewerStatusState);
   };
 
-  var skipForward = function (status)
+  var skipForward = function ()
   {
 
     trace('skipForward');
 
     var now = this.now();
 
-    var program = status.program;
+    var program = schedule;
 
-    var b = status.blockIndex;
-    var i = status.itemIndex;
+    var b = viewerStatusState.blockIndex;
+    var i = viewerStatusState.itemIndex;
 
     var blocks = program.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (status.wait > 0)
-      if (block.appt)
+    if (viewerStatusState.wait > 0) {
+      if (block.appt) {
         i = block.items.length;
-    else {
-      status.wait = 0;
-      return;
+      }
+      else {
+        viewerStatusState.wait = 0;
+        return viewerStatus(viewerStatusState);
+      }
     }
     else {
       i += 1;
-
-      while ((i < items.length) && items[i].hidden)
+      while ((i < items.length) && items[i].hidden) {
         i += 1;
+      }
     }
 
     if (i >= items.length) {
       i = 0;
-      if (b + 1 < blocks.length)
+      if (b + 1 < blocks.length) {
         b += 1;
-      else
+      }
+      else {
         b = 0;
+      }
     }
 
-    this.jump(status, b, i);
+    return this.jump(b, i);
   };
 
-  var skipBackward = function (status)
+  var skipBackward = function ()
   {
     trace('skipBackward');
 
-    var program = status.program;
+    var program = schedule;
 
-    var b = status.blockIndex;
-    var i = status.itemIndex;
+    var b = viewerStatusState.blockIndex;
+    var i = viewerStatusState.itemIndex;
 
     var blocks = program.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (status.wait > 0)
+    if (viewerStatusState.wait > 0) {
       i = -1;
+    }
     else {
       i -= 1;
 
-      while ((i >= 0) && items[i].hidden)
+      while ((i >= 0) && items[i].hidden) {
         i -= 1;
+      }
     }
 
     if (i < 0) {
-      if (b > 0)
+      if (b > 0) {
         b -= 1;
-      else
+      }
+      else {
         b = blocks.length - 1;
+      }
 
       block = blocks[b];
       items = block.items;
       i = items.length - 1;
 
-      while ((i >= 0) && items[i].hidden)
+      while ((i >= 0) && items[i].hidden) {
         i -= 1;
+      }
     }
 
-    this.jump(status, b, i);
+    return this.jump(b, i);
   };
 
-  var jump = function (status, blockIndex, itemIndex)
+  var jump = function (blockIndex, itemIndex)
   {
     trace('jump(' + blockIndex + ',' + itemIndex + ')');
 
     var now = this.now();
 
-    var program = status.program;
+    var program = schedule;
 
     block = program.blocks[blockIndex];
 
-    if (blockIndex != status.blockIndex) {
-      status.hasLoopedBlock = false;
+    if (blockIndex != viewerStatusState.blockIndex) {
+      viewerStatusState.hasLoopedBlock = false;
     }
 
-    status.wait = 0;
-    status.offset = 0;
-    status.adsEnabled = true;
+    viewerStatusState.wait = 0;
+    viewerStatusState.offset = 0;
+    viewerStatusState.adsEnabled = true;
 
     if (block.appt) {
       var nowOffset = now - program.startTime;
 
       if (block.start * 1000 > nowOffset) {
-        status.wait = block.start * 1000 - nowOffset;
+        viewerStatusState.wait = block.start * 1000 - nowOffset;
         i = 0;
       }
     }
 
-    status.blockIndex = blockIndex;
-    status.itemIndex = itemIndex;
+    viewerStatusState.blockIndex = blockIndex;
+    viewerStatusState.itemIndex = itemIndex;
+
+    return viewerStatus(viewerStatusState);
+
   };
 
-  var onPlayerVideoStarted = function (uri, status)
+  var onPlayerVideoStarted = function (uri)
   {
     trace('onPlayerVideoStarted');
 
-    var items = status.program.blocks[status.blockIndex].items;
+    var items = schedule.blocks[viewerStatusState.blockIndex].items;
 
-    for (var i = status.itemIndex; (i < items.length) && items[i].auto; i++)
+    for (var i = viewerStatusState.itemIndex; (i < items.length) && items[i].auto; i++)
     if (items[i].uri == uri) {
-      status.itemIndex = i;
+      viewerStatusState.itemIndex = i;
       break;
     }
+     
+    return viewerStatus(viewerStatusState);
+
   };
 
-  var play = function (player, status)
+  //TODO remove status param, figure our what to do with player
+  var play = function (player)
   {
     trace('play');
 
-    var item = status.program.blocks[status.blockIndex].items[status.itemIndex];
+    var item = schedule.blocks[viewerStatusState.blockIndex].items[viewerStatusState.itemIndex];
 
     var uri = item.uri;
     var playlistUri = item.playlistUri;
@@ -446,40 +495,61 @@ VIACOM.Schedule.Controller = ( function () {
         player.loadPlaylist(playlistUri);
         player.seekToPlaylistVideo(uri, duration);
       }
-      else
+      else {
         player.loadVideo(uri, duration);
+      }
     }
     else {
       player.config(uri);
       player.loadVideo(uri, duration);
     }
 
-    if (status.adsEnabled)
+    if (viewerStatusState.adsEnabled) {
       player.setAdDuration(adDuration);
+    }
 
-    if (status.offset > 0)
-      player.seekToOffset(status.offset);
+    if (viewerStatusState.offset > 0) {
+      player.seekToOffset(viewerStatusState.offset);
+    }
     player.play();
+
+    return viewerStatus(viewerStatusState);
   };
 
-  var timeUntilBlockStart = function (program, b)
-  {
+  var timeUntilBlockStart = function (program, b) {
     //trace('timeUntilBlockStart called');
 
     var now = this.now();
 
-    return program.startTime + program.blocks[b].start * 1000 - now;
+    return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
 
-  var addListener = function (eventName, callback) 
-  {
+  var addListener = function (eventName, callback) {
     trace('Added Listener [ ' + eventName  + ' ]');
   }
+
+  var getViewerStatus = function () {
+    return viewerStatus(viewerStatusState);
+  }
+
+  var getLiveStatus = function () {
+    //trace("getLiveStatus");
+    sync(liveStatusState, this.now());
+    return viewerStatus(liveStatusState);
+  }
+
+  var currentItem = function () {
+    return schedule.blocks[viewerStatusState.blockIndex].items[viewerStatusState.itemIndex];
+  }
+  var currentLiveItem = function () {
+    trace( schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex].uri);
+    return schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex];
+  }
+
 
 
   return {
     'goLive' : goLive,
-    'loadProgram' : loadProgram,
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'timeUntilBlockStart' : timeUntilBlockStart,
@@ -488,7 +558,11 @@ VIACOM.Schedule.Controller = ( function () {
     'skipBackward' : skipBackward,
     'jump' : jump,
     'addListener' : addListener,
-    'now' : now
+    'now' : now,
+    'getViewerStatus' : getViewerStatus,
+    'getCurrentItem' : currentItem,
+    'getLiveItem' : currentLiveItem,
+    'getLiveStatus' : getLiveStatus
   };
 
 

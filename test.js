@@ -1,11 +1,10 @@
 function init()
 {
 	App.init();
-
-	App.loadProgram(VIACOM.Schedule.ScheduleService.getSchedule());
+  App.loadProgram();
 
 	var programDiv = document.getElementById("program");
-	UI.displayProgram(App.programStatus.program, programDiv);
+	UI.displayProgram(VIACOM.Schedule.ScheduleService.getSchedule(), programDiv);
 
 	var playerDiv = document.getElementById("player");
 	var videoDiv = document.getElementById("video");
@@ -21,15 +20,14 @@ function init()
 			var now = new Date().getTime();
 			var programStatus = App.programStatus;
 
-			var tmpProgramStatus = Object.create(programStatus);
-			tmpProgramStatus.clone(programStatus);
-			App.programController.goLive(tmpProgramStatus);
-			var item = tmpProgramStatus.currentItem();
-			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", tmpProgramStatus.blockIndex, tmpProgramStatus.itemIndex, (item.duration + item.adDuration) * 1000, tmpProgramStatus.offset);
+			var liveStatus =  App.programController.getLiveStatus();
+			//tmpProgramStatus.clone(programStatus);
+			//App.programController.goLive(tmpProgramStatus);
+			var item =  App.programController.getLiveItem();
+			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", liveStatus.blockIndex(), liveStatus.itemIndex(), (item.duration + item.adDuration) * 1000, liveStatus.offset());
 
-			programStatus = App.programStatus;
-			item = programStatus.currentItem();
-			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex, programStatus.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
+			item =  App.programController.getCurrentItem();
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex(), programStatus.itemIndex(), (item.duration + item.adDuration) * 1000, App.player.offset);
 
 			App.player.onInterval(now);
 			UI.updatePlayer(App.player, videoDiv);
@@ -97,8 +95,9 @@ function addOverlayAllowedRegion(overlay, id)
 
 function slideProgram(offset)
 {
-	App.programStatus.program.startTime += offset;
+	VIACOM.Schedule.ScheduleService.getSchedule().startTime += offset;
 	var programDiv = document.getElementById("program");
-	UI.displayProgram(App.programStatus.program, programDiv);
+	
+  UI.displayProgram(App.program, programDiv);
 	App.onAirNowStart = 0;
 }
