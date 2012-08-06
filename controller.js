@@ -3,9 +3,9 @@ VIACOM.Schedule = VIACOM.Schedule || {};
 
 VIACOM.Schedule.Controller = ( function () {
 
-  trace = VIACOM.Schedule.Util.trace;
+  var trace = VIACOM.Schedule.Util.trace;
 
-  schedule = VIACOM.Schedule.Service.getSchedule();
+  var schedule = VIACOM.Schedule.Service.getSchedule();
 
   schedule.apptBlocks = [];
 
@@ -16,20 +16,9 @@ VIACOM.Schedule.Controller = ( function () {
   }
 
 
-  var ProgramStatus = {
-    program: null, 
-    blockIndex: 0,
-    itemIndex: 0, 
-    wait: 0, 
-    offset: 0, 
-    adsEnabled: true, 
-    hasLoopedBlock: false
-  };
+   var viewerStatus = function (spec) {
 
-
-  viewerStatus = function (spec) {
-
-    that  = {};
+    var that  = {};
 
     var blockIndex = function ()  {
       return  spec.blockIndex;
@@ -63,7 +52,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   }
 
-  viewerStatusState = {
+  var viewerStatusState = {
     blockIndex: 0, 
     itemIndex: 0, 
     offset: 0, 
@@ -72,7 +61,7 @@ VIACOM.Schedule.Controller = ( function () {
     wait: 0
   }
 
-  liveStatusState = {
+  var liveStatusState = {
     blockIndex: 0, 
     itemIndex: 0, 
     offset: 0, 
@@ -80,44 +69,6 @@ VIACOM.Schedule.Controller = ( function () {
     hasLoopedBlock: false,
     wait: 0
   }
-
-
-
-
-
-  ProgramStatus.reset = function ()
-  {
-    //trace('ProgramStatus.reset called');
-    this.blockIndex = 0;
-    this.itemIndex = 0;
-    this.wait = 0;
-    this.offset = 0;
-    this.adsEnabled = true;
-    this.hasLoopedBlock = false;
-  };
-
-  ProgramStatus.clone = function (status)
-  {
-
-    //trace('ProgramStatus.clone called');
-
-    this.program = status.program;
-    this.blockIndex = status.blockIndex;
-    this.itemIndex = status.itemIndex;
-    this.wait = status.wait;
-    this.offset = status.offset;
-    this.adsEnabled = status.adsEnabled;
-    this.hasLoopedBlock = status.hasLoopedBlock;
-  };
-
-
-  ProgramStatus.currentItem = function ()
-  {
-
-    //trace('ProgramStatus.currentItem caled');
-
-    return this.program.blocks[this.blockIndex].items[this.itemIndex];
-  };
 
   var now = function () {
     // will need to base this on server time eventually.
@@ -125,11 +76,9 @@ VIACOM.Schedule.Controller = ( function () {
     //
   }
 
-
-
   // private
   // TODO done
-  stepToTime = function (time, status)
+  var stepToTime = function (time, status)
   {
 
 
@@ -203,7 +152,7 @@ VIACOM.Schedule.Controller = ( function () {
       status.itemIndex = i;
   };
   //TODO figure out what to do with the boolean return values
-  sync = function (status, now)
+  var sync = function (status, now)
   {
 
     //trace('it is now: ' + now);
@@ -494,7 +443,7 @@ VIACOM.Schedule.Controller = ( function () {
   var timeUntilBlockStart = function (b) {
 
     var now = this.now();
-    trace('timeUntilBlockStart(' + b + ')');
+    //trace('timeUntilBlockStart(' + b + ')');
 
     return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
