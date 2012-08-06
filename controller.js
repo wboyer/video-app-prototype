@@ -82,13 +82,13 @@ VIACOM.Schedule.Controller = ( function () {
   {
 
 
-    var program = schedule;
-    var timeOffset = time - program.startTime;
+    //var schedule = schedule;
+    var timeOffset = time - schedule.startTime;
 
     var b = status.blockIndex;
     var i = status.itemIndex;
 
-    var blocks = program.blocks;
+    var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
@@ -155,19 +155,6 @@ VIACOM.Schedule.Controller = ( function () {
   var sync = function (status, now)
   {
 
-    //trace('it is now: ' + now);
-
-    //status.reset();
-    //this could be a method, right?
-    //statusState = {
-    //  blockIndex: 0, 
-    //  itemIndex: 0, 
-    //  offset: 0, 
-    //  time : 0, 
-    //  hasLoopedBlock: false,
-    //  wait: 0
-    //};
-
     status.blockIndex = 0;
     status.itemIndex = 0;
     status.offset = 0;
@@ -176,14 +163,14 @@ VIACOM.Schedule.Controller = ( function () {
     status.wait = 0;
 
 
-    var program = schedule;
+    //var schedule = schedule;
 
 
-    if ((program.blocks.length == 0) || (program.blocks[0].items.length == 0)) {
+    if ((schedule.blocks.length == 0) || (schedule.blocks[0].items.length == 0)) {
       return false;
     }
 
-    var time = program.startTime + program.blocks[0].start * 1000;
+    var time = schedule.startTime + schedule.blocks[0].start * 1000;
     while (true) {
       stepToTime(time, status);
 
@@ -196,7 +183,7 @@ VIACOM.Schedule.Controller = ( function () {
       else {
         status.wait = 0;
 
-        var block = program.blocks[status.blockIndex];			
+        var block = schedule.blocks[status.blockIndex];			
 
         while (true) {
           var item = block.items[status.itemIndex];
@@ -269,12 +256,12 @@ VIACOM.Schedule.Controller = ( function () {
 
     var now = this.now();
 
-    var program = schedule;
+    //var schedule = schedule;
 
     var b = viewerStatusState.blockIndex;
     var i = viewerStatusState.itemIndex;
 
-    var blocks = program.blocks;
+    var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
@@ -311,12 +298,12 @@ VIACOM.Schedule.Controller = ( function () {
   {
     trace('skipBackward');
 
-    var program = schedule;
+    //var schedule = schedule;
 
     var b = viewerStatusState.blockIndex;
     var i = viewerStatusState.itemIndex;
 
-    var blocks = program.blocks;
+    var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
@@ -357,9 +344,9 @@ VIACOM.Schedule.Controller = ( function () {
 
     var now = this.now();
 
-    var program = schedule;
+    //var schedule = schedule;
 
-    block = program.blocks[blockIndex];
+    block = schedule.blocks[blockIndex];
 
     if (blockIndex != viewerStatusState.blockIndex) {
       viewerStatusState.hasLoopedBlock = false;
@@ -370,7 +357,7 @@ VIACOM.Schedule.Controller = ( function () {
     viewerStatusState.adsEnabled = true;
 
     if (block.appt) {
-      var nowOffset = now - program.startTime;
+      var nowOffset = now - schedule.startTime;
 
       if (block.start * 1000 > nowOffset) {
         viewerStatusState.wait = block.start * 1000 - nowOffset;
