@@ -7,7 +7,7 @@ var VIACOM = VIACOM || {};
 VIACOM.Schedule = VIACOM.Schedule || {};
 
 
-VIACOM.Schedule.ScheduleService =  ( function () {
+VIACOM.Schedule.Service =  ( function () {
 
  // var trace = VIACOM.Util.trace;
 

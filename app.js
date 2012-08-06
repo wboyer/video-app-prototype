@@ -104,6 +104,7 @@ var App = {programController: null, programStatus: null, player: null,
         if (this.player.playing) {
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
+            //TODO create nextUp method in controller
             //	var tmpProgramStatus = Object.create(programStatus);
             //	tmpProgramStatus.clone(programStatus);
             //	this.programController.stepForward(tmpProgramStatus);
@@ -124,10 +125,10 @@ var App = {programController: null, programStatus: null, player: null,
         }
       }
       else {
-        for (var a = 0; a < VIACOM.Schedule.ScheduleService.getSchedule().apptBlocks.length; a++)
+        for (var a = 0; a < VIACOM.Schedule.Service.getSchedule().apptBlocks.length; a++)
         {
-          var blockIndex = VIACOM.Schedule.ScheduleService.getSchedule().apptBlocks[a];
-          var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(VIACOM.Schedule.ScheduleService.getSchedule(), blockIndex) / 1000);
+          var blockIndex = VIACOM.Schedule.Service.getSchedule().apptBlocks[a];
+          var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(blockIndex) / 1000);
           if (
             ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
               ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||

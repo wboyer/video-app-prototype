@@ -1,39 +1,14 @@
-// TODO add Object.create fallback
-
 var VIACOM = VIACOM || {};
 VIACOM.Schedule = VIACOM.Schedule || {};
 
-//Turn trace for debugging
-VIACOM.enableTrace = true;
-
-// Common utility methods
-VIACOM.Util = ( function() {
-  // Writes trace output messages into a div named "trace-output" if the div exists and
-  // MTVN.enableTrace is true.
-  var trace = function(msg) {
-    if(VIACOM.enableTrace) {
-      if(window['console']) {
-        console.log('[TRACE] ' + new Date().toString() + ' - VIACOM.Schedule.Controller - ' + msg);
-      }
-      var t = document.getElementById('trace-output');
-      if(t) {
-        t.innerHTML += '=&gt; ' + msg + '<br>';
-      }
-    }
-  };
-  return {
-    'trace' : trace
-  };
-}());
-
-
-
 VIACOM.Schedule.Controller = ( function () {
 
-  trace = VIACOM.Util.trace;
+  trace = VIACOM.Schedule.Util.trace;
 
-  schedule = VIACOM.Schedule.ScheduleService.getSchedule();
+  schedule = VIACOM.Schedule.Service.getSchedule();
+
   schedule.apptBlocks = [];
+
   for (var b = 0; b < schedule.blocks.length; b++) {
     if (schedule.blocks[b].appt) {
       schedule.apptBlocks[schedule.apptBlocks.length] = b; 
@@ -516,10 +491,10 @@ VIACOM.Schedule.Controller = ( function () {
     return viewerStatus(viewerStatusState);
   };
 
-  var timeUntilBlockStart = function (program, b) {
-    //trace('timeUntilBlockStart called');
+  var timeUntilBlockStart = function (b) {
 
     var now = this.now();
+    trace('timeUntilBlockStart(' + b + ')');
 
     return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
@@ -542,7 +517,7 @@ VIACOM.Schedule.Controller = ( function () {
     return schedule.blocks[viewerStatusState.blockIndex].items[viewerStatusState.itemIndex];
   }
   var currentLiveItem = function () {
-    trace( schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex].uri);
+    //trace( schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex].uri);
     return schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex];
   }
 

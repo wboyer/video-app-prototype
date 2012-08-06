@@ -4,7 +4,7 @@ function init()
   App.loadProgram();
 
 	var programDiv = document.getElementById("program");
-	UI.displayProgram(VIACOM.Schedule.ScheduleService.getSchedule(), programDiv);
+	UI.displayProgram(VIACOM.Schedule.Service.getSchedule(), programDiv);
 
 	var playerDiv = document.getElementById("player");
 	var videoDiv = document.getElementById("video");
