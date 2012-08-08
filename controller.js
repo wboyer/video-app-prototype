@@ -15,7 +15,7 @@ VIACOM.Schedule.Controller = ( function () {
     }
   }
 
-
+/*
    var viewerStatus = function (spec) {
 
     var that  = {};
@@ -69,6 +69,60 @@ VIACOM.Schedule.Controller = ( function () {
     hasLoopedBlock: false,
     wait: 0
   }
+*/
+
+  // Constructor function for the ViewerStatus "class"
+  var ViewerStatus = function(spec) {
+
+    // Function to zero-out all the state variables
+    this.reset = function() {
+      this.blockIndex = 0;
+      this.itemIndex = 0;
+      this.offset = 0;
+      this.time = 0;
+      this.wait = 0;
+      this.adsEnabled = false;
+      this.hasLoopedBlock = false;
+    }
+
+      if (spec) {
+        this.blockIndex = spec.blockIndex || 0;
+        this.itemIndex = spec.itemIndex || 00;
+        this.offset = spec.offset || 0;
+        this.time = spec.time || 0;
+        this.wait = spec.wait || 0;
+        this.adsEnabled = spec.adsEnabled || false;
+        this.hasLoopedBlock = spec.hasLoooedBlock || false;
+      }
+      else {
+        this.reset()
+      }
+    // Create a read-only "interface" to the internal state
+    var ro = {};
+
+    // Create accessor functions for each property
+    var that = this;
+    for (var prop in this) {
+      // Skip functions
+      if (typeof this[prop] == 'function') {
+        continue;
+      }
+      // Create the accessor function. See below for why it's done this way:
+      // http://www.mennovanslooten.nl/blog/post/62/
+      ro[prop] = (function(p) {
+        return function() {
+          return that[p];
+        }
+      })(prop);
+    }
+
+    this.readOnlyCopy = ro;
+  }
+
+  var viewer = new ViewerStatus();
+  var live = new ViewerStatus();
+
+
 
   var now = function () {
     // will need to base this on server time eventually.
@@ -216,38 +270,41 @@ VIACOM.Schedule.Controller = ( function () {
 
       status.itemIndex += 1;
     }
-    return viewerStatus(statusState);
+    return true;
   };
 
 
   var goLive = function () {
     trace("go live");
-    return sync(viewerStatusState, this.now());
+    return sync(viewer, this.now());
   }
 
 
 
-  var stepForward = function (playerCanStepThroughPlaylist)
+  var step = function (status, playerCanStepThroughPlaylist)
   {
 
     trace('stepForward');
 
-    var now = this.now();
 
-    var i = viewerStatusState.itemIndex + 1;
+    var i = status.itemIndex + 1;
 
-    var items = schedule.blocks[viewerStatusState.blockIndex].items;
+    var items = schedule.blocks[status.blockIndex].items;
 
     if (playerCanStepThroughPlaylist) {
-      while ((i < items.length) && (items[viewerStatusState.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto) {
+      while ((i < items.length) && (items[status.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto) {
         i += 1;
       }
     }
 
-    viewerStatusState.itemIndex = i;
+    status.itemIndex = i;
 
-    return stepToTime(now, viewerStatusState);
+    return stepToTime(now(), status);
   };
+
+  var stepForward = function (playerCanStepThroughPlaylist) {
+    return step(viewer, playerCanStepThroughPlaylist);
+  }
 
   var skipForward = function ()
   {
@@ -258,20 +315,20 @@ VIACOM.Schedule.Controller = ( function () {
 
     //var schedule = schedule;
 
-    var b = viewerStatusState.blockIndex;
-    var i = viewerStatusState.itemIndex;
+    var b = viewer.blockIndex;
+    var i = viewer.itemIndex;
 
     var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (viewerStatusState.wait > 0) {
+    if (viewer.wait > 0) {
       if (block.appt) {
         i = block.items.length;
       }
       else {
-        viewerStatusState.wait = 0;
-        return viewerStatus(viewerStatusState);
+        viewer.wait = 0;
+        return viewer.readOnlyCopy;
       }
     }
     else {
@@ -300,14 +357,14 @@ VIACOM.Schedule.Controller = ( function () {
 
     //var schedule = schedule;
 
-    var b = viewerStatusState.blockIndex;
-    var i = viewerStatusState.itemIndex;
+    var b = viewer.blockIndex;
+    var i = viewer.itemIndex;
 
     var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (viewerStatusState.wait > 0) {
+    if (viewer.wait > 0) {
       i = -1;
     }
     else {
@@ -348,27 +405,27 @@ VIACOM.Schedule.Controller = ( function () {
 
     block = schedule.blocks[blockIndex];
 
-    if (blockIndex != viewerStatusState.blockIndex) {
-      viewerStatusState.hasLoopedBlock = false;
+    if (blockIndex != viewer.blockIndex) {
+      viewer.hasLoopedBlock = false;
     }
 
-    viewerStatusState.wait = 0;
-    viewerStatusState.offset = 0;
-    viewerStatusState.adsEnabled = true;
+    viewer.wait = 0;
+    viewer.offset = 0;
+    viewer.adsEnabled = true;
 
     if (block.appt) {
       var nowOffset = now - schedule.startTime;
 
       if (block.start * 1000 > nowOffset) {
-        viewerStatusState.wait = block.start * 1000 - nowOffset;
+        viewer.wait = block.start * 1000 - nowOffset;
         i = 0;
       }
     }
 
-    viewerStatusState.blockIndex = blockIndex;
-    viewerStatusState.itemIndex = itemIndex;
+    viewer.blockIndex = blockIndex;
+    viewer.itemIndex = itemIndex;
 
-    return viewerStatus(viewerStatusState);
+    return viewer.readOnlyCopy;
 
   };
 
@@ -376,15 +433,15 @@ VIACOM.Schedule.Controller = ( function () {
   {
     trace('onPlayerVideoStarted');
 
-    var items = schedule.blocks[viewerStatusState.blockIndex].items;
+    var items = schedule.blocks[viewer.blockIndex].items;
 
-    for (var i = viewerStatusState.itemIndex; (i < items.length) && items[i].auto; i++)
+    for (var i = viewer.itemIndex; (i < items.length) && items[i].auto; i++)
     if (items[i].uri == uri) {
-      viewerStatusState.itemIndex = i;
+      viewer.itemIndex = i;
       break;
     }
      
-    return viewerStatus(viewerStatusState);
+    return viewer.readOnlyCopy;
 
   };
 
@@ -393,7 +450,7 @@ VIACOM.Schedule.Controller = ( function () {
   {
     trace('play');
 
-    var item = schedule.blocks[viewerStatusState.blockIndex].items[viewerStatusState.itemIndex];
+    var item = schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
 
     var uri = item.uri;
     var playlistUri = item.playlistUri;
@@ -415,16 +472,16 @@ VIACOM.Schedule.Controller = ( function () {
       player.loadVideo(uri, duration);
     }
 
-    if (viewerStatusState.adsEnabled) {
+    if (viewer.adsEnabled) {
       player.setAdDuration(adDuration);
     }
 
-    if (viewerStatusState.offset > 0) {
-      player.seekToOffset(viewerStatusState.offset);
+    if (viewer.offset > 0) {
+      player.seekToOffset(viewer.offset);
     }
     player.play();
 
-    return viewerStatus(viewerStatusState);
+     return viewer.readOnlyCopy;
   };
 
   var timeUntilBlockStart = function (b) {
@@ -440,21 +497,30 @@ VIACOM.Schedule.Controller = ( function () {
   }
 
   var getViewerStatus = function () {
-    return viewerStatus(viewerStatusState);
+     return viewer.readOnlyCopy;
   }
 
   var getLiveStatus = function () {
     //trace("getLiveStatus");
-    sync(liveStatusState, this.now());
-    return viewerStatus(liveStatusState);
+    sync(live, this.now());
+    return live.readOnlyCopy;
   }
 
   var currentItem = function () {
-    return schedule.blocks[viewerStatusState.blockIndex].items[viewerStatusState.itemIndex];
+    return schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
+  }
+  var nextUpItem = function() {
+    var next = new ViewerStatus(viewer);
+    return schedule.blocks[next.blockIndex].items[next.itemIndex];
   }
   var currentLiveItem = function () {
     //trace( schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex].uri);
-    return schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex];
+    return schedule.blocks[live.blockIndex].items[live.itemIndex];
+  }
+
+  var setWait = function(secs) {
+    trace ("Setting viewer wait to: " + secs + "secs.");
+    viewer.wait = secs;
   }
 
 
@@ -472,8 +538,10 @@ VIACOM.Schedule.Controller = ( function () {
     'now' : now,
     'getViewerStatus' : getViewerStatus,
     'getCurrentItem' : currentItem,
+    'getNextUpItem' : nextUpItem,
     'getLiveItem' : currentLiveItem,
-    'getLiveStatus' : getLiveStatus
+    'getLiveStatus' : getLiveStatus,
+    'setWait' : setWait
   };
 
 

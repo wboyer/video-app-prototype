@@ -74,19 +74,13 @@ var App = {programController: null, programStatus: null, player: null,
       if (programStatus.wait() > 0) {
         this.waitRemaining = this.waitStart + programStatus.wait - now;
         if (this.waitRemaining <= 0) {
-          //TODO this should be remvoced or done differently
-          //programStatus.wait = 0;
+          this.programController.setWait(0);
           this.playProgram();
         }
       }
 
       // display an "on air now" message
       if ((now - this.onAirNowStart) > 10000) {
-        //TODO none of this will work now
-        //var tmpProgramStatus = Object.create(programStatus);
-        //tmpProgramStatus.clone(programStatus);
-        //this.programController.goLive(tmpProgramStatus);
-       	//var liveStatus =  this.programController.getLiveStatus();
  
         this.onAirNowItem =  this.programController.getLiveItem();
         this.onAirNowStart = now;
@@ -100,19 +94,15 @@ var App = {programController: null, programStatus: null, player: null,
         }
       }
       else {
-        //TODO This is going to break.
         if (this.player.playing) {
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
-            //TODO create nextUp method in controller
-            //	var tmpProgramStatus = Object.create(programStatus);
-            //	tmpProgramStatus.clone(programStatus);
             //	this.programController.stepForward(tmpProgramStatus);
-            //	var item = tmpProgramStatus.currentItem();
-            //		if (!item.hidden) {
-            //			this.nextUpItem = item;
-            //			this.nextUpMsgStart = now;
-            //		}
+            var item = this.programController.getNextUpItem();
+            if (!item.hidden) {
+              this.nextUpItem = item;
+              this.nextUpMsgStart = now;
+            }
           }
         }
       }
