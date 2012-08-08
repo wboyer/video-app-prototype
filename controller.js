@@ -15,62 +15,6 @@ VIACOM.Schedule.Controller = ( function () {
     }
   }
 
-/*
-   var viewerStatus = function (spec) {
-
-    var that  = {};
-
-    var blockIndex = function ()  {
-      return  spec.blockIndex;
-    }
-    var itemIndex = function ()  {
-      return  spec.itemIndex;
-    }
-    var offset = function ()  {
-      return  spec.offset;
-    }
-    var time = function ()  {
-      return  spec.timex;
-    }
-    var hasLoopedBlock = function ()  {
-      return  spec.hasLoopedBlock;
-    }
-    var wait = function ()  {
-      return  spec.wait;
-    }
-
-
-    that.blockIndex =  blockIndex;
-    that.itemIndex = itemIndex;
-    that.offset = offset;
-    that.time = time;
-    that.hasLoopedBlock = hasLoopedBlock;
-    that.wait = wait;
-
-    return that;
-
-
-  }
-
-  var viewerStatusState = {
-    blockIndex: 0, 
-    itemIndex: 0, 
-    offset: 0, 
-    time : 0, 
-    hasLoopedBlock: false,
-    wait: 0
-  }
-
-  var liveStatusState = {
-    blockIndex: 0, 
-    itemIndex: 0, 
-    offset: 0, 
-    time : 0, 
-    hasLoopedBlock: false,
-    wait: 0
-  }
-*/
-
   // Constructor function for the ViewerStatus "class"
   var ViewerStatus = function(spec) {
 
@@ -511,10 +455,10 @@ VIACOM.Schedule.Controller = ( function () {
   }
   var nextUpItem = function() {
     var next = new ViewerStatus(viewer);
+    this.step
     return schedule.blocks[next.blockIndex].items[next.itemIndex];
   }
   var currentLiveItem = function () {
-    //trace( schedule.blocks[liveStatusState.blockIndex].items[liveStatusState.itemIndex].uri);
     return schedule.blocks[live.blockIndex].items[live.itemIndex];
   }
 
