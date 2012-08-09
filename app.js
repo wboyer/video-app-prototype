@@ -15,7 +15,7 @@ var App = {programController: null, programStatus: null, player: null,
     };
 
     this.player.stepCallback = function () {
-      App.programController.stepForward(App.player.canStepThroughPlaylist());
+      App.programController.step(App.player.canStepThroughPlaylist());
       App.playProgram();
     };
   };

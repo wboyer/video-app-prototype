@@ -482,14 +482,12 @@ VIACOM.Schedule.Controller = ( function () {
     viewer.wait = secs;
   }
 
-
-
   return {
     'goLive' : goLive,
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'timeUntilBlockStart' : timeUntilBlockStart,
-    'stepForward' : stepForward,
+    'step' : stepForward,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
