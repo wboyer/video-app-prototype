@@ -95,7 +95,7 @@ function addOverlayAllowedRegion(overlay, id)
 
 function slideProgram(offset)
 {
-	VIACOM.Schedule.ScheduleService.getSchedule().startTime += offset;
+	VIACOM.Schedule.Service.getSchedule().startTime += offset;
 	var programDiv = document.getElementById("program");
 	
   UI.displayProgram(App.program, programDiv);
