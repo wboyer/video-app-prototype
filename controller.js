@@ -489,6 +489,7 @@ VIACOM.Schedule.Controller = ( function () {
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'timeUntilBlockStart' : timeUntilBlockStart,
+    'stepForward' : stepForward,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
