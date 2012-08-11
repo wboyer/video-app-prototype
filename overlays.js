@@ -156,8 +156,8 @@ Region.scoreRectangle = function (left, top, right, bottom, bias)
 	var horizontalBias;	
 	
 	if (bias < 0) {
-		verticalBias = Math.floor((bias * myHeight - 1) / 100);
-		horizontalBias = Math.floor((bias * myWidth - 1) / 100);
+		verticalBias = Math.floor(bias * myHeight / 100 + 1);
+		horizontalBias = Math.floor(bias * myWidth / 100 + 1);
 	}
 	else {
 		verticalBias = Math.floor(bias * myHeight / 100);
