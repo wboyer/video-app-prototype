@@ -43,13 +43,16 @@ function init()
 			var overlays = [];
 			overlays[overlays.length] = createOverlay("overlay0");
 			overlays[overlays.length] = createOverlay("overlay1");
-			overlays[overlays.length] = createOverlay("overlay2");			
+			overlays[overlays.length] = createOverlay("overlay2");
 			overlays[overlays.length] = createOverlay("overlay3");
-			
+
+			var overlayGroups = [];
+			overlayGroups[0] = overlays;
+
 			var region = Object.create(Region);
 			region.construct(0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-			var arrangement = Arrangement.findBest(overlays, region);
-			UI.displayOverlays(playerDiv, overlays, arrangement, "overlay");
+			var arrangement = Arrangement.findBest(overlayGroups, region);
+			UI.displayOverlays(playerDiv, overlayGroups, arrangement, "overlay");
 			
 			//console.debug(new Date().getTime() - now);
 		},

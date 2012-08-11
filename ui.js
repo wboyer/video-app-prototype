@@ -132,15 +132,21 @@ UI.displayOverlay = function (playerDiv, placement, overlayClass)
 	overlayDiv.style["top"] = placement.top - 1;
 	overlayDiv.style["width"] = placement.right - placement.left;
 	overlayDiv.style["height"] = placement.bottom - placement.top;
-	overlayDiv.style["z-index"] = 1 + (placement.coveredPlacements ? placement.coveredPlacements.length : 0);
+	overlayDiv.style["zIndex"] = 1 + (placement.coveredPlacements ? placement.coveredPlacements.length : 0);
 
 	overlayDiv.style["backgroundColor"] = placement.overlay.color;
 };
 
-UI.displayOverlays = function (playerDiv, overlays, arrangement, overlayClass)
+UI.displayOverlays = function (playerDiv, overlayGroups, arrangement, overlayClass)
 {
-	var removeOverlays = overlays.slice();
+	var removeOverlays = [];
 	
+	for (var g = 0; g < overlayGroups.length; g++) {
+		var overlays = overlayGroups[g];		
+		for (var i = 0; i < overlays.length; i++)
+			removeOverlays[removeOverlays.length] = overlays[i];
+	}
+		
 	if (arrangement)
 		for (var i = 0; i < arrangement.placements.length; i++) {
 			UI.displayOverlay(playerDiv, arrangement.placements[i], overlayClass);

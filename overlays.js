@@ -28,14 +28,24 @@ Arrangement.construct = function (copyFrom)
 			this.placements[p] = copyFrom.placements[p];
 };
 
-Arrangement.findBest = function (overlays, targetRegion)
+Arrangement.findBest = function (overlayGroups, targetRegion)
 {
 	var arrangements = [];
+	var existingArrangements = null;
+	
+	for (var g = 0; g < overlayGroups.length; g++)
+	{
+		var overlays = overlayGroups[g];		
 
-	for (var o = 0; o < overlays.length; o++)
-		if (overlays[o].enabled)
-			Arrangement.copyArrangements(overlays[o].arrange(overlays, null), arrangements);
+		arrangements = [];
 
+		for (var o = 0; o < overlays.length; o++)
+			if (overlays[o].enabled)
+				Arrangement.copyArrangements(overlays[o].arrange(overlays, existingArrangements), arrangements);
+
+		existingArrangements = arrangements;
+	}
+	
 	if (arrangements.length == 0)
 		return null;
 
@@ -139,8 +149,23 @@ Region.construct = function (left, top, right, bottom, axis, bias)
 
 Region.scoreRectangle = function (left, top, right, bottom, bias)
 {
-	var myMiddle = ((this.bottom - 1 - this.top) / 2) + bias;
-	var myCenter = ((this.right - 1 - this.left) / 2) - bias;
+	var myHeight = this.bottom - this.top;
+	var myWidth = this.right - this.left;
+
+	var verticalBias;
+	var horizontalBias;	
+	
+	if (bias < 0) {
+		verticalBias = Math.floor((bias * myHeight - 1) / 100);
+		horizontalBias = Math.floor((bias * myWidth - 1) / 100);
+	}
+	else {
+		verticalBias = Math.floor(bias * myHeight / 100);
+		horizontalBias = Math.floor(bias * myWidth / 100);
+	}
+		
+	var myMiddle = ((myHeight - 1) / 2) + verticalBias;
+	var myCenter = ((myWidth - 1) / 2) - horizontalBias;
 
 	var middle = (bottom - 1 + top) / 2;
 	var center = (right - 1 + left) / 2;
