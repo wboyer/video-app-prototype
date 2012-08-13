@@ -40,13 +40,13 @@ VIACOM.Schedule.Controller = ( function () {
     }
 
       if (spec) {
-        this.blockIndex = spec.blockIndex || 0;
-        this.itemIndex = spec.itemIndex || 00;
-        this.offset = spec.offset || 0;
-        this.time = spec.time || 0;
-        this.wait = spec.wait || 0;
-        this.adsEnabled = spec.adsEnabled || false;
-        this.hasLoopedBlock = spec.hasLoooedBlock || false;
+        this.blockIndex = spec.blockIndex() || 0;
+        this.itemIndex = spec.itemIndex() || 00;
+        this.offset = spec.offset() || 0;
+        this.time = spec.time() || 0;
+        this.wait = spec.wait() || 0;
+        this.adsEnabled = spec.adsEnabled() || false;
+        this.hasLoopedBlock = spec.hasLoopedBlock() || false;
       }
       else {
         this.reset()
@@ -243,7 +243,7 @@ VIACOM.Schedule.Controller = ( function () {
   var step = function (status, playerCanStepThroughPlaylist)
   {
 
-    trace('stepForward');
+    trace('step (internal)');
 
 
     var i = status.itemIndex + 1;
@@ -262,6 +262,7 @@ VIACOM.Schedule.Controller = ( function () {
   };
 
   var stepForward = function (playerCanStepThroughPlaylist) {
+    trace('stepForward');
     return step(viewer, playerCanStepThroughPlaylist);
   }
 
@@ -469,8 +470,8 @@ VIACOM.Schedule.Controller = ( function () {
     return schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
   }
   var nextUpItem = function() {
-    var next = new ViewerStatus(viewer);
-    this.step
+    var next = new ViewerStatus(viewer.readOnlyCopy);
+    step(next, true);
     return schedule.blocks[next.blockIndex].items[next.itemIndex];
   }
   var currentLiveItem = function () {

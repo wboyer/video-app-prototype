@@ -1,3 +1,5 @@
+var trace = VIACOM.Schedule.Util.trace;
+
 var App = {programController: null, programStatus: null, player: null,
   programIsPlaying: false, 
   waitStart: 0, waitRemaining: 0,
@@ -88,6 +90,7 @@ var App = {programController: null, programStatus: null, player: null,
 
       // display a "next up" message
       if (this.nextUpItem) {
+        // If the next up overlay has been visible for more than 6 seconds, remove it.
         if ((now - this.nextUpMsgStart) > 6000) {
           this.nextUpMsgStart = 0;
           this.nextUpItem = null;
@@ -97,7 +100,7 @@ var App = {programController: null, programStatus: null, player: null,
         if (this.player.playing) {
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
-            //	this.programController.stepForward(tmpProgramStatus);
+            // If the next up item starts in 9 seconds and is not hidden, show next up overlay
             var item = this.programController.getNextUpItem();
             if (!item.hidden) {
               this.nextUpItem = item;
