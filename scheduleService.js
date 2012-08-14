@@ -37,7 +37,7 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
      *
      */
 
-  var testProgram = {
+  var schedule = {
     // For testing, these will be reset by the client.
     // But they will be respected once there's a real server serving them.
     startTime: 1341666000000,
@@ -79,16 +79,27 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
     apptBlocks: null
   }; 
 
+  schedule.apptBlocks = [];
+
+  for (var b = 0; b < schedule.blocks.length; b++) {
+    if (schedule.blocks[b].appt) {
+      //VIACOM.Schedule.Util.trace(schedule.apptBlocks.length + "->" + b);
+      schedule.apptBlocks[schedule.apptBlocks.length] = b; 
+    }
+  }
+
   var getSchedule = function () {
     //trace('getSchedule');
 
     // Just for testing, compute our own current time,
     // and slide the test program forward to be closer to now.
     var now = new Date().getTime();
-    while (testProgram.startTime + 3600000 < now) {
-      testProgram.startTime += 3600000;
+    while (schedule.startTime + 3600000 < now) {
+      schedule.startTime += 3600000;
     }
-    return testProgram;
+
+
+    return schedule;
   };
 
   return {

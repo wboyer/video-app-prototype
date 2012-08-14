@@ -1,6 +1,6 @@
 var trace = VIACOM.Schedule.Util.trace;
 
-var App = {programController: null, programStatus: null, player: null,
+var App = {programController: null, player: null,
   programIsPlaying: false, 
   waitStart: 0, waitRemaining: 0,
   nextUpItem: null, nextUpMsgStart: 0,
@@ -23,11 +23,10 @@ var App = {programController: null, programStatus: null, player: null,
   };
 
 
-  //TODO get rid of this call
   App.loadProgram = function (program) {
     this.programIsPlaying = false;
     this.player.stop();
-    this.programStatus = this.programController.getViewerStatus();
+    //this.programStatus = this.programController.getViewerStatus();
     this.sync();
   };
 
@@ -37,12 +36,12 @@ var App = {programController: null, programStatus: null, player: null,
     this.playProgram();
   };
 
-  App.playProgram = function (now) {
-    var programStatus = this.programStatus;
+  App.playProgram = function () {
+    var viewerStatus =  this.programController.getViewerStatus();
 
-    if (programStatus.wait() > 0) {
+    if (viewerStatus.wait() > 0) {
       this.player.stop();
-      this.waitStart = now;
+      this.waitStart = this.programController.now();
     }
     else {
       this.programController.play(this.player);
@@ -63,18 +62,18 @@ var App = {programController: null, programStatus: null, player: null,
   };
 
   App.skipToItem = function (blockIndex, itemIndex){
-    this.programController.jump(this.programStatus, blockIndex, itemIndex);
+    this.programController.jump(blockIndex, itemIndex);
     this.playProgram();
   };
 
   App.onInterval = function () {
-    var programStatus = this.programStatus;
+    var viewerStatus =  this.programController.getViewerStatus();
     var now = this.programController.now()
 
     if (this.programIsPlaying) {
       // display a "waiting" message
-      if (programStatus.wait() > 0) {
-        this.waitRemaining = this.waitStart + programStatus.wait - now;
+      if (viewerStatus.wait() > 0) {
+        this.waitRemaining = this.waitStart + viewerStatus.wait() - now;
         if (this.waitRemaining <= 0) {
           this.programController.setWait(0);
           this.playProgram();
@@ -83,7 +82,6 @@ var App = {programController: null, programStatus: null, player: null,
 
       // display an "on air now" message
       if ((now - this.onAirNowStart) > 10000) {
- 
         this.onAirNowItem =  this.programController.getLiveItem();
         this.onAirNowStart = now;
       }
@@ -120,6 +118,7 @@ var App = {programController: null, programStatus: null, player: null,
       else {
         for (var a = 0; a < VIACOM.Schedule.Service.getSchedule().apptBlocks.length; a++)
         {
+        
           var blockIndex = VIACOM.Schedule.Service.getSchedule().apptBlocks[a];
           var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(blockIndex) / 1000);
           if (

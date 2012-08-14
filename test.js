@@ -18,16 +18,14 @@ function init()
 	window.setInterval(
 		function () {
 			var now = new Date().getTime();
-			var programStatus = App.programStatus;
+			var viewerStatus = App.programController.getViewerStatus();
 
 			var liveStatus =  App.programController.getLiveStatus();
-			//tmpProgramStatus.clone(programStatus);
-			//App.programController.goLive(tmpProgramStatus);
 			var item =  App.programController.getLiveItem();
 			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", liveStatus.blockIndex(), liveStatus.itemIndex(), (item.duration + item.adDuration) * 1000, liveStatus.offset());
 
 			item =  App.programController.getCurrentItem();
-			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", programStatus.blockIndex(), programStatus.itemIndex(), (item.duration + item.adDuration) * 1000, App.player.offset);
+			UI.markProgramOffset(programDiv, "t_m_c", "marker_current", viewerStatus.blockIndex(), viewerStatus.itemIndex(), (item.duration + item.adDuration) * 1000, App.player.offset);
 
 			App.player.onInterval(now);
 			UI.updatePlayer(App.player, videoDiv);
@@ -98,9 +96,10 @@ function addOverlayAllowedRegion(overlay, id)
 
 function slideProgram(offset)
 {
-	VIACOM.Schedule.Service.getSchedule().startTime += offset;
+  var program =  VIACOM.Schedule.Service.getSchedule();
+	program.startTime += offset;
 	var programDiv = document.getElementById("program");
 	
-  UI.displayProgram(App.program, programDiv);
+  UI.displayProgram(program, programDiv);
 	App.onAirNowStart = 0;
 }

@@ -17,13 +17,7 @@ VIACOM.Schedule.Controller = ( function () {
   });
 
 
-  schedule.apptBlocks = [];
 
-  for (var b = 0; b < schedule.blocks.length; b++) {
-    if (schedule.blocks[b].appt) {
-      schedule.apptBlocks[schedule.apptBlocks.length] = b; 
-    }
-  }
 
   // Constructor function for the ViewerStatus "class"
   var ViewerStatus = function(spec) {
@@ -90,12 +84,9 @@ VIACOM.Schedule.Controller = ( function () {
   }
 
   // private
-  // TODO done
+  // Step to a particular point in time
   var stepToTime = function (time, status)
   {
-
-
-    //var schedule = schedule;
     var timeOffset = time - schedule.startTime;
 
     var b = status.blockIndex;
@@ -113,23 +104,34 @@ VIACOM.Schedule.Controller = ( function () {
       {
         done = true;
 
+        // if we've reached the end of the items in a block, we've looped back
         if (i >= items.length) {
           i = 0;
           hasLoopedBlock = true;
         }
 
+        // If there is at least one more block
         if (b + 1 < blocks.length) {
           var nextBlock = blocks[b + 1];
           var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
+          // If next block is appt block, mssl is overridden
           var mssl = nextBlock.mssl;
-          if (nextBlock.appt)
+          if (nextBlock.appt) {
             mssl = 0;
-
+          }
+          //total duration = item duration + ad duration
           var duration = items[i].duration + items[i].adDuration;
-          for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++)
-          duration += items[j].duration + items[j].adDuration;
-
+          //if the next item is in the same playlist and it's an auto playlist 
+          //(i.e., the player handles stepping), add up the durations
+          //of the items in that playlist
+          for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++) {
+            duration += items[j].duration + items[j].adDuration;
+          }
+          // 1. Is the duration of the current block minus the mssl of the next block (i.e., the minimum time to finish the block)
+          // greater than the time until the next block?
+          // 2. Has the the block looped or does the block prohibit finishing early?
+          // -- If both of these are true, then continue to next block
           if ((mssl >= 0) && ((duration - mssl) * 1000 > timeUntilBlockStart) && (hasLoopedBlock || !block.dfe)) {
             b += 1;
             i = 0;
@@ -144,13 +146,16 @@ VIACOM.Schedule.Controller = ( function () {
       status.offset = 0;
       status.adsEnabled = true;
 
+      //have we stepped to the next block?
       if (b != status.blockIndex) {
         var timeUntilBlockStart = block.start * 1000 - timeOffset;
 
         var msse = block.msse * 1000;
+        // if it's an appt block, we can't start early
         if (block.appt) {
           msse = 0;
         }
+        // If the time until the next block is greater than msse, wait out the difference
         if ((msse >= 0) && (timeUntilBlockStart > msse)) {
           status.wait = timeUntilBlockStart - msse;
         }
@@ -164,7 +169,8 @@ VIACOM.Schedule.Controller = ( function () {
       }
       status.itemIndex = i;
   };
-  //TODO figure out what to do with the boolean return values
+  
+  // Sync viewerStatus with what is live now if possible
   var sync = function (status, now)
   {
 
@@ -176,19 +182,21 @@ VIACOM.Schedule.Controller = ( function () {
     status.wait = 0;
 
 
-    //var schedule = schedule;
-
-
     if ((schedule.blocks.length == 0) || (schedule.blocks[0].items.length == 0)) {
       return false;
     }
 
+    // set time to when the first block should start
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
     while (true) {
+
+      //step forward to the begining
       stepToTime(time, status);
 
+      //if we need to wait, add it
       time += status.wait;
 
+      // if "live" is in the future, we're done, wait it out.
       if (time > now) {
         status.wait = time - now;
         return true;
@@ -206,8 +214,9 @@ VIACOM.Schedule.Controller = ( function () {
           time += duration;
 
           if (time > now) {
-            if (block.dll || item.dll)
+            if (block.dll || item.dll) {
               time -= duration;
+            }
             else {
               status.offset = now + duration - time;
               status.adsEnabled = false;
@@ -220,10 +229,12 @@ VIACOM.Schedule.Controller = ( function () {
           }
 
           var i = status.itemIndex + 1;
-          if ((i < block.items.length) && (item.playlistUri == block.items[i].playlistUri) && block.items[i].auto)
+          if ((i < block.items.length) && (item.playlistUri == block.items[i].playlistUri) && block.items[i].auto) {
             status.itemIndex = i;
-          else
+          }
+          else {
             break;
+          }
         }
       }
 
@@ -272,9 +283,6 @@ VIACOM.Schedule.Controller = ( function () {
     trace('skipForward');
 
     var now = this.now();
-
-    //var schedule = schedule;
-
     var b = viewer.blockIndex;
     var i = viewer.itemIndex;
 
@@ -405,7 +413,6 @@ VIACOM.Schedule.Controller = ( function () {
 
   };
 
-  //TODO remove status param, figure our what to do with player
   var play = function (player)
   {
     trace('play');
@@ -447,8 +454,6 @@ VIACOM.Schedule.Controller = ( function () {
   var timeUntilBlockStart = function (b) {
 
     var now = this.now();
-    //trace('timeUntilBlockStart(' + b + ')');
-
     return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
 
@@ -479,7 +484,7 @@ VIACOM.Schedule.Controller = ( function () {
   }
 
   var setWait = function(secs) {
-    trace ("Setting viewer wait to: " + secs + "secs.");
+    live.wait = secs;
     viewer.wait = secs;
   }
 
