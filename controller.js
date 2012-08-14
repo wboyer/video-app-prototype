@@ -24,6 +24,7 @@ VIACOM.Schedule.Controller = ( function () {
 
     // Function to zero-out all the state variables
     this.reset = function() {
+      //this.
       this.blockIndex = 0;
       this.itemIndex = 0;
       this.offset = 0;
@@ -289,7 +290,7 @@ VIACOM.Schedule.Controller = ( function () {
     var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
-
+    
     if (viewer.wait > 0) {
       if (block.appt) {
         i = block.items.length;
@@ -325,6 +326,7 @@ VIACOM.Schedule.Controller = ( function () {
 
     //var schedule = schedule;
 
+
     var b = viewer.blockIndex;
     var i = viewer.itemIndex;
 
@@ -333,6 +335,7 @@ VIACOM.Schedule.Controller = ( function () {
     var items = block.items;
 
     if (viewer.wait > 0) {
+      trace("wait>0");
       i = -1;
     }
     else {
@@ -360,8 +363,10 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
+    trace("jumping to: " + b + ', ' + i);
     return this.jump(b, i);
   };
+  
 
   var jump = function (blockIndex, itemIndex)
   {
@@ -386,12 +391,13 @@ VIACOM.Schedule.Controller = ( function () {
 
       if (block.start * 1000 > nowOffset) {
         viewer.wait = block.start * 1000 - nowOffset;
-        i = 0;
+        itemIndex = 0;
       }
     }
 
     viewer.blockIndex = blockIndex;
     viewer.itemIndex = itemIndex;
+
 
     return viewer.readOnlyCopy;
 
@@ -484,7 +490,7 @@ VIACOM.Schedule.Controller = ( function () {
   }
 
   var setWait = function(secs) {
-    live.wait = secs;
+    //live.wait = secs;
     viewer.wait = secs;
   }
 
