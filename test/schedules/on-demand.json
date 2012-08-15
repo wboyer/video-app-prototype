@@ -1,0 +1,56 @@
+{
+	"blocks": [
+		{
+			"items": [
+				{
+					"videoUri": "uri1",
+	
+					"video": {
+						"title1": "Primary Title for a Video",
+						"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+						"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+						"rating": "TV-13",
+						"id": "767195",
+						"uri": "uri1"
+					}
+				},
+				{
+					"videoUri": "uri2",
+
+					"video": {
+						"title1": "Primary Title for a Video",
+						"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+						"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+						"rating": "TV-13",
+						"id": "767195",
+						"uri": "uri2"
+					}
+				},
+				{
+					"playlistUri": "pl1",
+
+					"playlist": {
+						"title1": "Primary Title for a Playlist",
+						"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+						"thumbnail": "http://fpoimg.com/256x144/Promo 1 of 3",
+						"rating": "TV-13",
+						"id": "1666182",
+						"uri": "pl1"
+					},
+				},
+				{
+					"videoUri": "uri3",
+
+					"video": {
+						"title1": "Primary Title for a Video",
+						"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+						"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+						"rating": "TV-13",
+						"id": "767195",
+						"uri": "uri3"
+					}
+				}
+			]
+		}
+	]
+}
