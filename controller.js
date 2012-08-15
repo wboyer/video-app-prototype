@@ -70,6 +70,8 @@ VIACOM.Schedule.Controller = ( function () {
 
   var viewer = new ViewerStatus();
   var live = new ViewerStatus();
+  //for debugging
+  live.isLive = true;
 
 
 
@@ -88,6 +90,7 @@ VIACOM.Schedule.Controller = ( function () {
   // Step to a particular point in time
   var stepToTime = function (time, status)
   {
+  
     var timeOffset = time - schedule.startTime;
 
     var b = status.blockIndex;
@@ -113,6 +116,7 @@ VIACOM.Schedule.Controller = ( function () {
 
         // If there is at least one more block
         if (b + 1 < blocks.length) {
+         
           var nextBlock = blocks[b + 1];
           var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
@@ -170,18 +174,13 @@ VIACOM.Schedule.Controller = ( function () {
       }
       status.itemIndex = i;
   };
-  
+
+   
   // Sync viewerStatus with what is live now if possible
   var sync = function (status, now)
   {
 
-    status.blockIndex = 0;
-    status.itemIndex = 0;
-    status.offset = 0;
-    status.time = 0;
-    status.hasLoopedBlock = false;
-    status.wait = 0;
-
+    status.reset();
 
     if ((schedule.blocks.length == 0) || (schedule.blocks[0].items.length == 0)) {
       return false;
@@ -244,7 +243,7 @@ VIACOM.Schedule.Controller = ( function () {
     return true;
   };
 
-
+ 
   var goLive = function () {
     trace("go live");
     return sync(viewer, this.now());
@@ -473,6 +472,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var getLiveStatus = function () {
     //trace("getLiveStatus");
+    //live = new ViewerStatus(viewer.readOnlyCopy);
     sync(live, this.now());
     return live.readOnlyCopy;
   }
