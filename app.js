@@ -20,6 +20,12 @@ var App = {programController: null, player: null,
       App.programController.step(App.player.canStepThroughPlaylist());
       App.playProgram();
     };
+
+    this.handleSkipForward = function (vs) {
+      trace("HANDLE: SkipForward");
+    }
+    VIACOM.Schedule.Controller.addListener('SkipForward', this.handleSkipForward);
+
   };
 
 

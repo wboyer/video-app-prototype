@@ -316,7 +316,9 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    return this.jump(b, i);
+    var vs = this.jump(b, i);
+    fire('SkipForward', vs);
+    return vs;
   };
 
   var skipBackward = function ()
@@ -462,10 +464,6 @@ VIACOM.Schedule.Controller = ( function () {
     return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
 
-  var addListener = function (eventName, callback) {
-    trace('Added Listener [ ' + eventName  + ' ]');
-  }
-
   var getViewerStatus = function () {
      return viewer.readOnlyCopy;
   }
@@ -493,6 +491,57 @@ VIACOM.Schedule.Controller = ( function () {
     //live.wait = secs;
     viewer.wait = secs;
   }
+
+
+  // Data structure to store event listeners. Key is event name, value is an array
+  // of listeners.
+  var eventRegistry = {};
+
+  // Public method to regsiter for the specified eventName. The callback is the function
+  // to invoke when the event is fired, and the scope determines the value of "this"
+  // within the callback function. If no scope is specified, it will default to the
+  // global scope (ie, the window). You can register as many listeners as you want for
+  // an event.
+  var addListener = function(eventName, callback, scope) {
+    trace("Adding listener: " + eventName + "->" + callback);
+    var listeners = eventRegistry[eventName];
+    if (!listeners) {
+      eventRegistry[eventName] = listeners = [];
+    }
+    if (!scope) {
+      scope = window;
+    }
+    listeners.push({ 'scope': scope, 'callback': callback });
+  };
+
+  // Fire the named event. You can pass as many additional arguments as needed to this
+  // function when firing an event, and they will be passed on to the callback function.
+  var fire = function(eventName) {
+    trace("EVENT: " + eventName);
+
+    var listeners = eventRegistry[eventName], args = [], i, listener;
+    if (!listeners) {
+      return;
+    }
+    // Grab the arguments to be passed to the callback function
+    // There's a more clever way to do this, but I don't remember what it is :)
+    if (arguments.length > 1) {
+      for (i = 1; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      }
+    }
+    // Invoke each listener's callback in succession, passing along the arguments
+    for (i = 0; i < listeners.length; i++) {
+      listener = listeners[i];
+      listener.callback.apply(listener.scope, args);
+    }
+  };
+
+  // Examples of how to fire events
+  // An event with no arguments: fire('Ready');
+  // An event with one argument: fire('Play', viewerStatus);
+  // An event with two arguments: fire('Announce', block, viewerState);
+
 
   return {
     'goLive' : goLive,
