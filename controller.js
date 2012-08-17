@@ -547,6 +547,18 @@ VIACOM.Schedule.Controller = ( function () {
   // An event with one argument: fire('Play', viewerStatus);
   // An event with two arguments: fire('Announce', block, viewerState);
 
+  var setup  = function(options) {
+    //ScheduleService.loadSchedule(options.channel);
+    //options.player.onPlayerReady(playerReady);
+    // etc.
+    //
+    fire("Ready");
+  }
+
+  var playerReady = function() {
+    // whatever we need to do when the player is ready…
+  }
+  
 
   return {
     'goLive' : goLive,
@@ -564,7 +576,8 @@ VIACOM.Schedule.Controller = ( function () {
     'getNextUpItem' : nextUpItem,
     'getLiveItem' : currentLiveItem,
     'getLiveStatus' : getLiveStatus,
-    'setWait' : setWait
+    'setWait' : setWait,
+    'setup' : setup
   };
 
 

@@ -12,6 +12,13 @@ var App = {programController: null, player: null,
     this.programController = VIACOM.Schedule.Controller; 
     this.player = Object.create(Player);
 
+
+
+    this.programController.setup({
+      channel: 'test',
+      player: this.player,
+    });
+
     this.player.videoStartedCallback = function (uri) {
       App.programController.onPlayerVideoStarted(uri);
     };
@@ -44,6 +51,13 @@ var App = {programController: null, player: null,
       trace("HANDLE: Live");
     }
     VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
+
+
+    this.handleReady = function (vs) {
+      trace("HANDLE: Ready");
+    }
+    VIACOM.Schedule.Controller.addListener('Ready', this.handleReady);
+
 
 
   };
