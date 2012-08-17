@@ -21,10 +21,30 @@ var App = {programController: null, player: null,
       App.playProgram();
     };
 
+
     this.handleSkipForward = function (vs) {
       trace("HANDLE: SkipForward");
     }
     VIACOM.Schedule.Controller.addListener('SkipForward', this.handleSkipForward);
+
+
+    this.handleSkipBackward = function (vs) {
+      trace("HANDLE: SkipBackward");
+    }
+    VIACOM.Schedule.Controller.addListener('SkipBackward', this.handleSkipBackward);
+
+
+    this.handleStep = function (vs) {
+      trace("HANDLE: Step");
+    }
+    VIACOM.Schedule.Controller.addListener('Step', this.handleStep);
+
+
+    this.handleLive = function (vs) {
+      trace("HANDLE: Live");
+    }
+    VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
+
 
   };
 

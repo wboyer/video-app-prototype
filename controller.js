@@ -246,7 +246,9 @@ VIACOM.Schedule.Controller = ( function () {
  
   var goLive = function () {
     trace("go live");
-    return sync(viewer, this.now());
+    var vs = sync(viewer, this.now());
+    fire('Live', vs); 
+    return vs;
   }
 
 
@@ -274,7 +276,9 @@ VIACOM.Schedule.Controller = ( function () {
 
   var stepForward = function (playerCanStepThroughPlaylist) {
     trace('stepForward');
-    return step(viewer, playerCanStepThroughPlaylist);
+    var vs = step(viewer, playerCanStepThroughPlaylist);
+    fire('Step', vs); 
+    return vs;
   }
 
   var skipForward = function ()
@@ -364,8 +368,9 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    trace("jumping to: " + b + ', ' + i);
-    return this.jump(b, i);
+      var vs = this.jump(b, i);
+      fire('SkipBackward', vs);
+      return vs;
   };
   
 
@@ -399,7 +404,7 @@ VIACOM.Schedule.Controller = ( function () {
     viewer.blockIndex = blockIndex;
     viewer.itemIndex = itemIndex;
 
-
+      
     return viewer.readOnlyCopy;
 
   };
