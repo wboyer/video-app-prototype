@@ -214,7 +214,7 @@ VIACOM.Schedule.Controller = ( function () {
 
           time += duration;
 
-          if (time > now) {
+          if (time >= now) {
             if (block.dll || item.dll) {
               time -= duration;
             }

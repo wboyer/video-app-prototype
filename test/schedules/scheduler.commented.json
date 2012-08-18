@@ -1,12 +1,13 @@
 {
 	"startTime": 1341666000000,
 
-	"now": 1341666649762,
+	"now": 1341666649762, // for testing only
 
 	"blocks": [
 		{
 			"start": 0, "dll": false, "dfe": false, "msse": 0, "mssl": 0, "appt": false,
 			"items": [
+				// a "flattened" playlist
 				{
 					"duration": 180, "videoUri": "uri1", "playlistUri": "pl1", "dll": false, "auto": false, "hidden": null,
 
@@ -30,7 +31,7 @@
 						}
 					},
 						
-					"adDuration": 0
+					"adDuration": 0 // for testing only
 				},
 				{
 					"duration": 180, "videoUri": "uri2", "playlistUri": "pl1", "dll": false, "auto": false, "hidden": null,
@@ -46,7 +47,7 @@
 						}
 					},
 
-					"adDuration": 60
+					"adDuration": 60 // for testing only
 				},
 				{
 					"duration": 60, "videoUri": "uri3", "playlistUri": null, "dll": true, "auto": false, "hidden": null,
@@ -62,7 +63,7 @@
 						}
 					},
 
-					"adDuration": 0
+					"adDuration": 0 // for testing only
 				}
 			]
 		},
@@ -72,42 +73,46 @@
 				{
 					"duration": 270, "videoUri": "uri4", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 180, "videoUri": "uri5", "playlistUri": "pl2", "dll": false, "auto": true, "hidden": null,
 
-					"adDuration": 0
+					"adDuration": 0 // for testing only
 				},
+
+				// a full episode
 				{
 					"duration": 90, "videoUri": "uri6", "playlistUri": "pl2", "dll": false, "auto": true, "hidden": "playlist",
 					
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 90, "videoUri": "uri7", "playlistUri": "pl2", "dll": false, "auto": true, "hidden": "playlist",
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 90, "videoUri": "uri8", "playlistUri": "pl2", "dll": false, "auto": true, "hidden": "playlist",
 					
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
+				
+				// a CMS-based playlist
 				{
 					"duration": 90, "videoUri": "uri9", "playlistUri": "pl3", "dll": false, "auto": true, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 150, "videoUri": "uri10", "playlistUri": "pl3", "dll": false, "auto": true, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 150, "videoUri": "uri11", "playlistUri": "pl3", "dll": false, "auto": true, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				}
 			]
 		},
@@ -117,17 +122,17 @@
 				{
 					"duration": 30, "videoUri": "uri12", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 210, "videoUri": "uri13", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				},
 				{
 					"duration": 270, "videoUri": "uri14", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
-					"adDuration": 30
+					"adDuration": 30 // for testing only
 				}
 			]
 		}
