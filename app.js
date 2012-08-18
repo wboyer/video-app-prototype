@@ -12,6 +12,13 @@ var App = {programController: null, player: null,
     this.programController = VIACOM.Schedule.Controller; 
     this.player = Object.create(Player);
 
+
+
+    this.programController.setup({
+      channel: 'test',
+      player: this.player,
+    });
+
     this.player.videoStartedCallback = function (uri) {
       App.programController.onPlayerVideoStarted(uri);
     };
@@ -20,6 +27,39 @@ var App = {programController: null, player: null,
       App.programController.step(App.player.canStepThroughPlaylist());
       App.playProgram();
     };
+
+
+    this.handleSkipForward = function (vs) {
+      trace("HANDLE: SkipForward");
+    }
+    VIACOM.Schedule.Controller.addListener('SkipForward', this.handleSkipForward);
+
+
+    this.handleSkipBackward = function (vs) {
+      trace("HANDLE: SkipBackward");
+    }
+    VIACOM.Schedule.Controller.addListener('SkipBackward', this.handleSkipBackward);
+
+
+    this.handleStep = function (vs) {
+      trace("HANDLE: Step");
+    }
+    VIACOM.Schedule.Controller.addListener('Step', this.handleStep);
+
+
+    this.handleLive = function (vs) {
+      trace("HANDLE: Live");
+    }
+    VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
+
+
+    this.handleReady = function (vs) {
+      trace("HANDLE: Ready");
+    }
+    VIACOM.Schedule.Controller.addListener('Ready', this.handleReady);
+
+
+
   };
 
 

@@ -88,10 +88,7 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
     }
   }
 
-  var getSchedule = function () {
-    //trace('getSchedule');
-
-    // Just for testing, compute our own current time,
+   // Just for testing, compute our own current time,
     // and slide the test program forward to be closer to now.
     var now = new Date().getTime();
     while (schedule.startTime + 3600000 < now) {
@@ -99,6 +96,7 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
     }
 
 
+  var getSchedule = function () {
     return schedule;
   };
 

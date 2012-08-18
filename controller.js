@@ -70,6 +70,8 @@ VIACOM.Schedule.Controller = ( function () {
 
   var viewer = new ViewerStatus();
   var live = new ViewerStatus();
+  //for debugging
+  live.isLive = true;
 
 
 
@@ -88,6 +90,7 @@ VIACOM.Schedule.Controller = ( function () {
   // Step to a particular point in time
   var stepToTime = function (time, status)
   {
+  
     var timeOffset = time - schedule.startTime;
 
     var b = status.blockIndex;
@@ -113,6 +116,7 @@ VIACOM.Schedule.Controller = ( function () {
 
         // If there is at least one more block
         if (b + 1 < blocks.length) {
+         
           var nextBlock = blocks[b + 1];
           var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
@@ -170,18 +174,13 @@ VIACOM.Schedule.Controller = ( function () {
       }
       status.itemIndex = i;
   };
-  
+
+   
   // Sync viewerStatus with what is live now if possible
   var sync = function (status, now)
   {
 
-    status.blockIndex = 0;
-    status.itemIndex = 0;
-    status.offset = 0;
-    status.time = 0;
-    status.hasLoopedBlock = false;
-    status.wait = 0;
-
+    status.reset();
 
     if ((schedule.blocks.length == 0) || (schedule.blocks[0].items.length == 0)) {
       return false;
@@ -244,10 +243,12 @@ VIACOM.Schedule.Controller = ( function () {
     return true;
   };
 
-
+ 
   var goLive = function () {
     trace("go live");
-    return sync(viewer, this.now());
+    var vs = sync(viewer, this.now());
+    fire('Live', vs); 
+    return vs;
   }
 
 
@@ -275,7 +276,9 @@ VIACOM.Schedule.Controller = ( function () {
 
   var stepForward = function (playerCanStepThroughPlaylist) {
     trace('stepForward');
-    return step(viewer, playerCanStepThroughPlaylist);
+    var vs = step(viewer, playerCanStepThroughPlaylist);
+    fire('Step', vs); 
+    return vs;
   }
 
   var skipForward = function ()
@@ -317,7 +320,9 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    return this.jump(b, i);
+    var vs = this.jump(b, i);
+    fire('SkipForward', vs);
+    return vs;
   };
 
   var skipBackward = function ()
@@ -363,8 +368,9 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    trace("jumping to: " + b + ', ' + i);
-    return this.jump(b, i);
+      var vs = this.jump(b, i);
+      fire('SkipBackward', vs);
+      return vs;
   };
   
 
@@ -398,7 +404,7 @@ VIACOM.Schedule.Controller = ( function () {
     viewer.blockIndex = blockIndex;
     viewer.itemIndex = itemIndex;
 
-
+      
     return viewer.readOnlyCopy;
 
   };
@@ -463,16 +469,13 @@ VIACOM.Schedule.Controller = ( function () {
     return schedule.startTime + schedule.blocks[b].start * 1000 - now;
   };
 
-  var addListener = function (eventName, callback) {
-    trace('Added Listener [ ' + eventName  + ' ]');
-  }
-
   var getViewerStatus = function () {
      return viewer.readOnlyCopy;
   }
 
   var getLiveStatus = function () {
     //trace("getLiveStatus");
+    //live = new ViewerStatus(viewer.readOnlyCopy);
     sync(live, this.now());
     return live.readOnlyCopy;
   }
@@ -494,6 +497,69 @@ VIACOM.Schedule.Controller = ( function () {
     viewer.wait = secs;
   }
 
+
+  // Data structure to store event listeners. Key is event name, value is an array
+  // of listeners.
+  var eventRegistry = {};
+
+  // Public method to regsiter for the specified eventName. The callback is the function
+  // to invoke when the event is fired, and the scope determines the value of "this"
+  // within the callback function. If no scope is specified, it will default to the
+  // global scope (ie, the window). You can register as many listeners as you want for
+  // an event.
+  var addListener = function(eventName, callback, scope) {
+    trace("Adding listener: " + eventName + "->" + callback);
+    var listeners = eventRegistry[eventName];
+    if (!listeners) {
+      eventRegistry[eventName] = listeners = [];
+    }
+    if (!scope) {
+      scope = window;
+    }
+    listeners.push({ 'scope': scope, 'callback': callback });
+  };
+
+  // Fire the named event. You can pass as many additional arguments as needed to this
+  // function when firing an event, and they will be passed on to the callback function.
+  var fire = function(eventName) {
+    trace("EVENT: " + eventName);
+
+    var listeners = eventRegistry[eventName], args = [], i, listener;
+    if (!listeners) {
+      return;
+    }
+    // Grab the arguments to be passed to the callback function
+    // There's a more clever way to do this, but I don't remember what it is :)
+    if (arguments.length > 1) {
+      for (i = 1; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      }
+    }
+    // Invoke each listener's callback in succession, passing along the arguments
+    for (i = 0; i < listeners.length; i++) {
+      listener = listeners[i];
+      listener.callback.apply(listener.scope, args);
+    }
+  };
+
+  // Examples of how to fire events
+  // An event with no arguments: fire('Ready');
+  // An event with one argument: fire('Play', viewerStatus);
+  // An event with two arguments: fire('Announce', block, viewerState);
+
+  var setup  = function(options) {
+    //ScheduleService.loadSchedule(options.channel);
+    //options.player.onPlayerReady(playerReady);
+    // etc.
+    //
+    fire("Ready");
+  }
+
+  var playerReady = function() {
+    // whatever we need to do when the player is ready…
+  }
+  
+
   return {
     'goLive' : goLive,
     'play' : play,
@@ -510,7 +576,8 @@ VIACOM.Schedule.Controller = ( function () {
     'getNextUpItem' : nextUpItem,
     'getLiveItem' : currentLiveItem,
     'getLiveStatus' : getLiveStatus,
-    'setWait' : setWait
+    'setWait' : setWait,
+    'setup' : setup
   };
 
 

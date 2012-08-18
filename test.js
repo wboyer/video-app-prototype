@@ -22,6 +22,33 @@ function init()
 
 			var liveStatus =  App.programController.getLiveStatus();
 			var item =  App.programController.getLiveItem();
+
+     /* 
+      if ((liveStatus.blockIndex() == 0) || (liveStatus.blockIndex() == 2)) {
+      trace("********************");
+      trace("-------------------");
+      trace("LiveStatus");
+      trace("blockIndex: " + liveStatus.blockIndex());
+      trace("itemIndex: " + liveStatus.itemIndex());
+      trace("offset: " + liveStatus.offset());
+      trace("time: " + liveStatus.time());
+      trace("wait: " + liveStatus.wait());
+      trace("adsEnabled: " + liveStatus.adsEnabled());
+      trace("hasLoopedBack: " + liveStatus.hasLoopedBlock());
+      trace("-------------------");
+      trace("-------------------");
+      trace("ViewerStatus");
+      trace("blockIndex: " + viewerStatus.blockIndex());
+      trace("itemIndex: " + viewerStatus.itemIndex());
+      trace("offset: " + viewerStatus.offset());
+      trace("time: " + viewerStatus.time());
+      trace("wait: " + viewerStatus.wait());
+      trace("adsEnabled: " + viewerStatus.adsEnabled());
+      trace("hasLoopedBack: " + viewerStatus.hasLoopedBlock());
+      trace("-------------------");
+      trace("********************");
+      }*/
+
 			UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", liveStatus.blockIndex(), liveStatus.itemIndex(), (item.duration + item.adDuration) * 1000, liveStatus.offset());
 
 			item =  App.programController.getCurrentItem();
