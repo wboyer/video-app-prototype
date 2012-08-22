@@ -8,16 +8,11 @@ var App = {programController: null, player: null,
   nextApptBlock: null, nextApptMsgStart: 0};
 
   App.init = function () {
-    //this.programController = Object.create(ProgramController);
+
     this.programController = VIACOM.Schedule.Controller; 
+
+    // player setup and event registration. Need better way for player here
     this.player = Object.create(Player);
-
-
-
-    this.programController.setup({
-      channel: 'test',
-      player: this.player,
-    });
 
     this.player.videoStartedCallback = function (uri) {
       App.programController.onPlayerVideoStarted(uri);
@@ -27,6 +22,36 @@ var App = {programController: null, player: null,
       App.programController.step(App.player.canStepThroughPlaylist());
       App.playProgram();
     };
+
+    // end player stuff
+
+
+    // Register for "ready" event
+    VIACOM.Schedule.Controller.addListener('Ready', function() {
+      // Do some stuff...
+      // Fire it up!
+      App.loadProgram();
+      UI.displayProgram(VIACOM.Schedule.Controller.getSchedule(),  document.getElementById("program"));
+      App.isReady = true;
+
+    });
+
+    this.programController.setup({
+      channel: 'test',
+      player: this.player,
+    });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     this.handleSkipForward = function (vs) {
@@ -53,10 +78,17 @@ var App = {programController: null, player: null,
     VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
 
 
-    this.handleReady = function (vs) {
-      trace("HANDLE: Ready");
-    }
-    VIACOM.Schedule.Controller.addListener('Ready', this.handleReady);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -156,10 +188,10 @@ var App = {programController: null, player: null,
         }
       }
       else {
-        for (var a = 0; a < VIACOM.Schedule.Service.getSchedule().apptBlocks.length; a++)
+        for (var a = 0; a < VIACOM.Schedule.Controller.getSchedule().apptBlocks.length; a++)
         {
-        
-          var blockIndex = VIACOM.Schedule.Service.getSchedule().apptBlocks[a];
+
+          var blockIndex = VIACOM.Schedule.Controller.getSchedule().apptBlocks[a];
           var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(blockIndex) / 1000);
           if (
             ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||

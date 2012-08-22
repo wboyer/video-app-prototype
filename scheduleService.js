@@ -9,7 +9,9 @@ VIACOM.Schedule = VIACOM.Schedule || {};
 
 VIACOM.Schedule.Service =  ( function () {
 
- // var trace = VIACOM.Util.trace;
+    var Cors = VIACOM.Cors;
+    var trace = VIACOM.Schedule.Util.trace;
+
 
 
     /*
@@ -36,7 +38,7 @@ hidden
 Implies auto=true, and additionally means that the item can't be skipped to, and shouldn't be shown in the EPG.
      *
      */
-
+/*
   var schedule = {
     // For testing, these will be reset by the client.
     // But they will be respected once there's a real server serving them.
@@ -78,8 +80,18 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
     // This will be computed on the client.
     apptBlocks: null
   }; 
+ */
 
-  schedule.apptBlocks = [];
+    var theSchedule;
+    
+    Cors.get('http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', {
+      success: function(response) { setSchedule(response); },
+      failure: function() { trace('Could not get schedule.'); },
+      timeout: function() { trace('Schedule GET request timeout'); },
+      parseJson: true
+    });
+/*
+  theSchedule.apptBlocks = [];
 
   for (var b = 0; b < schedule.blocks.length; b++) {
     if (schedule.blocks[b].appt) {
@@ -88,16 +100,22 @@ Implies auto=true, and additionally means that the item can't be skipped to, and
     }
   }
 
+ */
+
    // Just for testing, compute our own current time,
     // and slide the test program forward to be closer to now.
-    var now = new Date().getTime();
-    while (schedule.startTime + 3600000 < now) {
-      schedule.startTime += 3600000;
-    }
+   // var now = new Date().getTime();
+   // while (schedule.startTime + 3600000 < now) {
+   //   schedule.startTime += 3600000;
+   // }
 
+  var setSchedule = function(schedule) {
+   // trace("setSchdule called: " + schedule.now);
+    theSchedule = schedule;
+  }
 
   var getSchedule = function () {
-    return schedule;
+    return theSchedule;
   };
 
   return {

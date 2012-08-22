@@ -5,16 +5,18 @@ VIACOM.Schedule.Controller = ( function () {
 
   var trace = VIACOM.Schedule.Util.trace;
 
-  var schedule = VIACOM.Schedule.Service.getSchedule();
+  var Cors = VIACOM.Cors;
 
-  //set start time in schedule until we have live data
+  var schedule, viewer, live, clock;
+
   //schedule.startTime = this.now();
-
+/*
   var clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
     initialTimeUTC: schedule.now,       // get this from the schedule data feed
     maxDriftMsec: 2000,        // this is the default value, so you could leave it out
     updateFrequencyMsec: 1000  // also the default value
   });
+*/
 
 
 
@@ -68,10 +70,9 @@ VIACOM.Schedule.Controller = ( function () {
     this.readOnlyCopy = ro;
   }
 
-  var viewer = new ViewerStatus();
-  var live = new ViewerStatus();
-  //for debugging
-  live.isLive = true;
+
+
+ 
 
 
 
@@ -542,23 +543,54 @@ VIACOM.Schedule.Controller = ( function () {
     }
   };
 
-  // Examples of how to fire events
-  // An event with no arguments: fire('Ready');
-  // An event with one argument: fire('Play', viewerStatus);
-  // An event with two arguments: fire('Announce', block, viewerState);
 
   var setup  = function(options) {
     //ScheduleService.loadSchedule(options.channel);
     //options.player.onPlayerReady(playerReady);
     // etc.
     //
-    fire("Ready");
+    //
+ 
+    Cors.get('http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', {
+      success: function(response) { 
+        
+        setSchedule(response);
+        viewer = new ViewerStatus();
+        live = new ViewerStatus();
+        schedule.apptBlocks = [];
+
+        for (var b = 0; b < schedule.blocks.length; b++) {
+          if (schedule.blocks[b].appt) {
+            schedule.apptBlocks[schedule.apptBlocks.length] = b; 
+          }
+        }
+
+        fire("Ready");
+      },
+      failure: function() { trace('Could not get schedule.'); },
+      timeout: function() { trace('Schedule GET request timeout'); },
+      parseJson: true
+    });
+
+
+
+    //fire("Ready");
   }
+
+  var setSchedule = function(theSchedule) {
+    trace("setSchdule called: " + theSchedule.now);
+    schedule = theSchedule;
+  }
+
 
   var playerReady = function() {
     // whatever we need to do when the player is ready…
   }
-  
+
+  var getSchedule = function () {
+    return schedule;
+  };
+ 
 
   return {
     'goLive' : goLive,
@@ -577,7 +609,8 @@ VIACOM.Schedule.Controller = ( function () {
     'getLiveItem' : currentLiveItem,
     'getLiveStatus' : getLiveStatus,
     'setWait' : setWait,
-    'setup' : setup
+    'setup' : setup,
+    'getSchedule' : getSchedule
   };
 
 
