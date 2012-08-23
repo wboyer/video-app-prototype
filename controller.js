@@ -552,18 +552,17 @@ VIACOM.Schedule.Controller = ( function () {
     var clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
       updateFrequencyMsec: 1000,
-      readyCallback: function () {
+      ready: function () {
 
-        loadSchedule(function () {})
-
-         // Just for testing, compute our own current time,
+        loadSchedule(function () {
+          // Just for testing, compute our own current time,
           // and slide the test program forward to be closer to now.
           trace("adjust schedule");
           while (schedule.startTime + 3600000 < now()) {
             schedule.startTime += 3600000;
           }
           fire("Ready"); 
-
+        })
       }    
     });
   }
