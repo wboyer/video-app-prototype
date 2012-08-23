@@ -78,12 +78,12 @@ VIACOM.Schedule.Controller = ( function () {
 
   var now = function () {
     // will need to base this on server time eventually.
-    var theTimeIs = new Date().getTime();
-    //var theTimeIs = clock.getCurrentTime()
+    //var theTimeIs = new Date().getTime();
+    var theTimeIs = clock.getCurrentTime()
     //trace("the time is: " + theTimeIs);
     //trace("the clock sez: " + theClockSez);
-    //return theTimeIs;
     return theTimeIs;
+    //return theTimeIs;
   
   }
 
@@ -545,19 +545,43 @@ VIACOM.Schedule.Controller = ( function () {
 
 
   var setup  = function(options) {
-    //ScheduleService.loadSchedule(options.channel);
-    //options.player.onPlayerReady(playerReady);
-    // etc.
-    //
-    //
+    
+    viewer = new ViewerStatus();
+    live = new ViewerStatus();
  
+    var clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
+      maxDriftMsec: 2000,
+      updateFrequencyMsec: 1000,
+      readyCallback: function () {
+
+        loadSchedule(function () {})
+
+         // Just for testing, compute our own current time,
+          // and slide the test program forward to be closer to now.
+          trace("adjust schedule");
+          while (schedule.startTime + 3600000 < now()) {
+            schedule.startTime += 3600000;
+          }
+          fire("Ready"); 
+
+      }    
+    });
+  }
+
+  var setSchedule = function(theSchedule) {
+    trace("setSchedule called: " + theSchedule.now);
+    schedule = theSchedule;
+  }
+  // TODO add channel paramter
+  var loadSchedule = function(callback) {
     Cors.get('http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', {
       success: function(response) { 
-        
+        trace("Schedule loaded");
         setSchedule(response);
-        viewer = new ViewerStatus();
-        live = new ViewerStatus();
+
         schedule.apptBlocks = [];
+
+   
 
         for (var b = 0; b < schedule.blocks.length; b++) {
           if (schedule.blocks[b].appt) {
@@ -565,14 +589,7 @@ VIACOM.Schedule.Controller = ( function () {
           }
         }
 
-        // Just for testing, compute our own current time,
-        // and slide the test program forward to be closer to now.
-        while (schedule.startTime + 3600000 < now()) {
-          schedule.startTime += 3600000;
-        }
-
-
-        fire("Ready");
+        callback();
       },
       failure: function() { trace('Could not get schedule.'); },
       timeout: function() { trace('Schedule GET request timeout'); },
@@ -580,14 +597,7 @@ VIACOM.Schedule.Controller = ( function () {
     });
 
 
-
-    //fire("Ready");
-  }
-
-  var setSchedule = function(theSchedule) {
-    trace("setSchdule called: " + theSchedule.now);
-    schedule = theSchedule;
-  }
+  };
 
 
   var playerReady = function() {
@@ -597,7 +607,7 @@ VIACOM.Schedule.Controller = ( function () {
   var getSchedule = function () {
     return schedule;
   };
- 
+
 
   return {
     'goLive' : goLive,
