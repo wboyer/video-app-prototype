@@ -549,7 +549,7 @@ VIACOM.Schedule.Controller = ( function () {
     viewer = new ViewerStatus();
     live = new ViewerStatus();
  
-    var clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
+    clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
       updateFrequencyMsec: 1000,
       ready: function () {
