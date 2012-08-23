@@ -39,7 +39,7 @@ UI.displayProgram = function (program, programDiv)
 			var item = items[i];
 			var duration = item.duration + item.adDuration;
 			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/6) + "px;\">";
-			innerHTML += "uri: <a onclick=\"App.skipToItem(" + b + "," + i + ");\">" + item.uri + "</a>, ";
+			innerHTML += "videoUri: <a onclick=\"App.skipToItem(" + b + "," + i + ");\">" + item.videoUri + "</a>, ";
 			innerHTML += "dll: " + item.dll + ", ";
 			innerHTML += "plUri: " + item.playlistUri + ", ";
 			innerHTML += "auto: " + item.auto + ", ";
@@ -84,7 +84,7 @@ UI.updatePlayer = function (player, videoDiv)
 };
 
 UI.displayOnAirNow = function(app, onAirNowDiv) {
-	onAirNowDiv.innerHTML = "On Air Now: " + app.onAirNowItem.uri;
+	onAirNowDiv.innerHTML = "On Air Now: " + app.onAirNowItem.videoUri;
 };
 
 UI.displayWait = function(app, waitDiv) {
@@ -99,7 +99,7 @@ UI.displayWait = function(app, waitDiv) {
 UI.displayNextUp = function(app, nextUpDiv) {
 	if (app.programIsPlaying && app.nextUpItem) {
 		nextUpDiv.style["visibility"] = "visible";
-		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.uri;
+		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.videoUri;
 	}
 	else
 		nextUpDiv.style["visibility"] = "hidden";
@@ -112,9 +112,9 @@ UI.displayNextAppt = function(app, nextApptDiv, now) {
 		var timeUntilApptStart = app.programController.timeUntilBlockStart(app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
-			nextApptDiv.innerHTML = "Live Now: " + program.blocks[app.nextApptBlock].items[0].uri;
+			nextApptDiv.innerHTML = "Live Now: " + program.blocks[app.nextApptBlock].items[0].videoUri;
 		else
-			nextApptDiv.innerHTML = "Live Soon: " + program.blocks[app.nextApptBlock].items[0].uri + " in " + UI.mmss(timeUntilApptStart);
+			nextApptDiv.innerHTML = "Live Soon: " + program.blocks[app.nextApptBlock].items[0].videoUri + " in " + UI.mmss(timeUntilApptStart);
 	}
 	else
 		nextApptDiv.style["visibility"] = "hidden";

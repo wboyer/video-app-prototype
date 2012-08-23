@@ -16,7 +16,7 @@ function init()
   window.setInterval(
     function () { 
     if (App.isReady) {
-      var now = new Date().getTime();
+      var now = VIACOM.Schedule.Controller.now();
       var viewerStatus = App.programController.getViewerStatus();
 
       var liveStatus =  App.programController.getLiveStatus();
@@ -97,7 +97,7 @@ function addOverlayAllowedRegion(overlay, id)
 
 function slideProgram(offset)
 {
-  var program =  VIACOM.Schedule.Service.getSchedule();
+  var program =  VIACOM.Schedule.Controller.getSchedule();
   program.startTime += offset;
   var programDiv = document.getElementById("program");
 

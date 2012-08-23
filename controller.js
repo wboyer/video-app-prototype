@@ -417,7 +417,7 @@ VIACOM.Schedule.Controller = ( function () {
     var items = schedule.blocks[viewer.blockIndex].items;
 
     for (var i = viewer.itemIndex; (i < items.length) && items[i].auto; i++)
-    if (items[i].uri == uri) {
+    if (items[i].videoUri == uri) {
       viewer.itemIndex = i;
       break;
     }
@@ -432,7 +432,7 @@ VIACOM.Schedule.Controller = ( function () {
 
     var item = schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
 
-    var uri = item.uri;
+    var uri = item.videoUri;
     var playlistUri = item.playlistUri;
     var duration = (item.duration + item.adDuration) * 1000;
     var adDuration = item.adDuration * 1000;
@@ -564,6 +564,13 @@ VIACOM.Schedule.Controller = ( function () {
             schedule.apptBlocks[schedule.apptBlocks.length] = b; 
           }
         }
+
+        // Just for testing, compute our own current time,
+        // and slide the test program forward to be closer to now.
+        while (schedule.startTime + 3600000 < now()) {
+          schedule.startTime += 3600000;
+        }
+
 
         fire("Ready");
       },

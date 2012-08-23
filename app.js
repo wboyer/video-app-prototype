@@ -109,6 +109,7 @@ var App = {programController: null, player: null,
   };
 
   App.playProgram = function () {
+    trace("App.playProgram");
     var viewerStatus =  this.programController.getViewerStatus();
 
     if (viewerStatus.wait() > 0) {
@@ -116,7 +117,8 @@ var App = {programController: null, player: null,
       this.waitStart = this.programController.now();
     }
     else {
-      this.programController.play(this.player);
+     trace("telling the controller to play");
+     this.programController.play(this.player);
     }
     this.programIsPlaying = true;
     this.nextUpItem = null;
