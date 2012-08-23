@@ -557,10 +557,10 @@ VIACOM.Schedule.Controller = ( function () {
         loadSchedule(function () {
           // Just for testing, compute our own current time,
           // and slide the test program forward to be closer to now.
-          trace("adjust schedule");
-          while (schedule.startTime + 3600000 < now()) {
-            schedule.startTime += 3600000;
-          }
+         // trace("adjust schedule");
+         // while (schedule.startTime + 3600000 < now()) {
+         //   schedule.startTime += 3600000;
+         // }
           fire("Ready"); 
         })
       }    
