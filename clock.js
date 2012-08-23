@@ -15,6 +15,7 @@
  * maxDriftMsec:        The maximum number of milliseconds of drift permitted before the
  *                      clock must re-sync with the remote server. Default is 2000.
  * updateFrequencyMsec: How often to update the local time (msec). Default is 1000.
+ * ready:               Optional callback function to invoke when the clock is ready.
  *
  * TODO: What if the sync() operation fails?
  */
@@ -22,6 +23,7 @@ var RemoteClock = function(remoteClockUrl, options) {
   var initialTimeUTC = options['initialTimeUTC'] ? options.initialTimeUTC : 0;  
   var maxDriftMsec = options['maxDriftMsec'] ? options.maxDriftMsec : 2000;
   var updateFrequencyMsec = options['updateFrequencyMsec'] ? options.updateFrequencyMsec : 1000;
+  var readyCallback = options['ready'] ? options.ready : function() {};
   var totalDriftMsec = 0;
   var currentTimeUTC = initialTimeUTC;
   var lastUpdateTimeUTC = new Date().getTime();
@@ -79,11 +81,16 @@ var RemoteClock = function(remoteClockUrl, options) {
     return currentTimeUTC;
   };
 
-  // If no initial time was specified, get it from the remote server.  
+  // If no initial time was specified, get it from the remote server.  When the sync
+  // is done, start the clock and invoke the "ready" callback.
   if (initialTimeUTC == 0) {
-    sync(start);
+    sync(function() {
+      start();
+      readyCallback();
+    });
   }
   else {
     start();
+    readyCallback();
   }
-}
+};
