@@ -68,7 +68,7 @@ VIACOM.Schedule.Controller = ( function () {
     }
 
     this.readOnlyCopy = ro;
-  }
+  };
 
 
 
@@ -85,7 +85,7 @@ VIACOM.Schedule.Controller = ( function () {
     return theTimeIs;
     //return theTimeIs;
   
-  }
+  };
 
   // private
   // Step to a particular point in time
@@ -280,7 +280,7 @@ VIACOM.Schedule.Controller = ( function () {
     var vs = step(viewer, playerCanStepThroughPlaylist);
     fire('Step', vs); 
     return vs;
-  }
+  };
 
   var skipForward = function ()
   {
@@ -472,26 +472,28 @@ VIACOM.Schedule.Controller = ( function () {
 
   var getViewerStatus = function () {
      return viewer.readOnlyCopy;
-  }
+  };
 
   var getLiveStatus = function () {
     //trace("getLiveStatus");
     //live = new ViewerStatus(viewer.readOnlyCopy);
     sync(live, this.now());
     return live.readOnlyCopy;
-  }
+  };
 
   var currentItem = function () {
     return schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
-  }
+  };
+
   var nextUpItem = function() {
     var next = new ViewerStatus(viewer.readOnlyCopy);
     step(next, true);
     return schedule.blocks[next.blockIndex].items[next.itemIndex];
-  }
+  };
+
   var currentLiveItem = function () {
     return schedule.blocks[live.blockIndex].items[live.itemIndex];
-  }
+  };
 
   var setWait = function(secs) {
     //live.wait = secs;
@@ -565,7 +567,7 @@ VIACOM.Schedule.Controller = ( function () {
         })
       }    
     });
-  }
+  };
 
   var setSchedule = function(theSchedule) {
     trace("setSchedule called: " + theSchedule.now);
@@ -601,7 +603,7 @@ VIACOM.Schedule.Controller = ( function () {
 
   var playerReady = function() {
     // whatever we need to do when the player is ready…
-  }
+  };
 
   var getSchedule = function () {
     return schedule;
