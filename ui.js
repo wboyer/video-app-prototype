@@ -108,7 +108,7 @@ UI.displayNextUp = function(app, nextUpDiv) {
 UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
-		var program =  VIACOM.Schedule.Service.getSchedule();
+		var program =  VIACOM.Schedule.Controller.getSchedule();
 		var timeUntilApptStart = app.programController.timeUntilBlockStart(app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
