@@ -77,6 +77,12 @@ var App = {programController: null, player: null,
     }
     VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
 
+    this.handleSyncAnnounce = function (timeUntil) {
+      trace("Appt block in: " + timeUntil + " seconds"); 
+    }
+    VIACOM.Schedule.Controller.addListener('SyncAnounce', this.handleSyncAnnounce);
+
+
 
 
 
@@ -182,6 +188,8 @@ var App = {programController: null, player: null,
         }
       }
 
+      
+
       // display a "live soon" message
       if (this.nextApptBlock) {
         if ((now - this.nextApptMsgStart) > 20000) {
@@ -209,5 +217,7 @@ var App = {programController: null, player: null,
           }
         }
       }
+
+
     }
   };

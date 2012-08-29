@@ -466,8 +466,8 @@ VIACOM.Schedule.Controller = ( function () {
 
   var timeUntilBlockStart = function (b) {
 
-    var now = this.now();
-    return schedule.startTime + schedule.blocks[b].start * 1000 - now;
+    //var now = this.now();
+    return schedule.startTime + schedule.blocks[b].start * 1000 - now();
   };
 
   var getViewerStatus = function () {
@@ -550,6 +550,7 @@ VIACOM.Schedule.Controller = ( function () {
     
     viewer = new ViewerStatus();
     live = new ViewerStatus();
+    var announceIntervalId
  
     clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
@@ -557,16 +558,32 @@ VIACOM.Schedule.Controller = ( function () {
       ready: function () {
 
         loadSchedule(function () {
-          // Just for testing, compute our own current time,
-          // and slide the test program forward to be closer to now.
-         // trace("adjust schedule");
-         // while (schedule.startTime + 3600000 < now()) {
-         //   schedule.startTime += 3600000;
-         // }
+          announceIntervalId = window.setInterval(announce, 300);
           fire("Ready"); 
         })
       }    
     });
+  };
+
+  var announce = function() {
+    
+          
+    for (var a = 0; a < VIACOM.Schedule.Controller.getSchedule().apptBlocks.length; a++)
+    {
+      var blockIndex = getSchedule().apptBlocks[a];
+      var secondsUntilAppt = Math.floor(timeUntilBlockStart(blockIndex) / 1000);
+
+      if (
+        ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
+          ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
+            ((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
+              ((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
+                ((secondsUntilAppt < 0) && (secondsUntilAppt >= -1)) ) {
+
+        fire("SyncAnounce", secondsUntilAppt);
+      }
+    }
+
   };
 
   var setSchedule = function(theSchedule) {
