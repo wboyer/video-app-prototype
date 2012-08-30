@@ -88,7 +88,7 @@ UI.displayOnAirNow = function(app, onAirNowDiv) {
 };
 
 UI.displayWait = function(app, waitDiv) {
-	if (app.programIsPlaying && (app.programController.getViewerStatus().wait() > 0)) {
+	if (app.scheduleIsPlaying && (app.scheduleController.getViewerStatus().wait() > 0)) {
 		waitDiv.style["visibility"] = "visible";
 		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
 	}
@@ -97,7 +97,7 @@ UI.displayWait = function(app, waitDiv) {
 };
 
 UI.displayNextUp = function(app, nextUpDiv) {
-	if (app.programIsPlaying && app.nextUpItem) {
+	if (app.scheduleIsPlaying && app.nextUpItem) {
 		nextUpDiv.style["visibility"] = "visible";
 		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.videoUri;
 	}
@@ -109,7 +109,7 @@ UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
 		var program =  VIACOM.Schedule.Controller.getSchedule();
-		var timeUntilApptStart = app.programController.timeUntilBlockStart(app.nextApptBlock);
+		var timeUntilApptStart = app.scheduleController.timeUntilBlockStart(app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
 			nextApptDiv.innerHTML = "Live Now: " + program.blocks[app.nextApptBlock].items[0].videoUri;

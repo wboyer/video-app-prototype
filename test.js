@@ -1,7 +1,6 @@
 function init()
 {
   App.init();
-  //App.loadProgram();
 
   var programDiv = document.getElementById("program");
   var playerDiv = document.getElementById("player");
@@ -16,15 +15,15 @@ function init()
   window.setInterval(
     function () { 
     if (App.isReady) {
-      var now = VIACOM.Schedule.Controller.now();
-      var viewerStatus = App.programController.getViewerStatus();
+      var now = App.scheduleController.now();
+      var viewerStatus = App.scheduleController.getViewerStatus();
 
-      var liveStatus =  App.programController.getLiveStatus();
-      var item =  App.programController.getLiveItem();
+      var liveStatus =  App.scheduleController.getLiveStatus();
+      var item =  App.scheduleController.getLiveItem();
 
       UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", liveStatus.blockIndex(), liveStatus.itemIndex(), (item.duration + item.adDuration) * 1000, liveStatus.offset());
 
-      item =  App.programController.getCurrentItem();
+      item =  App.scheduleController.getCurrentItem();
       UI.markProgramOffset(programDiv, "t_m_c", "marker_current", viewerStatus.blockIndex(), viewerStatus.itemIndex(), (item.duration + item.adDuration) * 1000, App.player.offset);
 
       App.player.onInterval(now);
