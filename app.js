@@ -53,8 +53,12 @@ var App = {scheduleController: null, player: null,
     this.handleLive = function (vs) {
       trace("HANDLE: Live");
     };
-    
     this.scheduleController.addListener('Live', this.handleLive);
+
+    this.handleSyncAnnounce = function(timeUntil) {
+      trace("Appt block in: " + timeUntil + " seconds");
+    };
+    this.scheduleController.addListener('SyncAnounce', this.handleSyncAnnounce);
   };
 
   App.sync = function () {
