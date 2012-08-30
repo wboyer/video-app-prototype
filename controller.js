@@ -450,8 +450,8 @@ VIACOM.Schedule.Controller = ( function () {
 
   var timeUntilBlockStart = function (b)
   {
-    var now = this.now();
-    return schedule.startTime + schedule.blocks[b].start * 1000 - now;
+    //var now = this.now();
+    return schedule.startTime + schedule.blocks[b].start * 1000 - now();
   };
 
   var getViewerStatus = function () {
