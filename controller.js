@@ -26,7 +26,6 @@ VIACOM.Schedule.Controller = ( function () {
       this.blockIndex = 0;
       this.itemIndex = 0;
       this.offset = 0;
-      this.time = 0;
       this.wait = 0;
       this.adsEnabled = false;
       this.hasLoopedBlock = false;
@@ -36,7 +35,6 @@ VIACOM.Schedule.Controller = ( function () {
       this.blockIndex = spec.blockIndex() || 0;
       this.itemIndex = spec.itemIndex() || 0;
       this.offset = spec.offset() || 0;
-      this.time = spec.time() || 0;
       this.wait = spec.wait() || 0;
       this.adsEnabled = spec.adsEnabled() || false;
       this.hasLoopedBlock = spec.hasLoopedBlock() || false;
@@ -116,6 +114,7 @@ VIACOM.Schedule.Controller = ( function () {
 
         //total duration = item duration + ad duration
         var duration = items[i].duration + items[i].adDuration;
+
         //if the next item is in the same playlist and it's an auto playlist 
         //(i.e., the player handles stepping), add up the durations
         //of the items in that playlist
@@ -140,7 +139,7 @@ VIACOM.Schedule.Controller = ( function () {
     status.offset = 0;
     status.adsEnabled = true;
 
-    //have we stepped to the next block?
+    // have we stepped to the next block?
     if (b != status.blockIndex) {
       var timeUntilBlockStart = block.start * 1000 - timeOffset;
 
@@ -149,7 +148,7 @@ VIACOM.Schedule.Controller = ( function () {
       if (block.appt)
         msse = 0;
 
-      // If the time until the next block is greater than msse, wait out the difference
+      // if the time until the next block is greater than msse, wait out the difference
       if ((msse >= 0) && (timeUntilBlockStart > msse))
         status.wait = timeUntilBlockStart - msse;
 
@@ -160,6 +159,7 @@ VIACOM.Schedule.Controller = ( function () {
       if (hasLoopedBlock)
         status.hasLoopedBlock = true;
     }
+
     status.itemIndex = i;
   };
 
@@ -176,7 +176,7 @@ VIACOM.Schedule.Controller = ( function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
-      //step forward to the begining
+      //step forward to the beginning
       stepToTime(time, status);
 
       //if we need to wait, add it
@@ -209,7 +209,7 @@ VIACOM.Schedule.Controller = ( function () {
                 status.wait = adDuration - status.offset;
                 status.offset = adDuration;
               }
-            }					
+            }
             return true;
           }
 
@@ -223,17 +223,14 @@ VIACOM.Schedule.Controller = ( function () {
 
       status.itemIndex += 1;
     }
-    return true;
   };
-
 
   var goLive = function () {
     trace("go live");
-    var vs = sync(viewer, this.now());
-    fire('Live', vs); 
-    return vs;
+    var status = sync(viewer, this.now());
+    fire('Live', status);
+    return status;
   };
-
 
   var step = function (status, playerCanStepThroughPlaylist)
   {
@@ -256,29 +253,31 @@ VIACOM.Schedule.Controller = ( function () {
   var stepForward = function (playerCanStepThroughPlaylist)
   {
     trace('stepForward');
-    var vs = step(viewer, playerCanStepThroughPlaylist);
-    fire('Step', vs); 
-    return vs;
+    var status = step(viewer, playerCanStepThroughPlaylist);
+    fire('Step', status); 
+    return status;
   };
 
-  var skipForward = function ()
+  var skipForward = function (status)
   {
     trace('skipForward');
 
-    var now = this.now();
-    var b = viewer.blockIndex;
-    var i = viewer.itemIndex;
+    if (!status)
+      status = viewer;
+    
+    var b = status.blockIndex;
+    var i = status.itemIndex;
 
     var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (viewer.wait > 0) {
+    if (status.wait > 0) {
       if (block.appt)
         i = block.items.length;
       else {
-        viewer.wait = 0;
-        return viewer.readOnlyCopy;
+        status.wait = 0;
+        return;
       }
     }
     else {
@@ -288,13 +287,13 @@ VIACOM.Schedule.Controller = ( function () {
           i += 1;
       else
       {
-        while ((i < items.length) && items[i].hidden == "pre")
+        while ((i < items.length) && (items[i].hidden == "pre"))
           i += 1;
 
         if ((i < items.length) && !items[i].hidden)
           i += 1;
 
-        while ((i < items.length) && items[i].hidden == "post")
+        while ((i < items.length) && (items[i].hidden == "post"))
           i += 1;
       }
     }
@@ -307,17 +306,20 @@ VIACOM.Schedule.Controller = ( function () {
         b = 0;
     }
 
-    var vs = this.jump(b, i);
-    fire('SkipForward', vs);
-    return vs;
+    status = this.jump(b, i);
+    fire('SkipForward', status);
+    return status;
   };
 
-  var skipBackward = function ()
+  var skipBackward = function (status)
   {
     trace('skipBackward');
 
-    var b = viewer.blockIndex;
-    var i = viewer.itemIndex;
+    if (!status)
+      status = viewer;
+    
+    var b = status.blockIndex;
+    var i = status.itemIndex;
 
     var blocks = schedule.blocks;
     var block = blocks[b];
@@ -328,13 +330,13 @@ VIACOM.Schedule.Controller = ( function () {
       while ((i >= 0) && (items[i].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
         i -= 1;
     else {
-      while ((i >= 0) && items[i].hidden == "post")
+      while ((i >= 0) && (items[i].hidden == "post"))
         i -= 1;
 
       if ((i >= 0) && !items[i].hidden)
         i -= 1;
 
-      while ((i >= 0) && items[i].hidden == "pre")
+      while ((i >= 0) && (items[i].hidden == "pre"))
         i -= 1;
     }
 
@@ -350,9 +352,8 @@ VIACOM.Schedule.Controller = ( function () {
     }
 
     var playlistUri = items[i].playlistUri;
-    if (items[i].hidden == "playlist")
-      while ((i > 0) && (items[i-1].playlistUri == playlistUri) && (items[i-1].hidden == "playlist"))
-        i -= 1;
+    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
+      i -= 1;
 
     while ((i >= 0) && items[i].hidden == "post")
       i -= 1;
@@ -360,41 +361,42 @@ VIACOM.Schedule.Controller = ( function () {
     while ((i > 0) && (items[i-1].hidden == "pre"))
       i -= 1;
     
-    var vs = this.jump(b, i);
-    fire('SkipBackward', vs);
-    return vs;
+    status = this.jump(b, i);
+    fire('SkipBackward', status);
+    return status;
   };
 
-
-  var jump = function (blockIndex, itemIndex)
+  var jump = function (blockIndex, itemIndex, status)
   {
     trace('jump(' + blockIndex + ',' + itemIndex + ')');
 
+    if (!status)
+      status = viewer;
+    
     var now = this.now();
 
     block = schedule.blocks[blockIndex];
 
-    if (blockIndex != viewer.blockIndex)
-      viewer.hasLoopedBlock = false;
+    if (blockIndex != status.blockIndex)
+      status.hasLoopedBlock = false;
 
-    viewer.wait = 0;
-    viewer.offset = 0;
-    viewer.adsEnabled = true;
+    status.wait = 0;
+    status.offset = 0;
+    status.adsEnabled = true;
 
     if (block.appt) {
       var nowOffset = now - schedule.startTime;
 
       if (block.start * 1000 > nowOffset) {
-        viewer.wait = block.start * 1000 - nowOffset;
+        status.wait = block.start * 1000 - nowOffset;
         itemIndex = 0;
       }
     }
 
-    viewer.blockIndex = blockIndex;
-    viewer.itemIndex = itemIndex;
-
-    return viewer.readOnlyCopy;
-
+    status.blockIndex = blockIndex;
+    status.itemIndex = itemIndex;
+    
+    return status.readOnlyCopy;
   };
 
   var onPlayerVideoStarted = function (uri)
@@ -448,10 +450,79 @@ VIACOM.Schedule.Controller = ( function () {
     return viewer.readOnlyCopy;
   };
 
+  var guide = function (fromTime, toTime, callback)
+  {
+    status = new ViewerStatus();
+
+    this.sync(status, fromTime);
+    time = this.blockStart(status.blockIndex);
+
+    var time = fromTime;
+    time += status.wait;
+
+    var playlistUri = null;
+    var playlistMeta = null;
+
+    while (time < toTime)
+    {
+      var block = schedule.blocks[status.blockIndex];
+      var items = block.items;
+      var i = status.itemIndex;
+
+      if (items[i].playlistUri != playlistUri) {
+        playlistUri = items[i].playlistUri;
+        playlistMeta = null;
+      }
+
+      if (playlistUri && !playlistMeta)
+        for (var j = i; (j >= 0) && (items[j].playlistUri == playlistUri) && !playlistMeta; j--)
+          playlistMeta = items[j].meta.playlist;
+
+      var startTime = 0;
+      if (i == 0)
+        startTime = time;
+
+      var videoMeta = null;
+      var duration = 0;
+      var j = i;
+      
+      while ((j < items.length) && (items[j].hidden == "pre")) {
+        duration += items[j].duration;
+        j += 1;
+      }
+
+      if ((j < items.length) && !items[j].hidden) {
+        videoMeta = items[j].meta.video;
+        duration += items[j].duration;
+        j += 1;
+      }
+
+      while ((j < items.length) && (items[j].hidden == "post")) {
+        duration += items[j].duration;
+        j += 1;
+      }
+      
+      callback(startTime, videoMeta, playlistMeta, items[i].offset, duration);
+
+      this.skipForward(status);
+
+      var nextTime = this.blockStart(status.blockIndex);
+      if (nextTime < time)
+        break;
+      else
+        time = nextTime;
+    }
+  };
+  
+  var blockStart = function (b)
+  {
+    return schedule.startTime + schedule.blocks[b].start * 1000;
+  };
+
   var timeUntilBlockStart = function (b)
   {
     var now = this.now();
-    return schedule.startTime + schedule.blocks[b].start * 1000 - now;
+    return this.blockStart(b) - now;
   };
 
   var getViewerStatus = function () {
@@ -459,8 +530,6 @@ VIACOM.Schedule.Controller = ( function () {
   };
 
   var getLiveStatus = function () {
-    //trace("getLiveStatus");
-    //live = new ViewerStatus(viewer.readOnlyCopy);
     sync(live, this.now());
     return live.readOnlyCopy;
   };
@@ -476,6 +545,7 @@ VIACOM.Schedule.Controller = ( function () {
   };
 
   var currentLiveItem = function () {
+    this.getLiveStatus();
     return schedule.blocks[live.blockIndex].items[live.itemIndex];
   };
 
@@ -483,7 +553,6 @@ VIACOM.Schedule.Controller = ( function () {
     //live.wait = secs;
     viewer.wait = secs;
   };
-
 
   // Data structure to store event listeners. Key is event name, value is an array
   // of listeners.
@@ -529,51 +598,47 @@ VIACOM.Schedule.Controller = ( function () {
     }
   };
 
-
   var setup  = function(options) {
-    
+
     viewer = new ViewerStatus();
     live = new ViewerStatus();
-    var announceIntervalId
- 
+
     clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
       updateFrequencyMsec: 1000,
       ready: function () {
 
         loadSchedule(function () {
-          announceIntervalId = window.setInterval(announce, 300);
+          window.setInterval(announce, 300);
           fire("Ready"); 
-        })
+        });
       }    
     });
   };
 
   var announce = function() {
-    
-          
+
     for (var a = 0; a < VIACOM.Schedule.Controller.getSchedule().apptBlocks.length; a++)
     {
       var blockIndex = getSchedule().apptBlocks[a];
-      var secondsUntilAppt = Math.floor(timeUntilBlockStart(blockIndex) / 1000);
+      var secondsUntilAppt = Math.floor(VIACOM.Schedule.Controller.timeUntilBlockStart(blockIndex) / 1000);
 
-      if (
-        ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
+      if (((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
           ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
-            ((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
-              ((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
-                ((secondsUntilAppt < 0) && (secondsUntilAppt >= -1)) ) {
+          ((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
+          ((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
+          ((secondsUntilAppt < 0) && (secondsUntilAppt >= -1)) ) {
 
         fire("SyncAnounce", secondsUntilAppt);
       }
     }
-
   };
 
   var setSchedule = function(theSchedule) {
     trace("setSchedule called: " + theSchedule.now);
     schedule = theSchedule;
-  }
+  };
+  
   // TODO add channel paramter
   var loadSchedule = function(callback) {
     Cors.get('http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', {
@@ -583,11 +648,9 @@ VIACOM.Schedule.Controller = ( function () {
 
         schedule.apptBlocks = [];
 
-        for (var b = 0; b < schedule.blocks.length; b++) {
-          if (schedule.blocks[b].appt) {
+        for (var b = 0; b < schedule.blocks.length; b++)
+          if (schedule.blocks[b].appt)
             schedule.apptBlocks[schedule.apptBlocks.length] = b; 
-          }
-        }
 
         callback();
       },
@@ -595,8 +658,6 @@ VIACOM.Schedule.Controller = ( function () {
       timeout: function() { trace('Schedule GET request timeout'); },
       parseJson: true
     });
-
-
   };
 
   var playerReady = function() {
@@ -611,6 +672,7 @@ VIACOM.Schedule.Controller = ( function () {
     'goLive' : goLive,
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
+    'blockStart' : blockStart,
     'timeUntilBlockStart' : timeUntilBlockStart,
     'step' : stepForward,
     'skipForward' : skipForward,
@@ -625,6 +687,7 @@ VIACOM.Schedule.Controller = ( function () {
     'getLiveStatus' : getLiveStatus,
     'setWait' : setWait,
     'setup' : setup,
+    'announce' : announce,
     'getSchedule' : getSchedule
   };
 
