@@ -1,162 +1,118 @@
 var trace = VIACOM.Schedule.Util.trace;
 
-var App = {programController: null, player: null,
-  programIsPlaying: false, 
+var App = {scheduleController: null, player: null,
+  scheduleIsPlaying: false, 
   waitStart: 0, waitRemaining: 0,
   nextUpItem: null, nextUpMsgStart: 0,
   onAirNowItem: null, onAirNowStart: 0,
   nextApptBlock: null, nextApptMsgStart: 0};
 
-  App.init = function () {
-
-    this.programController = VIACOM.Schedule.Controller; 
+  App.init = function ()
+  {
+    this.scheduleController = VIACOM.Schedule.Controller; 
 
     // player setup and event registration. Need better way for player here
     this.player = Object.create(Player);
 
     this.player.videoStartedCallback = function (uri) {
-      App.programController.onPlayerVideoStarted(uri);
+      App.scheduleController.onPlayerVideoStarted(uri);
     };
 
     this.player.stepCallback = function () {
-      App.programController.step(App.player.canStepThroughPlaylist());
-      App.playProgram();
+      App.scheduleController.step(App.player.canStepThroughPlaylist());
+      App.playSchedule();
     };
-
     // end player stuff
 
-
     // Register for "ready" event
-    VIACOM.Schedule.Controller.addListener('Ready', function() {
-      // Do some stuff...
-      // Fire it up!
-      App.loadProgram();
-      UI.displayProgram(VIACOM.Schedule.Controller.getSchedule(),  document.getElementById("program"));
+    this.scheduleController.addListener('Ready', function() {
+      App.sync();
+      UI.displayProgram(App.scheduleController.getSchedule(),  document.getElementById("program"));
       App.isReady = true;
-
     });
-
-    this.programController.setup({
-      channel: 'test',
-      player: this.player,
+    
+    this.scheduleController.setup({
+      channel: 'test'
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     this.handleSkipForward = function (vs) {
       trace("HANDLE: SkipForward");
-    }
-    VIACOM.Schedule.Controller.addListener('SkipForward', this.handleSkipForward);
-
+    };
+    this.scheduleController.addListener('SkipForward', this.handleSkipForward);
 
     this.handleSkipBackward = function (vs) {
       trace("HANDLE: SkipBackward");
-    }
-    VIACOM.Schedule.Controller.addListener('SkipBackward', this.handleSkipBackward);
-
+    };
+    this.scheduleController.addListener('SkipBackward', this.handleSkipBackward);
 
     this.handleStep = function (vs) {
       trace("HANDLE: Step");
-    }
-    VIACOM.Schedule.Controller.addListener('Step', this.handleStep);
-
+    };
+    this.scheduleController.addListener('Step', this.handleStep);
 
     this.handleLive = function (vs) {
       trace("HANDLE: Live");
-    }
-    VIACOM.Schedule.Controller.addListener('Live', this.handleLive);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    };
+    
+    this.scheduleController.addListener('Live', this.handleLive);
   };
-
-
-  App.loadProgram = function (program) {
-    this.programIsPlaying = false;
-    this.player.stop();
-    //this.programStatus = this.programController.getViewerStatus();
-    this.sync();
-  };
-
 
   App.sync = function () {
-    this.programController.goLive();
-    this.playProgram();
+    this.scheduleController.goLive();
+    this.playSchedule();
   };
 
-  App.playProgram = function () {
-    trace("App.playProgram");
-    var viewerStatus =  this.programController.getViewerStatus();
+  App.playSchedule = function () {
+    trace("App.playSchedule");
+    var viewerStatus =  this.scheduleController.getViewerStatus();
 
     if (viewerStatus.wait() > 0) {
       this.player.stop();
-      this.waitStart = this.programController.now();
+      this.waitStart = this.scheduleController.now();
     }
     else {
      trace("telling the controller to play");
-     this.programController.play(this.player);
+     this.scheduleController.play(this.player);
     }
-    this.programIsPlaying = true;
+    this.scheduleIsPlaying = true;
     this.nextUpItem = null;
     this.nextApptBlock = null;
   };
 
   App.skipForward = function () {
-    this.programController.skipForward();
-    this.playProgram();
+    this.scheduleController.skipForward();
+    this.playSchedule();
   };
 
   App.skipBackward = function () {
-    this.programController.skipBackward();
-    this.playProgram();
+    this.scheduleController.skipBackward();
+    this.playSchedule();
   };
 
   App.skipToItem = function (blockIndex, itemIndex){
-    this.programController.jump(blockIndex, itemIndex);
-    this.playProgram();
+    this.scheduleController.jump(blockIndex, itemIndex);
+    this.playSchedule();
   };
 
   App.onInterval = function () {
-    var viewerStatus =  this.programController.getViewerStatus();
-    var now = this.programController.now()
+    var controller = this.scheduleController;
+    
+    var viewerStatus = controller.getViewerStatus();
+    var now = controller.now();
 
-    if (this.programIsPlaying) {
+    if (this.scheduleIsPlaying) {
       // display a "waiting" message
       if (viewerStatus.wait() > 0) {
         this.waitRemaining = this.waitStart + viewerStatus.wait() - now;
         if (this.waitRemaining <= 0) {
-          this.programController.setWait(0);
-          this.playProgram();
+          controller.setWait(0);
+          this.playSchedule();
         }
       }
 
       // display an "on air now" message
       if ((now - this.onAirNowStart) > 10000) {
-        this.onAirNowItem =  this.programController.getLiveItem();
+        this.onAirNowItem =  controller.getLiveItem();
         this.onAirNowStart = now;
       }
 
@@ -173,7 +129,7 @@ var App = {programController: null, player: null,
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
             // If the next up item starts in 9 seconds and is not hidden, show next up overlay
-            var item = this.programController.getNextUpItem();
+            var item = controller.getNextUpItem();
             if (!item.hidden) {
               this.nextUpItem = item;
               this.nextUpMsgStart = now;
@@ -190,11 +146,10 @@ var App = {programController: null, player: null,
         }
       }
       else {
-        for (var a = 0; a < VIACOM.Schedule.Controller.getSchedule().apptBlocks.length; a++)
+        for (var a = 0; a < controller.getSchedule().apptBlocks.length; a++)
         {
-
-          var blockIndex = VIACOM.Schedule.Controller.getSchedule().apptBlocks[a];
-          var secondsUntilAppt = Math.floor(this.programController.timeUntilBlockStart(blockIndex) / 1000);
+          var blockIndex = controller.getSchedule().apptBlocks[a];
+          var secondsUntilAppt = Math.floor(controller.timeUntilBlockStart(blockIndex) / 1000);
           if (
             ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
               ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
