@@ -80,6 +80,10 @@ var App = {programController: null, player: null,
 
 
 
+    this.handleSyncAnnounce = function(timeUntil) {
+      trace("Appt block in: " + timeUntil + " seconds");
+    }
+    VIACOM.Schedule.Controller.addListener('SyncAnounce', this.handleSyncAnnounce);
 
 
 
