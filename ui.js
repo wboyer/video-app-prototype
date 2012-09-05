@@ -109,7 +109,7 @@ UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
 		var schedule = app.activeScheduleContext.schedule;
-		var timeUntilApptStart = app.scheduleController.timeUntilBlockStart(app.nextApptBlock);
+		var timeUntilApptStart = app.scheduleController.timeUntilBlockStart(schedule, app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
 			nextApptDiv.innerHTML = "Live Now: " + schedule.blocks[app.nextApptBlock].items[0].videoUri;
