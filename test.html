@@ -1,8 +1,8 @@
 <html>
 	<head>
-    <script src="util.js" type="text/javascript"></script>
-    <script src="cors.js" type="text/javascript"></script>
-    <script src="clock.js" type="text/javascript"></script>
+		<script src="util.js" type="text/javascript"></script>
+		<script src="cors.js" type="text/javascript"></script>
+		<script src="clock.js" type="text/javascript"></script>
 		<script src="player.js" type="text/javascript"></script>
 		<script src="controller.js" type="text/javascript"></script>
 		<script src="controls.js" type="text/javascript"></script>
@@ -16,11 +16,11 @@
 	</head>
 	
 	<body onload="init();">
-		<div class="slide">
-			<a onclick="slideProgram(-60000);">Slide Backward / </a><a onclick="slideProgram(60000);">Forward</a>
+		<div class="schedules">
+			Schedules: <a onclick="loadLocalSchedule('test/schedules/scheduler.json');">scheduler,</a> <a onclick="loadLocalSchedule('test/schedules/on-demand.json');">on-demand</a> Slide: <a onclick="slideSchedule(-60000);">backward,</a> <a onclick="slideSchedule(60000);">forward</a>
 		</div>
 		
-		<div id="program" class="program"></div>
+		<div id="schedule" class="schedule"></div>
 
 		<div id="player" class="player">
 			<div id="video" class="video"></div>

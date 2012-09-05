@@ -1,4 +1,4 @@
-{
+setLocalSchedule({
 	"startTime": 1341666000000,
 
 	"now": 1341666649762, // for testing only
@@ -137,4 +137,4 @@
 			]
 		}
 	]
-}
+});

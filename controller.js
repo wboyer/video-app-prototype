@@ -1,26 +1,17 @@
 var VIACOM = VIACOM || {};
 VIACOM.Schedule = VIACOM.Schedule || {};
 
-VIACOM.Schedule.Controller = ( function () {
+VIACOM.Schedule.Controller = (function () {
 
   var trace = VIACOM.Schedule.Util.trace;
 
   var Cors = VIACOM.Cors;
 
-  var schedule = null, viewer = null, live = null, clock = null;
+  var schedules = {}, latestSchedules = {}, clock = null;
 
-  //schedule.startTime = this.now();
-  /*
-  var clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
-    initialTimeUTC: schedule.now,       // get this from the schedule data feed
-    maxDriftMsec: 2000,        // this is the default value, so you could leave it out
-    updateFrequencyMsec: 1000  // also the default value
-  });
-   */
-
-  // Constructor function for the ViewerStatus "class"
-  var ViewerStatus = function(spec) {
-
+  // Constructor function for the ScheduleContext "class"
+  var ScheduleContext = function (spec)
+  {
     // Function to zero-out all the state variables
     this.reset = function() {
       this.blockIndex = 0;
@@ -32,62 +23,42 @@ VIACOM.Schedule.Controller = ( function () {
     };
 
     if (spec) {
-      this.blockIndex = spec.blockIndex() || 0;
-      this.itemIndex = spec.itemIndex() || 0;
-      this.offset = spec.offset() || 0;
-      this.wait = spec.wait() || 0;
-      this.adsEnabled = spec.adsEnabled() || false;
-      this.hasLoopedBlock = spec.hasLoopedBlock() || false;
+      this.schedule = spec.schedule;
+      this.blockIndex = spec.blockIndex;
+      this.itemIndex = spec.itemIndex;
+      this.offset = spec.offset;
+      this.wait = spec.wait;
+      this.adsEnabled = spec.adsEnabled;
+      this.hasLoopedBlock = spec.hasLoopedBlock;
     }
     else
       this.reset();
-
-    // Create a read-only "interface" to the internal state
-    var ro = {};
-
-    // Create accessor functions for each property
-    var that = this;
-    for (var prop in this) {
-      // Skip functions
-      if (typeof this[prop] == 'function') {
-        continue;
-      }
-      // Create the accessor function. See below for why it's done this way:
-      // http://www.mennovanslooten.nl/blog/post/62/
-      ro[prop] = (function(p) {
-        return function() {
-          return that[p];
-        };
-      })(prop);
-    }
-
-    this.readOnlyCopy = ro;
   };
 
-  var now = function () {
-    // will need to base this on server time eventually.
+  var now = function ()
+  {
     //var theTimeIs = new Date().getTime();
     var theTimeIs = clock.getCurrentTime();
     //trace("the time is: " + theTimeIs);
-    //trace("the clock sez: " + theClockSez);
     return theTimeIs;
-    //return theTimeIs;
   };
 
   // private
   // Step to a particular point in time
-  var stepToTime = function (time, status)
+  var stepToTime = function (context, time)
   {
+    var schedule = context.schedule;
+
     var timeOffset = time - schedule.startTime;
 
-    var b = status.blockIndex;
-    var i = status.itemIndex;
+    var b = context.blockIndex;
+    var i = context.itemIndex;
 
     var blocks = schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    var hasLoopedBlock = status.hasLoopedBlock;
+    var hasLoopedBlock = context.hasLoopedBlock;
 
     var done = false;
 
@@ -101,30 +72,30 @@ VIACOM.Schedule.Controller = ( function () {
         hasLoopedBlock = true;
       }
 
-      // If there is at least one more block
+      // if there is at least one more block
       if (b + 1 < blocks.length) {
 
         var nextBlock = blocks[b + 1];
         var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
-        // If next block is appt block, mssl is overridden
+        // if next block is appt block, mssl is overridden
         var mssl = nextBlock.mssl;
         if (nextBlock.appt)
           mssl = 0;
 
-        //total duration = item duration + ad duration
+        // total duration = item duration + ad duration
         var duration = items[i].duration + items[i].adDuration;
 
-        //if the next item is in the same playlist and it's an auto playlist 
-        //(i.e., the player handles stepping), add up the durations
-        //of the items in that playlist
+        // if the next item is in the same playlist and it's an auto playlist 
+        // (i.e., the player handles stepping), add up the durations
+        // of the items in that playlist
         for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++)
           duration += items[j].duration + items[j].adDuration;
 
         // 1. Is the duration of the current block minus the mssl of the next block (i.e., the minimum time to finish the block)
-        // greater than the time until the next block?
+        //    greater than the time until the next block?
         // 2. Has the the block looped or does the block prohibit finishing early?
-        // -- If both of these are true, then continue to next block
+        //    If both of these are true, then continue to next block
         if ((mssl >= 0) && ((duration - mssl) * 1000 > timeUntilBlockStart) && (hasLoopedBlock || !block.dfe)) {
           b += 1;
           i = 0;
@@ -135,12 +106,12 @@ VIACOM.Schedule.Controller = ( function () {
       }
     }
 
-    status.wait = 0;
-    status.offset = 0;
-    status.adsEnabled = true;
+    context.wait = 0;
+    context.offset = 0;
+    context.adsEnabled = true;
 
     // have we stepped to the next block?
-    if (b != status.blockIndex) {
+    if (b != context.blockIndex) {
       var timeUntilBlockStart = block.start * 1000 - timeOffset;
 
       var msse = block.msse * 1000;
@@ -150,50 +121,53 @@ VIACOM.Schedule.Controller = ( function () {
 
       // if the time until the next block is greater than msse, wait out the difference
       if ((msse >= 0) && (timeUntilBlockStart > msse))
-        status.wait = timeUntilBlockStart - msse;
+        context.wait = timeUntilBlockStart - msse;
 
-      status.blockIndex = b;
-      status.hasLoopedBlock = false;
+      context.blockIndex = b;
+      context.hasLoopedBlock = false;
     }
-    else {
+    else
       if (hasLoopedBlock)
-        status.hasLoopedBlock = true;
-    }
+        context.hasLoopedBlock = true;
 
-    status.itemIndex = i;
+    context.itemIndex = i;
   };
 
-
-  // Sync viewerStatus with what is live now if possible
-  var sync = function (status, now)
+  // Sync ScheduleContext with what is live now if possible
+  var sync = function (context, now)
   {
-    status.reset();
+    var schedule = context.schedule;
+
+    if (!now)
+      now = this.now();
+    
+    context.reset();
 
     if ((schedule.blocks.length == 0) || (schedule.blocks[0].items.length == 0))
-      return false;
+      return null;
 
     // set time to when the first block should start
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
       //step forward to the beginning
-      stepToTime(time, status);
+      this.stepToTime(context, time);
 
       //if we need to wait, add it
-      time += status.wait;
+      time += context.wait;
 
       // if "live" is in the future, we're done, wait it out.
       if (time > now) {
-        status.wait = time - now;
-        return true;
+        context.wait = time - now;
+        return context;
       }
       else {
-        status.wait = 0;
+        context.wait = 0;
 
-        var block = schedule.blocks[status.blockIndex];			
+        var block = schedule.blocks[context.blockIndex];			
 
         while (true) {
-          var item = block.items[status.itemIndex];
+          var item = block.items[context.itemIndex];
           var duration = (item.duration + item.adDuration) * 1000;
           var adDuration = item.adDuration * 1000;
 
@@ -203,80 +177,84 @@ VIACOM.Schedule.Controller = ( function () {
             if (block.dll || item.dll)
               time -= duration;
             else {
-              status.offset = now + duration - time;
-              status.adsEnabled = false;
-              if (status.offset < adDuration) {
-                status.wait = adDuration - status.offset;
-                status.offset = adDuration;
+              context.offset = now + duration - time;
+              context.adsEnabled = false;
+              if (context.offset < adDuration) {
+                context.wait = adDuration - context.offset;
+                context.offset = adDuration;
               }
             }
-            return true;
+            return context;
           }
 
-          var i = status.itemIndex + 1;
+          var i = context.itemIndex + 1;
           if ((i < block.items.length) && (item.playlistUri == block.items[i].playlistUri) && block.items[i].auto)
-            status.itemIndex = i;
+            context.itemIndex = i;
           else
             break;
         }
       }
 
-      status.itemIndex += 1;
+      context.itemIndex += 1;
     }
   };
 
-  var goLive = function () {
-    trace("go live");
-    var status = sync(viewer, this.now());
-    fire('Live', status);
-    return status;
+  var newContext = function (schedule)
+  {
+    var context = new ScheduleContext();
+    context.schedule = schedule;
+    return context;
   };
 
-  var step = function (status, playerCanStepThroughPlaylist)
+  var cloneContext = function (context)
   {
-    trace('step (internal)');
+    return new ScheduleContext(context);
+  };
 
-    var i = status.itemIndex + 1;
+  var step = function (context, playerCanStepThroughPlaylist)
+  {
+    trace('step');
 
-    var items = schedule.blocks[status.blockIndex].items;
+    var i = context.itemIndex + 1;
+
+    var items = context.schedule.blocks[context.blockIndex].items;
 
     if (playerCanStepThroughPlaylist) {
-      while ((i < items.length) && (items[status.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
+      while ((i < items.length) && (items[context.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
         i += 1;
     }
 
-    status.itemIndex = i;
+    context.itemIndex = i;
 
-    return stepToTime(now(), status);
+    this.stepToTime(context, this.now());
+    
+    return context;
   };
 
-  var stepForward = function (playerCanStepThroughPlaylist)
+  var stepForward = function (context, playerCanStepThroughPlaylist)
   {
     trace('stepForward');
-    var status = step(viewer, playerCanStepThroughPlaylist);
-    fire('Step', status); 
-    return status;
+    this.step(context, playerCanStepThroughPlaylist);
+    fireScheduleEvent(context.schedule.key, 'Step'); 
+    return context;
   };
 
-  var skipForward = function (status)
+  var skipForward = function (context)
   {
     trace('skipForward');
 
-    if (!status)
-      status = viewer;
-    
-    var b = status.blockIndex;
-    var i = status.itemIndex;
+    var b = context.blockIndex;
+    var i = context.itemIndex;
 
-    var blocks = schedule.blocks;
+    var blocks = context.schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
-    if (status.wait > 0) {
+    if (context.wait > 0) {
       if (block.appt)
         i = block.items.length;
       else {
-        status.wait = 0;
+        context.wait = 0;
         return;
       }
     }
@@ -306,22 +284,19 @@ VIACOM.Schedule.Controller = ( function () {
         b = 0;
     }
 
-    status = this.jump(b, i);
-    fire('SkipForward', status);
-    return status;
+    this.jump(context, b, i);
+    fireScheduleEvent(context.schedule.key, 'SkipForward');
+    return context;
   };
 
-  var skipBackward = function (status)
+  var skipBackward = function (context)
   {
     trace('skipBackward');
 
-    if (!status)
-      status = viewer;
-    
-    var b = status.blockIndex;
-    var i = status.itemIndex;
+    var b = context.blockIndex;
+    var i = context.itemIndex;
 
-    var blocks = schedule.blocks;
+    var blocks = context.schedule.blocks;
     var block = blocks[b];
     var items = block.items;
 
@@ -361,64 +336,62 @@ VIACOM.Schedule.Controller = ( function () {
     while ((i > 0) && (items[i-1].hidden == "pre"))
       i -= 1;
     
-    status = this.jump(b, i);
-    fire('SkipBackward', status);
-    return status;
+    this.jump(context, b, i);
+    fireScheduleEvent(context.schedule.key, 'SkipBackward');
+    return context;
   };
 
-  var jump = function (blockIndex, itemIndex, status)
+  var jump = function (context, blockIndex, itemIndex)
   {
     trace('jump(' + blockIndex + ',' + itemIndex + ')');
 
-    if (!status)
-      status = viewer;
-    
+    var schedule = context.schedule;
     var now = this.now();
 
     block = schedule.blocks[blockIndex];
 
-    if (blockIndex != status.blockIndex)
-      status.hasLoopedBlock = false;
+    if (blockIndex != context.blockIndex)
+      context.hasLoopedBlock = false;
 
-    status.wait = 0;
-    status.offset = 0;
-    status.adsEnabled = true;
+    context.wait = 0;
+    context.offset = 0;
+    context.adsEnabled = true;
 
     if (block.appt) {
       var nowOffset = now - schedule.startTime;
 
       if (block.start * 1000 > nowOffset) {
-        status.wait = block.start * 1000 - nowOffset;
+        context.wait = block.start * 1000 - nowOffset;
         itemIndex = 0;
       }
     }
 
-    status.blockIndex = blockIndex;
-    status.itemIndex = itemIndex;
-    
-    return status.readOnlyCopy;
+    context.blockIndex = blockIndex;
+    context.itemIndex = itemIndex;
+
+    return context;
   };
 
-  var onPlayerVideoStarted = function (uri)
+  var onPlayerVideoStarted = function (context, uri)
   {
     trace('onPlayerVideoStarted');
 
-    var items = schedule.blocks[viewer.blockIndex].items;
+    var items = context.schedule.blocks[context.blockIndex].items;
 
-    for (var i = viewer.itemIndex; (i < items.length) && items[i].auto; i++)
+    for (var i = context.itemIndex; (i < items.length) && items[i].auto; i++)
       if (items[i].videoUri == uri) {
-        viewer.itemIndex = i;
+        context.itemIndex = i;
         break;
       }
 
-    return viewer.readOnlyCopy;
+    return context;
   };
 
-  var play = function (player)
+  var play = function (context, player)
   {
     trace('play');
 
-    var item = schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
+    var item = context.schedule.blocks[context.blockIndex].items[context.itemIndex];
 
     var uri = item.videoUri;
     var playlistUri = item.playlistUri;
@@ -439,35 +412,35 @@ VIACOM.Schedule.Controller = ( function () {
       player.loadVideo(uri, duration);
     }
 
-    if (viewer.adsEnabled)
+    if (context.adsEnabled)
       player.setAdDuration(adDuration);
 
-    if (viewer.offset > 0)
-      player.seekToOffset(viewer.offset);
+    if (context.offset > 0)
+      player.seekToOffset(context.offset);
 
     player.play();
 
-    return viewer.readOnlyCopy;
+    return context;
   };
 
-  var guide = function (fromTime, toTime, callback)
+  var guide = function (schedule, fromTime, toTime, callback)
   {
-    status = new ViewerStatus();
+    var context = this.newContext(schedule);
+    this.sync(context, fromTime);
+    
+    var schedule = context.schedule;
 
-    this.sync(status, fromTime);
-    time = this.blockStart(status.blockIndex);
-
-    var time = fromTime;
-    time += status.wait;
+    var time = this.blockStart(schedule, context.blockIndex);
+    time += context.wait;
 
     var playlistUri = null;
     var playlistMeta = null;
 
     while (time < toTime)
     {
-      var block = schedule.blocks[status.blockIndex];
+      var block = schedule.blocks[context.blockIndex];
       var items = block.items;
-      var i = status.itemIndex;
+      var i = context.itemIndex;
 
       if (items[i].playlistUri != playlistUri) {
         playlistUri = items[i].playlistUri;
@@ -504,9 +477,9 @@ VIACOM.Schedule.Controller = ( function () {
       
       callback(startTime, videoMeta, playlistMeta, items[i].offset, duration);
 
-      this.skipForward(status);
+      this.skipForward(context);
 
-      var nextTime = this.blockStart(status.blockIndex);
+      var nextTime = this.blockStart(schedule, context.blockIndex);
       if (nextTime < time)
         break;
       else
@@ -514,82 +487,95 @@ VIACOM.Schedule.Controller = ( function () {
     }
   };
   
-  var blockStart = function (b)
+  var blockStart = function (schedule, blockIndex)
   {
-    return schedule.startTime + schedule.blocks[b].start * 1000;
+    return schedule.startTime + schedule.blocks[blockIndex].start * 1000;
   };
 
-  var timeUntilBlockStart = function (b)
+  var timeUntilBlockStart = function (schedule, blockIndex)
   {
-    return this.blockStart(b) - now();
+    return this.blockStart(schedule, blockIndex) - this.now();
   };
 
-  var getViewerStatus = function () {
-    return viewer.readOnlyCopy;
+  var currentItem = function (context)
+  {
+    return context.schedule.blocks[context.blockIndex].items[context.itemIndex];
   };
 
-  var getLiveStatus = function () {
-    sync(live, this.now());
-    return live.readOnlyCopy;
+  var nextUpItem = function (context)
+  {
+    var next = new ScheduleContext(context);
+    this.step(next, true);
+    return currentItem(next);
   };
 
-  var currentItem = function () {
-    return schedule.blocks[viewer.blockIndex].items[viewer.itemIndex];
-  };
-
-  var nextUpItem = function() {
-    var next = new ViewerStatus(viewer.readOnlyCopy);
-    step(next, true);
-    return schedule.blocks[next.blockIndex].items[next.itemIndex];
-  };
-
-  var currentLiveItem = function () {
-    this.getLiveStatus();
-    return schedule.blocks[live.blockIndex].items[live.itemIndex];
-  };
-
-  var setWait = function(secs) {
-    //live.wait = secs;
-    viewer.wait = secs;
+  var liveItem = function (context)
+  {
+    var live = new ScheduleContext(context);
+    this.sync(live);
+    return currentItem(live);
   };
 
   // Data structure to store event listeners. Key is event name, value is an array
   // of listeners.
   var eventRegistry = {};
 
+  // Data structure to store listeners for schedule-based events. Outer key is the
+  // schedule key, inner key is event name, and value is an array of listeners.
+  var scheduleEventRegistry = {};
+
   // Public method to register for the specified eventName. The callback is the function
   // to invoke when the event is fired, and the scope determines the value of "this"
   // within the callback function. If no scope is specified, it will default to the
   // global scope (ie, the window). You can register as many listeners as you want for
   // an event.
-  var addListener = function(eventName, callback, scope) {
+  var addListener = function(eventName, callback, scope)
+  {
     trace("Adding listener: " + eventName + "->" + callback);
+
     var listeners = eventRegistry[eventName];
-    if (!listeners) {
+    if (!listeners)
       eventRegistry[eventName] = listeners = [];
-    }
-    if (!scope) {
+
+    if (!scope)
       scope = window;
-    }
+
+    listeners.push({ 'scope': scope, 'callback': callback });
+  };
+
+  var addScheduleListener = function(key, eventName, callback, scope)
+  {
+    trace("Adding schedule listener: " + key + ", " + eventName + "->" + callback);
+
+    var registry = scheduleEventRegistry[key];
+    if (!registry)
+      scheduleEventRegistry[key] = registry = [];
+      
+    var listeners = registry[eventName];
+    if (!listeners)
+      registry[eventName] = listeners = [];
+
+    if (!scope)
+      scope = window;
+
     listeners.push({ 'scope': scope, 'callback': callback });
   };
 
   // Fire the named event. You can pass as many additional arguments as needed to this
   // function when firing an event, and they will be passed on to the callback function.
-  var fire = function(eventName) {
+  var fireEvent = function(eventName, context)
+  {
     trace("EVENT: " + eventName);
 
     var listeners = eventRegistry[eventName], args = [], i, listener;
-    if (!listeners) {
+    if (!listeners)
       return;
-    }
+
     // Grab the arguments to be passed to the callback function
     // There's a more clever way to do this, but I don't remember what it is :)
-    if (arguments.length > 1) {
-      for (i = 1; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-    }
+    for (i = 1; i < arguments.length; i++)
+      args.push(arguments[i]);
+
     // Invoke each listener's callback in succession, passing along the arguments
     for (i = 0; i < listeners.length; i++) {
       listener = listeners[i];
@@ -597,97 +583,110 @@ VIACOM.Schedule.Controller = ( function () {
     }
   };
 
-  var setup  = function(options) {
+  var fireScheduleEvent = function(key, eventName)
+  {
+    trace("EVENT: " + key + ", " + eventName);
 
-    viewer = new ViewerStatus();
-    live = new ViewerStatus();
+    var registry = scheduleEventRegistry[key];
+    if (!registry)
+      return;
+    
+    var listeners = registry[eventName], args = [], i, listener;
+    if (!listeners)
+      return;
 
+    for (i = 2; i < arguments.length; i++)
+      args.push(arguments[i]);
+ 
+    for (i = 0; i < listeners.length; i++) {
+      listener = listeners[i];
+      listener.callback.apply(listener.scope, args);
+    }
+  };
+
+  var setup  = function()
+  {
     clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
       updateFrequencyMsec: 1000,
       ready: function () {
-
-        loadSchedule(function () {
-          window.setInterval(announce, 300);
-          fire("Ready"); 
-        });
-      }    
+        fireEvent("Ready"); 
+      }
     });
   };
 
-  var announce = function() {
+  var setSchedule = function(key, schedule)
+  {
+    schedule.key = key;
+    
+    if (!schedule.startTime)
+      schedule.startTime = 0;
 
-    for (var a = 0; a < VIACOM.Schedule.Controller.getSchedule().apptBlocks.length; a++)
-    {
-      var blockIndex = getSchedule().apptBlocks[a];
-      var secondsUntilAppt = Math.floor(VIACOM.Schedule.Controller.timeUntilBlockStart(blockIndex) / 1000);
+    trace("setSchedule called: " + schedule.startTime);
 
-      if (((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
-          ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
-          ((secondsUntilAppt < 300) && (secondsUntilAppt >= 299)) ||
-          ((secondsUntilAppt < 60) && (secondsUntilAppt >= 59)) ||
-          ((secondsUntilAppt < 0) && (secondsUntilAppt >= -1)) ) {
-
-        fire("SyncAnounce", secondsUntilAppt);
-      }
+    schedule.apptBlocks = [];
+    for (var b = 0; b < schedule.blocks.length; b++) {
+      var block = schedule.blocks[b];
+      if (!block.start)
+        block.start = 0;
+      if (block.appt)
+        schedule.apptBlocks[schedule.apptBlocks.length] = b; 
     }
-  };
-
-  var setSchedule = function(theSchedule) {
-    trace("setSchedule called: " + theSchedule.now);
-    schedule = theSchedule;
+    
+    schedules[key] = schedule;
+    latestSchedules[key] = schedule;
   };
   
-  // TODO add channel paramter
-  var loadSchedule = function(callback) {
-    Cors.get('http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', {
-      success: function(response) { 
-        trace("Schedule loaded");
-        setSchedule(response);
-
-        schedule.apptBlocks = [];
-
-        for (var b = 0; b < schedule.blocks.length; b++)
-          if (schedule.blocks[b].appt)
-            schedule.apptBlocks[schedule.apptBlocks.length] = b; 
-
-        callback();
+  var loadSchedule = function(key, url, callback)
+  {
+    var controller = this;
+    
+    Cors.get(url, {
+      success: function(schedule) { 
+        trace("Schedule loaded for " + key + " from " + url);
+        controller.setSchedule(key, schedule);
+        var context = controller.newContext(schedule);
+        controller.sync(context);
+        callback(context);
       },
-      failure: function() { trace('Could not get schedule.'); },
-      timeout: function() { trace('Schedule GET request timeout'); },
+      failure: function() { trace("Could not get schedule for " + key + " from " + url); },
+      timeout: function() { trace("Schedule GET request timeout for " + key + " from " + url); },
       parseJson: true
     });
   };
 
-  var playerReady = function() {
-    // whatever we need to do when the player is ready
-  };
+  var removeSchedule = function(key)
+  {
+    trace("removeSchedule called: " + key);
 
-  var getSchedule = function () {
-    return schedule;
+    schedules[key] = null;
+    latestSchedules[key] = null;    
+    scheduleEventRegistry[key] = null;
   };
-
+  
   return {
-    'goLive' : goLive,
     'play' : play,
     'onPlayerVideoStarted' : onPlayerVideoStarted,
+    'setSchedule' : setSchedule,
+    'loadSchedule' : loadSchedule,
+    'removeSchedule' : removeSchedule,
+    'newContext' : newContext,
+    'cloneContext' : cloneContext,
     'blockStart' : blockStart,
     'timeUntilBlockStart' : timeUntilBlockStart,
-    'step' : stepForward,
+    'sync' : sync,
+    'step' : step,
+    'stepToTime' : stepToTime,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
+    'guide' : guide,
     'addListener' : addListener,
     'now' : now,
-    'getViewerStatus' : getViewerStatus,
     'getCurrentItem' : currentItem,
     'getNextUpItem' : nextUpItem,
-    'getLiveItem' : currentLiveItem,
-    'getLiveStatus' : getLiveStatus,
-    'setWait' : setWait,
-    'setup' : setup,
-    'announce' : announce,
-    'getSchedule' : getSchedule
+    'getLiveItem' : liveItem,
+    'setup' : setup
   };
 
 }());

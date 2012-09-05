@@ -14,9 +14,9 @@ UI.mmss = function (duration)
 	return  minutes + ":" + seconds;
 };
 
-UI.displayProgram = function (program, programDiv)
+UI.displaySchedule = function (schedule, scheduleDiv)
 {
-	var blocks = program.blocks;
+	var blocks = schedule.blocks;
 	var innerHTML = "";
 	
 	for (var b = 0; b < blocks.length; b++) {
@@ -25,7 +25,7 @@ UI.displayProgram = function (program, programDiv)
 		innerHTML += "<div id=\"t_b" + b + "\" class=\"block\">";
 
 		innerHTML += "<div id=\"t_b" + b + "_info\">";
-		innerHTML += new Date(program.startTime + block.start * 1000).toString() + "<br/>";
+		innerHTML += new Date(schedule.startTime + block.start * 1000).toString() + "<br/>";
 		innerHTML += "dll: " + block.dll + ", ";
 		innerHTML += "dfe: " + block.dfe + ", ";
 		innerHTML += "msse: " + block.msse + ", ";
@@ -39,7 +39,7 @@ UI.displayProgram = function (program, programDiv)
 			var item = items[i];
 			var duration = item.duration + item.adDuration;
 			innerHTML += "<div id=\"t_b" + b + "_i" + i + "\" class=\"item\" style=\"min-height: " + Math.floor(duration/6) + "px;\">";
-			innerHTML += "videoUri: <a onclick=\"App.skipToItem(" + b + "," + i + ");\">" + item.videoUri + "</a>, ";
+			innerHTML += "videoUri: <a onclick=\"App.jumpToItem(" + b + "," + i + ");\">" + item.videoUri + "</a>, ";
 			innerHTML += "dll: " + item.dll + ", ";
 			innerHTML += "plUri: " + item.playlistUri + ", ";
 			innerHTML += "auto: " + item.auto + ", ";
@@ -52,14 +52,14 @@ UI.displayProgram = function (program, programDiv)
 		innerHTML += "</div>";
 	}
 
-	programDiv.innerHTML = innerHTML;
+	scheduleDiv.innerHTML = innerHTML;
 };
 
-UI.markProgramOffset = function (programDiv, markerId, markerClass, b, i, duration, offset)
+UI.markScheduleOffset = function (scheduleDiv, markerId, markerClass, b, i, duration, offset)
 {
 	var markerDiv = document.getElementById(markerId);
 	if (!markerDiv) {
-		programDiv.innerHTML += "<div id=\"" + markerId + "\" class=\"" + markerClass + "\"></div>";
+		scheduleDiv.innerHTML += "<div id=\"" + markerId + "\" class=\"" + markerClass + "\"></div>";
 		markerDiv = document.getElementById(markerId);
 	}
 
@@ -88,7 +88,7 @@ UI.displayOnAirNow = function(app, onAirNowDiv) {
 };
 
 UI.displayWait = function(app, waitDiv) {
-	if (app.scheduleIsPlaying && (app.scheduleController.getViewerStatus().wait() > 0)) {
+	if (app.activeScheduleContext && (app.activeScheduleContext.wait > 0)) {
 		waitDiv.style["visibility"] = "visible";
 		waitDiv.innerHTML = "Waiting for " + UI.mmss(app.waitRemaining);
 	}
@@ -97,7 +97,7 @@ UI.displayWait = function(app, waitDiv) {
 };
 
 UI.displayNextUp = function(app, nextUpDiv) {
-	if (app.scheduleIsPlaying && app.nextUpItem) {
+	if (app.nextUpItem) {
 		nextUpDiv.style["visibility"] = "visible";
 		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.videoUri;
 	}
@@ -108,13 +108,13 @@ UI.displayNextUp = function(app, nextUpDiv) {
 UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
-		var program =  VIACOM.Schedule.Controller.getSchedule();
+		var schedule = app.activeScheduleContext.schedule;
 		var timeUntilApptStart = app.scheduleController.timeUntilBlockStart(app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
-			nextApptDiv.innerHTML = "Live Now: " + program.blocks[app.nextApptBlock].items[0].videoUri;
+			nextApptDiv.innerHTML = "Live Now: " + schedule.blocks[app.nextApptBlock].items[0].videoUri;
 		else
-			nextApptDiv.innerHTML = "Live Soon: " + program.blocks[app.nextApptBlock].items[0].videoUri + " in " + UI.mmss(timeUntilApptStart);
+			nextApptDiv.innerHTML = "Live Soon: " + schedule.blocks[app.nextApptBlock].items[0].videoUri + " in " + UI.mmss(timeUntilApptStart);
 	}
 	else
 		nextApptDiv.style["visibility"] = "hidden";

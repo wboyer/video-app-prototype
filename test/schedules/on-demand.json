@@ -1,4 +1,4 @@
-{
+setLocalSchedule({
 	"blocks": [
 		{
 			"items": [
@@ -61,4 +61,4 @@
 			]
 		}
 	]
-}
+});

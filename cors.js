@@ -76,7 +76,7 @@ VIACOM.Cors = (function() {
         if (xhr.status == 200) {
           handleSuccess(xhr.responseText, options);
         }
-        else if (xhr.status >= 400) {
+        else if ((xhr.status == 0) || (xhr.status >= 400)) {
           if (options['failure']) {
             options.failure();
           }          

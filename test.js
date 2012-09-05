@@ -2,7 +2,7 @@ function init()
 {
   App.init();
 
-  var programDiv = document.getElementById("program");
+  var scheduleDiv = document.getElementById("schedule");
   var playerDiv = document.getElementById("player");
   var videoDiv = document.getElementById("video");
 
@@ -12,19 +12,21 @@ function init()
   initOverlayAllowedRegion("overlay22", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);
   initOverlayAllowedRegion("overlay3", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2 + 40);
 
-  window.setInterval(
-    function () { 
-    if (App.isReady) {
-      var now = App.scheduleController.now();
-      var viewerStatus = App.scheduleController.getViewerStatus();
+  window.setInterval(function () {
+    if (App.activeScheduleContext) {
+      var controller = App.scheduleController;      
+      var now = controller.now();
 
-      var liveStatus =  App.scheduleController.getLiveStatus();
-      var item =  App.scheduleController.getLiveItem();
+      var context = App.activeScheduleContext;
 
-      UI.markProgramOffset(programDiv, "t_m_s", "marker_sync", liveStatus.blockIndex(), liveStatus.itemIndex(), (item.duration + item.adDuration) * 1000, liveStatus.offset());
+      var liveContext = controller.cloneContext(context);
+      controller.sync(liveContext);
+      var item =  controller.getCurrentItem(liveContext);
+      
+      UI.markScheduleOffset(scheduleDiv, "t_m_s", "marker_sync", liveContext.blockIndex, liveContext.itemIndex, (item.duration + item.adDuration) * 1000, liveContext.offset);
 
-      item =  App.scheduleController.getCurrentItem();
-      UI.markProgramOffset(programDiv, "t_m_c", "marker_current", viewerStatus.blockIndex(), viewerStatus.itemIndex(), (item.duration + item.adDuration) * 1000, App.player.offset);
+      item = controller.getCurrentItem(context);
+      UI.markScheduleOffset(scheduleDiv, "t_m_c", "marker_current", context.blockIndex, context.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
       App.player.onInterval(now);
       UI.updatePlayer(App.player, videoDiv);
@@ -34,23 +36,23 @@ function init()
       UI.displayWait(App, document.getElementById("wait"));
       UI.displayNextUp(App, document.getElementById("nextUp"));
       UI.displayNextAppt(App, document.getElementById("nextAppt"), now);
-
-      var overlays = [];
-      overlays[overlays.length] = createOverlay("overlay0");
-      overlays[overlays.length] = createOverlay("overlay1");
-      overlays[overlays.length] = createOverlay("overlay2");
-      overlays[overlays.length] = createOverlay("overlay3");
-
-      var overlayGroups = [];
-      overlayGroups[0] = overlays;
-
-      var region = Object.create(Region);
-      region.construct(0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
-      var arrangement = Arrangement.findBest(overlayGroups, region);
-      UI.displayOverlays(playerDiv, overlayGroups, arrangement, "overlay");
-
-      //console.debug(new Date().getTime() - now);
     }
+
+    var overlays = [];
+    overlays[overlays.length] = createOverlay("overlay0");
+    overlays[overlays.length] = createOverlay("overlay1");
+    overlays[overlays.length] = createOverlay("overlay2");
+    overlays[overlays.length] = createOverlay("overlay3");
+
+    var overlayGroups = [];
+    overlayGroups[0] = overlays;
+
+    var region = Object.create(Region);
+    region.construct(0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2);			
+    var arrangement = Arrangement.findBest(overlayGroups, region);
+    UI.displayOverlays(playerDiv, overlayGroups, arrangement, "overlay");
+    
+    //console.debug(new Date().getTime() - now);
   },
   300);
 }
@@ -94,12 +96,33 @@ function addOverlayAllowedRegion(overlay, id)
   overlay.addAllowedRegion(region);
 }
 
-function slideProgram(offset)
+function slideSchedule(offset)
 {
-  var program =  VIACOM.Schedule.Controller.getSchedule();
-  program.startTime += offset;
-  var programDiv = document.getElementById("program");
+  var schedule = App.activeScheduleContext.schedule;
+  schedule.startTime += offset;
 
-  UI.displayProgram(program, programDiv);
+  UI.displaySchedule(schedule, document.getElementById("schedule"));
+  App.onAirNowStart = 0;
+}
+
+function loadLocalSchedule(path)
+{
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = path;
+  var body = document.getElementsByTagName("body")[0];
+  body.appendChild(script);
+}
+
+function setLocalSchedule(schedule)
+{
+  var controller = App.scheduleController;      
+
+  controller.setSchedule("local", schedule);
+  var context = controller.newContext(schedule);
+  controller.sync(context);
+  App.playSchedule(context, App.player);
+
+  UI.displaySchedule(schedule, document.getElementById("schedule"));
   App.onAirNowStart = 0;
 }

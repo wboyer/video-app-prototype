@@ -52,6 +52,16 @@ var RemoteClock = function(remoteClockUrl, options) {
         setCurrentTime(parseInt(responseText));
         totalDriftMsec = 0;
         callback();
+      },
+      failure: function() {
+        setCurrentTime(new Date().getTime());
+        totalDriftMsec = 0;
+        callback();
+      },
+      timeout: function() {
+        setCurrentTime(new Date().getTime());
+        totalDriftMsec = 0;
+        callback();
       }
     });
   };

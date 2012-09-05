@@ -1,122 +1,114 @@
 var trace = VIACOM.Schedule.Util.trace;
 
-var App = {scheduleController: null, player: null,
-  scheduleIsPlaying: false, 
+var App = {
+  player: null,
+  scheduleController: null, activeScheduleContext: null,
   waitStart: 0, waitRemaining: 0,
   nextUpItem: null, nextUpMsgStart: 0,
   onAirNowItem: null, onAirNowStart: 0,
-  nextApptBlock: null, nextApptMsgStart: 0};
+  nextApptBlock: null, nextApptMsgStart: 0
+};
 
   App.init = function ()
   {
     this.scheduleController = VIACOM.Schedule.Controller; 
 
-    // player setup and event registration. Need better way for player here
     this.player = Object.create(Player);
 
     this.player.videoStartedCallback = function (uri) {
-      App.scheduleController.onPlayerVideoStarted(uri);
+      VIACOM.Schedule.Controller.onPlayerVideoStarted(App.activeScheduleContext, uri);
     };
 
     this.player.stepCallback = function () {
-      App.scheduleController.step(App.player.canStepThroughPlaylist());
-      App.playSchedule();
+      App.playSchedule(VIACOM.Schedule.Controller.step(App.activeScheduleContext, App.player.canStepThroughPlaylist()));
     };
-    // end player stuff
 
     // Register for "ready" event
     this.scheduleController.addListener('Ready', function() {
-      App.sync();
-      UI.displayProgram(App.scheduleController.getSchedule(),  document.getElementById("program"));
-      App.isReady = true;
+      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', function (context) {
+        App.playSchedule(context);
+        UI.displaySchedule(context.schedule,  document.getElementById("schedule"));
+      });
     });
     
-    this.scheduleController.setup({
-      channel: 'test'
-    });
+    this.scheduleController.setup();
 
-    this.handleSkipForward = function (vs) {
+    this.handleSkipForward = function (context) {
       trace("HANDLE: SkipForward");
     };
     this.scheduleController.addListener('SkipForward', this.handleSkipForward);
 
-    this.handleSkipBackward = function (vs) {
+    this.handleSkipBackward = function (context) {
       trace("HANDLE: SkipBackward");
     };
     this.scheduleController.addListener('SkipBackward', this.handleSkipBackward);
 
-    this.handleStep = function (vs) {
+    this.handleStep = function (context) {
       trace("HANDLE: Step");
     };
     this.scheduleController.addListener('Step', this.handleStep);
 
-    this.handleLive = function (vs) {
+    this.handleLive = function (context) {
       trace("HANDLE: Live");
     };
     this.scheduleController.addListener('Live', this.handleLive);
-
-    this.handleSyncAnnounce = function(timeUntil) {
-      trace("Appt block in: " + timeUntil + " seconds");
-    };
-    this.scheduleController.addListener('SyncAnounce', this.handleSyncAnnounce);
   };
 
-  App.sync = function () {
-    this.scheduleController.goLive();
-    this.playSchedule();
-  };
-
-  App.playSchedule = function () {
+  App.playSchedule = function (context) {
     trace("App.playSchedule");
-    var viewerStatus =  this.scheduleController.getViewerStatus();
+    var controller = this.scheduleController;
 
-    if (viewerStatus.wait() > 0) {
+    this.activeScheduleContext = context;
+    this.nextUpItem = null;
+    this.nextApptBlock = null;
+
+    if (context.wait > 0) {
       this.player.stop();
       this.waitStart = this.scheduleController.now();
     }
     else {
      trace("telling the controller to play");
-     this.scheduleController.play(this.player);
+     controller.play(context, this.player);
     }
-    this.scheduleIsPlaying = true;
-    this.nextUpItem = null;
-    this.nextApptBlock = null;
   };
 
   App.skipForward = function () {
-    this.scheduleController.skipForward();
-    this.playSchedule();
+    this.playSchedule(this.scheduleController.skipForward(this.activeScheduleContext));
   };
 
   App.skipBackward = function () {
-    this.scheduleController.skipBackward();
-    this.playSchedule();
+    this.playSchedule(this.scheduleController.skipBackward(this.activeScheduleContext));
   };
 
-  App.skipToItem = function (blockIndex, itemIndex){
-    this.scheduleController.jump(blockIndex, itemIndex);
-    this.playSchedule();
+  App.jumpToItem = function (blockIndex, itemIndex) {
+    var context = this.scheduleController.newContext(this.activeScheduleContext.schedule);
+    this.playSchedule(this.scheduleController.jump(context, blockIndex, itemIndex));
+  };
+
+  App.sync = function () {
+    this.playSchedule(this.scheduleController.sync(this.activeScheduleContext));
   };
 
   App.onInterval = function () {
     var controller = this.scheduleController;
+    var context = this.activeScheduleContext;
+    var schedule = context.schedule;
     
-    var viewerStatus = controller.getViewerStatus();
     var now = controller.now();
 
-    if (this.scheduleIsPlaying) {
+    if (this.activeScheduleContext) {
       // display a "waiting" message
-      if (viewerStatus.wait() > 0) {
-        this.waitRemaining = this.waitStart + viewerStatus.wait() - now;
+      if (context.wait > 0) {
+        this.waitRemaining = this.waitStart + context.wait - now;
         if (this.waitRemaining <= 0) {
-          controller.setWait(0);
-          this.playSchedule();
+          context.wait = 0;
+          this.playSchedule(context);
         }
       }
 
       // display an "on air now" message
       if ((now - this.onAirNowStart) > 10000) {
-        this.onAirNowItem =  controller.getLiveItem();
+        this.onAirNowItem = controller.getLiveItem(context);
         this.onAirNowStart = now;
       }
 
@@ -133,7 +125,7 @@ var App = {scheduleController: null, player: null,
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
             // If the next up item starts in 9 seconds and is not hidden, show next up overlay
-            var item = controller.getNextUpItem();
+            var item = controller.getNextUpItem(context);
             if (!item.hidden) {
               this.nextUpItem = item;
               this.nextUpMsgStart = now;
@@ -150,10 +142,10 @@ var App = {scheduleController: null, player: null,
         }
       }
       else {
-        for (var a = 0; a < controller.getSchedule().apptBlocks.length; a++)
+        for (var a = 0; a < schedule.apptBlocks.length; a++)
         {
-          var blockIndex = controller.getSchedule().apptBlocks[a];
-          var secondsUntilAppt = Math.floor(controller.timeUntilBlockStart(blockIndex) / 1000);
+          var blockIndex = schedule.apptBlocks[a];
+          var secondsUntilAppt = Math.floor(controller.timeUntilBlockStart(schedule, blockIndex) / 1000);
           if (
             ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
               ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
