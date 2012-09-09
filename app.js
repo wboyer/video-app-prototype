@@ -36,17 +36,17 @@ var App = {
     this.handleSkipForward = function (context) {
       trace("HANDLE: SkipForward");
     };
-    this.scheduleController.addListener('SkipForward', this.handleSkipForward);
+    this.scheduleController.addListener('remote', 'SkipForward', this.handleSkipForward);
 
     this.handleSkipBackward = function (context) {
       trace("HANDLE: SkipBackward");
     };
-    this.scheduleController.addListener('SkipBackward', this.handleSkipBackward);
+    this.scheduleController.addListener('remote', 'SkipBackward', this.handleSkipBackward);
 
     this.handleStep = function (context) {
       trace("HANDLE: Step");
     };
-    this.scheduleController.addListener('Step', this.handleStep);
+    this.scheduleController.addListener('remote', 'Step', this.handleStep);
 
     this.handleLive = function (context) {
       trace("HANDLE: Live");

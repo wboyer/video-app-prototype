@@ -111,25 +111,27 @@ VIACOM.Schedule.Controller = (function () {
     context.adsEnabled = true;
 
     // have we stepped to the next block?
-    if (b != context.blockIndex) {
-      var timeUntilBlockStart = block.start * 1000 - timeOffset;
-
-      var msse = block.msse * 1000;
-      // if it's an appt block, we can't start early
-      if (block.appt)
-        msse = 0;
-
-      // if the time until the next block is greater than msse, wait out the difference
-      if ((msse >= 0) && (timeUntilBlockStart > msse))
-        context.wait = timeUntilBlockStart - msse;
-
-      context.blockIndex = b;
+    if (b != context.blockIndex)
       context.hasLoopedBlock = false;
-    }
     else
       if (hasLoopedBlock)
         context.hasLoopedBlock = true;
 
+    // see if we need to wait for this block to start
+    var timeUntilBlockStart = block.start * 1000 - timeOffset;
+
+    var msse = block.msse * 1000;
+    // if it's an appt block, we can't start early
+    if (block.appt)
+      msse = 0;
+
+    // if the time until the next block is greater than msse, wait out the difference
+    if ((msse >= 0) && (timeUntilBlockStart > msse)) {
+      context.wait = timeUntilBlockStart - msse;
+      i = 0;
+    }
+    
+    context.blockIndex = b;
     context.itemIndex = i;
   };
 
@@ -150,10 +152,14 @@ VIACOM.Schedule.Controller = (function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
-      //step forward to the beginning
+      // step forward to the beginning
       this.stepToTime(context, time);
 
-      //if we need to wait, add it
+      // catch blocks with no duration
+      if (context.hasLoopedBlock && (time == schedule.startTime + schedule.blocks[context.blockIndex].start * 1000))
+        return context;
+      
+      // if we need to wait, add it
       time += context.wait;
 
       // if "live" is in the future, we're done, wait it out.
@@ -400,9 +406,10 @@ VIACOM.Schedule.Controller = (function () {
 
     if (playlistUri) {
       player.config(playlistUri);
-      if (item.auto) {
+      if (!uri || item.auto) {
         player.loadPlaylist(playlistUri);
-        player.seekToPlaylistVideo(uri, duration);
+        if (uri)
+          player.seekToPlaylistVideo(uri, duration);
       }
       else
         player.loadVideo(uri, duration);
@@ -428,8 +435,6 @@ VIACOM.Schedule.Controller = (function () {
     var context = this.newContext(schedule);
     this.sync(context, fromTime);
     
-    var schedule = context.schedule;
-
     var time = this.blockStart(schedule, context.blockIndex);
     time += context.wait;
 
@@ -627,10 +632,22 @@ VIACOM.Schedule.Controller = (function () {
     schedule.apptBlocks = [];
     for (var b = 0; b < schedule.blocks.length; b++) {
       var block = schedule.blocks[b];
+
       if (!block.start)
         block.start = 0;
+
       if (block.appt)
         schedule.apptBlocks[schedule.apptBlocks.length] = b; 
+
+      for (var i = 0; i < block.items.length; i++) {
+        var item = block.items[i];
+
+        if (!item.duration)
+          item.duration = 0;
+
+        if (!item.adDuration)
+          item.adDuration = 0;
+      }
     }
     
     schedules[key] = schedule;

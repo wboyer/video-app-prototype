@@ -64,23 +64,31 @@ UI.markScheduleOffset = function (scheduleDiv, markerId, markerClass, b, i, dura
 	}
 
 	itemDiv = document.getElementById("t_b" + b + "_i" + i);
-	markerDiv.style["top"] = itemDiv.offsetTop + Math.floor(itemDiv.offsetHeight * offset / duration);
+    if (duration > 0)
+      markerDiv.style["top"] = itemDiv.offsetTop + Math.floor(itemDiv.offsetHeight * offset / duration);
+    else
+      markerDiv.style["top"] = itemDiv.offsetTop;
 };
 
 UI.updatePlayer = function (player, videoDiv)
 {
-	if (player.uri) {
-		var playlistUri = player.playlistUri;
-		if (!playlistUri)
-			playlistUri = "(none)";
+  var videoUri = player.uri;
+  var playlistUri = player.playlistUri;
 
-		var offset = player.offset;
-		videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "uri: " + player.uri + "<br/>" + UI.mmss(offset);
-		if (offset < player.adDuration)
-			videoDiv.innerHTML += "<br/>ad playing";
-	}
-	else
-		videoDiv.innerHTML = "not playing";
+  if (videoUri || playlistUri) {
+    if (!videoUri)
+      videoUri = "(none)";
+
+    if (!playlistUri)
+      playlistUri = "(none)";
+    
+	var offset = player.offset;
+	videoDiv.innerHTML = "playlistUri: " + playlistUri + "<br/>" + "videoUri: " + videoUri + "<br/>" + UI.mmss(offset);
+	if (offset < player.adDuration)
+		videoDiv.innerHTML += "<br/>ad playing";
+  }
+  else
+	videoDiv.innerHTML = "not playing";
 };
 
 UI.displayOnAirNow = function(app, onAirNowDiv) {

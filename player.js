@@ -50,9 +50,9 @@ Player.seekToOffset = function (offset)
 
 Player.play = function ()
 {
-	if (this.uri) {
+	if (this.uri || this.playlistUri) {
 		this.playing = true;
-		if (this.videoStartedCallback)
+		if (this.uri && this.videoStartedCallback)
 			this.videoStartedCallback(this.uri);
 	}
 };
@@ -75,7 +75,7 @@ Player.onInterval = function (now)
 
 	this.lastTick = now;
 
-	if (this.playing && (this.offset >= this.duration) && this.stepCallback)
+	if (this.playing && (this.duration > 0) && (this.offset >= this.duration) && this.stepCallback)
 		this.stepCallback();
 };
 
