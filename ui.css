@@ -9,9 +9,9 @@ a {color: blue; cursor: pointer}
 .marker_sync {position: absolute; z-index: 1; left: 1; width: 380; height: 1; border-top-width: 1px; border-top-style: solid; border-top-color: green}
 .marker_current {position: absolute; z-index: 0; left: 1; width: 380; height: 1; border-top-width: 1px; border-top-style: solid; border-top-color: red}
 
-.player {position: absolute; left: 400; top: 190; background-color: gray; text-align: center; width: 318; height: 238; border: 1px solid black}
+.player {position: absolute; left: 400; top: 190; background-color: gray; text-align: center; width: 320; height: 238; border: 1px solid black}
 .video {font:20px Arial, Helvetica, sans-serif; position: absolute; left: 10%; top: 10%; background-color: #999999; text-align: center; width: 80%; height: 80%; border: 1px solid black}
-.controls {font-size:8px; position: absolute; left: 400; top: 440; background-color: gray; text-align: center; width: 318; height: 10; border: 1px solid black}
+.controls {font-size:8px; position: absolute; left: 400; top: 440; background-color: gray; text-align: center; width: 320; height: 10; border: 1px solid black}
 .schedules {position: absolute; left: 10; top: 3; text-align: right; background-color: gray; width: 360; border: 1px solid black}
 .overlays {font-size:6px; position: absolute; left: 400; top: 20; padding: 5; background-color: gray; text-align: left; border: 1px solid black; overflow: auto}
 
@@ -21,6 +21,9 @@ td {font:8px Arial, Helvetica, sans-serif; vertical-align: top}
 .nextAppt {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 620; top: 386; background-color: #000088; text-align: center; width: 200; height: 50; border: 1px solid black; visibility: hidden}
 .wait {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 580; top: 290; background-color: #880000; text-align: center; width: 160; height: 50; border: 1px solid black; visibility: hidden}
 .onAirNow {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 400; top: 462; background-color: #880088; text-align: center; width: 160; height: 50; border: 1px solid black}
+.onAirNext {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 560; top: 462; background-color: #888800; text-align: center; width: 160; height: 50; border: 1px solid black}
+
+.guide {font:14px Arial, Helvetica, sans-serif; position: absolute; left: 760; top: 190; background-color: #008888; text-align: center; width: 260; border: 1px solid black}
 
 .overlay {position: absolute; z-index: 1; opacity: 0.9}
 

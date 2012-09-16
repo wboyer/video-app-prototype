@@ -117,15 +117,48 @@ setLocalSchedule({
 				{
 					"duration": 30, "videoUri": "uri12", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
+					"meta" : {
+						"video": {
+							"title1": "Primary Title for a Video",
+							"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+							"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+							"rating": "TV-13",
+							"id": "767195",
+							"uri": "uri12"
+						}
+					},
+
 					"adDuration": 30
 				},
 				{
 					"duration": 210, "videoUri": "uri13", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
 
+					"meta" : {
+						"video": {
+							"title1": "Primary Title for a Video",
+							"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+							"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+							"rating": "TV-13",
+							"id": "767195",
+							"uri": "uri13"
+						}
+					},
+
 					"adDuration": 30
 				},
 				{
 					"duration": 270, "videoUri": "uri14", "playlistUri": null, "dll": false, "auto": false, "hidden": null,
+
+					"meta" : {
+						"video": {
+							"title1": "Primary Title for a Video",
+							"title2": "This secondary title can be up to two lines long, at which point the app will truncate it with an ellipsis.",
+							"thumbnail": "http://fpoimg.com/256x144/Promo 0 of 3",
+							"rating": "TV-13",
+							"id": "767195",
+							"uri": "uri14"
+						}
+					},
 
 					"adDuration": 30
 				}

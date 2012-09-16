@@ -13,6 +13,9 @@ function init()
   initOverlayAllowedRegion("overlay3", 0, 0, playerDiv.clientWidth + 2, playerDiv.clientHeight + 2 + 40);
 
   window.setInterval(function () {
+    playerDiv = document.getElementById("player");
+    videoDiv = document.getElementById("video");
+
     if (App.activeScheduleContext) {
       var controller = App.scheduleController;      
       var now = controller.now();
@@ -33,6 +36,7 @@ function init()
 
       App.onInterval(now);
       UI.displayOnAirNow(App, document.getElementById("onAirNow"));
+      UI.displayOnAirNext(App, document.getElementById("onAirNext"));
       UI.displayWait(App, document.getElementById("wait"));
       UI.displayNextUp(App, document.getElementById("nextUp"));
       UI.displayNextAppt(App, document.getElementById("nextAppt"), now);
@@ -98,10 +102,11 @@ function addOverlayAllowedRegion(overlay, id)
 
 function slideSchedule(offset)
 {
-  var schedule = App.activeScheduleContext.schedule;
-  schedule.startTime += offset;
+  App.activeScheduleContext.schedule.startTime += offset;
 
-  UI.displaySchedule(schedule, document.getElementById("schedule"));
+  UI.displaySchedule(App, document.getElementById("schedule"));
+  UI.displayGuide(App, document.getElementById("guide"));
+
   App.onAirNowStart = 0;
 }
 
@@ -118,11 +123,14 @@ function setLocalSchedule(schedule)
 {
   var controller = App.scheduleController;      
 
+  while (schedule.startTime + 3600000 < controller.now())
+    schedule.startTime += 3600000;
+  
   controller.setSchedule("local", schedule);
+
   var context = controller.newContext(schedule);
   controller.sync(context);
   App.playSchedule(context, App.player);
 
-  UI.displaySchedule(schedule, document.getElementById("schedule"));
-  App.onAirNowStart = 0;
+  slideSchedule(0);
 }

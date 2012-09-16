@@ -14,8 +14,34 @@ UI.mmss = function (duration)
 	return  minutes + ":" + seconds;
 };
 
-UI.displaySchedule = function (schedule, scheduleDiv)
+UI.displayGuide = function (app, guideDiv)
 {
+  var midnight = new Date();
+  midnight.setHours(0);
+  midnight.setMinutes(0);
+  midnight.setSeconds(0);
+
+  var tomorrowMidnight = new Date();
+  tomorrowMidnight.setTime(midnight.getTime() + 1000*60*60*24);
+
+  var innerHTML = "";
+  
+  app.scheduleController.guide(app.activeScheduleContext.schedule, midnight.getTime(), tomorrowMidnight.getTime(),
+    function(startTime, videoMeta, playlistMeta, duration) {
+      if (videoMeta)
+        innerHTML += videoMeta.title1 + " (" + videoMeta.uri + ")<br/>";
+      else
+        if (playlistMeta)
+          innerHTML += playlistMeta.title1 + " (" + playlistMeta.uri + ")<br/>";
+    }
+  );
+
+  guideDiv.innerHTML = innerHTML;
+};
+
+UI.displaySchedule = function (app, scheduleDiv)
+{
+    var schedule = app.activeScheduleContext.schedule;
 	var blocks = schedule.blocks;
 	var innerHTML = "";
 	
@@ -92,7 +118,31 @@ UI.updatePlayer = function (player, videoDiv)
 };
 
 UI.displayOnAirNow = function(app, onAirNowDiv) {
-	onAirNowDiv.innerHTML = "On Air Now: " + app.onAirNowItem.videoUri;
+  var innerHTML = "";
+   
+   app.scheduleController.describe(app.onAirNowContext,
+       function(startTime, videoMeta, playlistMeta, duration) {
+         if (videoMeta)
+           innerHTML += "Live Now: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
+         else
+           innerHTML += "Live Now: (metadata unavailable)";
+     }
+   );
+   onAirNowDiv.innerHTML = innerHTML;
+};
+
+UI.displayOnAirNext = function(app, onAirNextDiv) {
+  var innerHTML = "";
+   
+   app.scheduleController.describe(app.onAirNextContext,
+       function(startTime, videoMeta, playlistMeta, duration) {
+         if (videoMeta)
+             innerHTML += "Live Later: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
+         else
+           innerHTML += "Live Later: (metadata unavailable)";
+     }
+   );
+   onAirNextDiv.innerHTML = innerHTML;
 };
 
 UI.displayWait = function(app, waitDiv) {
@@ -105,9 +155,21 @@ UI.displayWait = function(app, waitDiv) {
 };
 
 UI.displayNextUp = function(app, nextUpDiv) {
-	if (app.nextUpItem) {
+	if (app.nextUpContext)
+	{
 		nextUpDiv.style["visibility"] = "visible";
-		nextUpDiv.innerHTML = "Next Up: " + app.nextUpItem.videoUri;
+		var innerHTML = "";
+		
+		app.scheduleController.describe(app.nextUpContext,
+		    function(startTime, videoMeta, playlistMeta, duration) {
+		    if (videoMeta)
+		      innerHTML += "Next Up: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
+		    else
+              innerHTML += "Next Up: (metadata unavailable)";
+		  }
+		);
+		
+		nextUpDiv.innerHTML = innerHTML;
 	}
 	else
 		nextUpDiv.style["visibility"] = "hidden";

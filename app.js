@@ -4,8 +4,8 @@ var App = {
   player: null,
   scheduleController: null, activeScheduleContext: null,
   waitStart: 0, waitRemaining: 0,
-  nextUpItem: null, nextUpMsgStart: 0,
-  onAirNowItem: null, onAirNowStart: 0,
+  nextUpContext: null, nextUpMsgStart: 0,
+  onAirNowContext: null, onAirNextContext: null, onAirNowStart: 0,
   nextApptBlock: null, nextApptMsgStart: 0
 };
 
@@ -27,7 +27,7 @@ var App = {
     this.scheduleController.addListener('Ready', function() {
       App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', function (context) {
         App.playSchedule(context);
-        UI.displaySchedule(context.schedule,  document.getElementById("schedule"));
+        UI.displaySchedule(App, document.getElementById("schedule"));
       });
     });
     
@@ -59,7 +59,7 @@ var App = {
     var controller = this.scheduleController;
 
     this.activeScheduleContext = context;
-    this.nextUpItem = null;
+    this.nextUpContext = null;
     this.nextApptBlock = null;
 
     if (context.wait > 0) {
@@ -106,30 +106,45 @@ var App = {
         }
       }
 
-      // display an "on air now" message
+      // display an "on air now" and "on air next" messages
       if ((now - this.onAirNowStart) > 10000) {
-        this.onAirNowItem = controller.getLiveItem(context);
+        this.onAirNowContext = controller.getLiveContext(context);
+        this.onAirNextContext = controller.cloneContext(this.onAirNowContext);
+        controller.skipForward(this.onAirNextContext);
         this.onAirNowStart = now;
       }
 
       // display a "next up" message
-      if (this.nextUpItem) {
+      if (this.nextUpContext) {
         // If the next up overlay has been visible for more than 6 seconds, remove it.
         if ((now - this.nextUpMsgStart) > 6000) {
           this.nextUpMsgStart = 0;
-          this.nextUpItem = null;
+          this.nextUpContext = null;
         }
       }
       else {
         if (this.player.playing) {
+          // If the next up item starts in 9 seconds, and will be described differently than
+          // the one currently playing, then put up a "next up" message.
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
-            // If the next up item starts in 9 seconds and is not hidden, show next up overlay
-            var item = controller.getNextUpItem(context);
-            if (!item.hidden) {
-              this.nextUpItem = item;
-              this.nextUpMsgStart = now;
-            }
+            controller.describe(context,
+                function(startTime, videoMeta, playlistMeta, duration)
+                {
+                  var currentVideoMeta = videoMeta;
+                  var nextUpContext = controller.getNextUpContext(context);
+
+                  controller.describe(nextUpContext,
+                      function(startTime, videoMeta, playlistMeta, duration)
+                      {
+                        if (videoMeta != currentVideoMeta) {
+                          App.nextUpContext = nextUpContext;
+                          App.nextUpMsgStart = now;
+                        }
+                      }
+                  );
+                }
+            );
           }
         }
       }

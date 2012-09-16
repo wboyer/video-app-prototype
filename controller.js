@@ -37,9 +37,7 @@ VIACOM.Schedule.Controller = (function () {
 
   var now = function ()
   {
-    //var theTimeIs = new Date().getTime();
     var theTimeIs = clock.getCurrentTime();
-    //trace("the time is: " + theTimeIs);
     return theTimeIs;
   };
 
@@ -247,7 +245,7 @@ VIACOM.Schedule.Controller = (function () {
 
   var skipForward = function (context)
   {
-    trace('skipForward');
+    //trace('skipForward');
 
     var b = context.blockIndex;
     var i = context.itemIndex;
@@ -256,24 +254,18 @@ VIACOM.Schedule.Controller = (function () {
     var block = blocks[b];
     var items = block.items;
 
-    if (context.wait > 0) {
-      if (block.appt)
-        i = block.items.length;
-      else {
-        context.wait = 0;
-        return;
-      }
-    }
+    if (block.appt && (context.wait > 0))
+      i = block.items.length;
     else {
       var playlistUri = items[i].playlistUri;
+      
       if (items[i].hidden == "playlist")
         while ((i < items.length) && (items[i].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
           i += 1;
-      else
-      {
+      else {
         while ((i < items.length) && (items[i].hidden == "pre"))
           i += 1;
-
+        
         if ((i < items.length) && !items[i].hidden)
           i += 1;
 
@@ -291,13 +283,12 @@ VIACOM.Schedule.Controller = (function () {
     }
 
     this.jump(context, b, i);
-    fireScheduleEvent(context.schedule.key, 'SkipForward');
     return context;
   };
 
   var skipBackward = function (context)
   {
-    trace('skipBackward');
+    //trace('skipBackward');
 
     var b = context.blockIndex;
     var i = context.itemIndex;
@@ -307,6 +298,7 @@ VIACOM.Schedule.Controller = (function () {
     var items = block.items;
 
     var playlistUri = items[i].playlistUri;
+    
     if (items[i].hidden == "playlist")
       while ((i >= 0) && (items[i].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
         i -= 1;
@@ -343,13 +335,12 @@ VIACOM.Schedule.Controller = (function () {
       i -= 1;
     
     this.jump(context, b, i);
-    fireScheduleEvent(context.schedule.key, 'SkipBackward');
     return context;
   };
 
   var jump = function (context, blockIndex, itemIndex)
   {
-    trace('jump(' + blockIndex + ',' + itemIndex + ')');
+    //trace('jump(' + blockIndex + ',' + itemIndex + ')');
 
     var schedule = context.schedule;
     var now = this.now();
@@ -434,64 +425,111 @@ VIACOM.Schedule.Controller = (function () {
   {
     var context = this.newContext(schedule);
     this.sync(context, fromTime);
-    
-    var time = this.blockStart(schedule, context.blockIndex);
-    time += context.wait;
 
-    var playlistUri = null;
-    var playlistMeta = null;
+    var initialBlockIndex = context.blockIndex;
+    var initialItemIndex = context.itemIndex;
+    
+    var time = this.blockStart(schedule, initialBlockIndex);
 
     while (time < toTime)
     {
-      var block = schedule.blocks[context.blockIndex];
-      var items = block.items;
-      var i = context.itemIndex;
-
-      if (items[i].playlistUri != playlistUri) {
-        playlistUri = items[i].playlistUri;
-        playlistMeta = null;
-      }
-
-      if (playlistUri && !playlistMeta)
-        for (var j = i; (j >= 0) && (items[j].playlistUri == playlistUri) && !playlistMeta; j--)
-          playlistMeta = items[j].meta.playlist;
-
-      var startTime = 0;
-      if (i == 0)
-        startTime = time;
-
-      var videoMeta = null;
-      var duration = 0;
-      var j = i;
-      
-      while ((j < items.length) && (items[j].hidden == "pre")) {
-        duration += items[j].duration;
-        j += 1;
-      }
-
-      if ((j < items.length) && !items[j].hidden) {
-        videoMeta = items[j].meta.video;
-        duration += items[j].duration;
-        j += 1;
-      }
-
-      while ((j < items.length) && (items[j].hidden == "post")) {
-        duration += items[j].duration;
-        j += 1;
-      }
-      
-      callback(startTime, videoMeta, playlistMeta, items[i].offset, duration);
-
+      this.describe(context, callback);
       this.skipForward(context);
 
-      var nextTime = this.blockStart(schedule, context.blockIndex);
-      if (nextTime < time)
+      if ((context.blockIndex == initialBlockIndex) && (context.itemIndex == initialItemIndex))
         break;
-      else
-        time = nextTime;
+      
+      time = this.blockStart(schedule, context.blockIndex);
     }
   };
+
+  var findPlaylistMeta = function (context)
+  {
+    context = this.cloneContext(context);
+    var initialItem = this.getCurrentItem(context);
+    var item = initialItem;
+
+    var playlistUri = item.playlistUri;
+
+    while ((!item.meta || !item.meta.playlist) && (playlistUri == item.playlistUri)) {
+      this.skipBackward(context);
+      item = this.getCurrentItem(context);
+      if (item == initialItem)
+        break;
+    }
+
+    if (item.meta && item.meta.playlist && (playlistUri == item.playlistUri))
+      return item.meta.playlist;
+    else
+      return null;
+  };
   
+  var describe = function (context, callback)
+  {
+    context = this.cloneContext(context);
+
+    var blocks = context.schedule.blocks;
+    
+    // first skip forward
+    this.skipForward(context);
+
+    // now skip backward manually, accumulating duration and looking for metadata along the way
+    var b = context.blockIndex;
+    var i = context.itemIndex - 1;
+
+    var items = blocks[b].items;
+    
+    if (i < 0) {
+      if (b > 0)
+        b -= 1;
+      else
+        b = blocks.length - 1;
+
+      items = blocks[b].items
+      i = items.length - 1;
+    }
+
+    var playlistUri = items[i].playlistUri;
+    var duration = 0;
+    var videoMeta = null;
+    var playlistMeta = null;
+    
+    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && (items[i].hidden == "playlist")) {
+      duration += items[i].duration;
+      i -= 1;
+    }
+
+    while ((i >= 0) && items[i].hidden == "post") {
+      duration += items[i].duration;
+      i -= 1;
+    }
+
+    if ((i >= 0) && items[i].meta && items[i].meta.video) {      
+      duration += items[i].duration;
+      videoMeta = items[i].meta.video;
+    }
+
+    while ((i > 0) && (items[i-1].hidden == "pre")) {
+      i -= 1;
+      duration += items[i].duration;
+    }
+
+    if (items[i].meta && items[i].meta.playlist)
+      playlistMeta = items[i].meta.playlist;
+
+    // if we didn't find playlist metadata, continue to skip backward until we find it
+    if (!playlistMeta) {
+      this.skipBackward(context);
+      playlistMeta = this.findPlaylistMeta(context);
+    }
+    
+    var startTime = 0;
+    if (i == 0)
+      startTime = this.blockStart(context.schedule, context.blockIndex);
+
+    callback(startTime, videoMeta, playlistMeta, duration);
+  };
+
   var blockStart = function (schedule, blockIndex)
   {
     return schedule.startTime + schedule.blocks[blockIndex].start * 1000;
@@ -507,18 +545,18 @@ VIACOM.Schedule.Controller = (function () {
     return context.schedule.blocks[context.blockIndex].items[context.itemIndex];
   };
 
-  var nextUpItem = function (context)
+  var nextUpContext = function (context)
   {
     var next = new ScheduleContext(context);
     this.step(next, true);
-    return currentItem(next);
+    return next;
   };
 
-  var liveItem = function (context)
+  var liveContext = function (context)
   {
     var live = new ScheduleContext(context);
     this.sync(live);
-    return currentItem(live);
+    return live;
   };
 
   // Data structure to store event listeners. Key is event name, value is an array
@@ -698,11 +736,13 @@ VIACOM.Schedule.Controller = (function () {
     'skipBackward' : skipBackward,
     'jump' : jump,
     'guide' : guide,
+    'findPlaylistMeta' : findPlaylistMeta,
+    'describe' : describe,
     'addListener' : addListener,
     'now' : now,
     'getCurrentItem' : currentItem,
-    'getNextUpItem' : nextUpItem,
-    'getLiveItem' : liveItem,
+    'getNextUpContext' : nextUpContext,
+    'getLiveContext' : liveContext,
     'setup' : setup
   };
 
