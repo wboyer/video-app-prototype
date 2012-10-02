@@ -221,12 +221,17 @@ VIACOM.Schedule.Controller = (function () {
 
     var i = context.itemIndex + 1;
 
+
     var items = context.schedule.blocks[context.blockIndex].items;
+
+    trace('here');
 
     if (playerCanStepThroughPlaylist) {
       while ((i < items.length) && (items[context.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
         i += 1;
     }
+     trace('and here');
+
 
     context.itemIndex = i;
 
@@ -649,7 +654,7 @@ VIACOM.Schedule.Controller = (function () {
 
   var setup  = function()
   {
-    clock = new RemoteClock('http://schedule.mtvnservices-d.mtvi.com/api/v1/now.esi', {
+    clock = new RemoteClock('http://schedule.mtvnservices.com/api/v1/now.esi', {
       maxDriftMsec: 2000,
       updateFrequencyMsec: 1000,
       ready: function () {

@@ -25,7 +25,7 @@ var App = {
 
     // Register for "ready" event
     this.scheduleController.addListener('Ready', function() {
-      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/example.php', function (context) {
+      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/cc-exampple.php', function (context) {
         App.playSchedule(context);
         UI.displaySchedule(App, document.getElementById("schedule"));
       });
