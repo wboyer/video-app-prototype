@@ -369,6 +369,40 @@ VIACOM.Schedule.Controller = (function () {
     return context;
   };
 
+  var seek = function (context, videoUri, playlistUri)
+  {
+    var initialBlockIndex = context.blockIndex;
+    var initialItemIndex = context.itemIndex;
+
+    var matchingBlockIndex = -1;
+    var matchingItemIndex = -1;
+
+    do {
+      this.skipForward(context);
+      var item = this.getCurrentItem(context);
+
+      if (videoUri && (item.videoUri == videoUri))
+        if (item.playlistUri == playlistUri)
+          return true;
+        else {
+          matchingBlockIndex = context.blockIndex;
+          matchingItemIndex = context.itemIndex;
+        }
+      else
+        if (!videoUri)
+          if (item.playlistUri == playlistUri)
+            return true;
+    }
+    while ((context.blockIndex != initialBlockIndex) || (context.itemIndex != initialItemIndex));
+
+    if (matchingBlockIndex != -1) {
+      this.jump(context, matchingBlockIndex, matchingItemIndex);
+      return true;
+    }
+    else
+      return false;
+  };
+  
   var onPlayerVideoStarted = function (context, uri)
   {
     trace('onPlayerVideoStarted');
@@ -658,6 +692,49 @@ VIACOM.Schedule.Controller = (function () {
     });
   };
 
+  var newScheduleFromSearchResults = function(results)
+  {
+    var schedule = {};
+
+    var blocks = [];
+    schedule.blocks = blocks;
+
+    var block = {};
+    blocks[0] = block;
+
+    var items = [];
+    block.items = items;
+    
+    for (var i = 0; i < results.results.length; i++) {
+      var result = results.results[i];
+
+      var item = {};
+      item.meta = {};
+
+      switch (result.type) {
+        case "video":
+          items[items.length] = item;
+          item.meta.video = result.video;
+          item.videoUri = result.video.uri;
+          break;
+  
+        case "playlist":
+          items[items.length] = item;
+          item.meta.playlist = result.playlist;
+          item.playlistUri = result.playlist.uri;
+          break;
+  
+        case "episode":
+          items[items.length] = item;
+          item.meta.episode = result.episode;
+          item.playlistUri = result.episode.uri;
+          break;
+      }
+    }
+    
+    return schedule;
+  };
+  
   var setSchedule = function(key, schedule)
   {
     schedule.key = key;
@@ -710,6 +787,25 @@ VIACOM.Schedule.Controller = (function () {
     });
   };
 
+  var loadSearchResults = function(key, url, callback)
+  {
+    var controller = this;
+    
+    Cors.get(url, {
+      success: function(results) { 
+        trace("Results loaded for " + key + " from " + url);
+        var schedule = controller.newScheduleFromSearchResults(results);
+        controller.setSchedule(key, schedule);
+        var context = controller.newContext(schedule);
+        controller.sync(context);
+        callback(context);
+      },
+      failure: function() { trace("Could not get schedule for " + key + " from " + url); },
+      timeout: function() { trace("Schedule GET request timeout for " + key + " from " + url); },
+      parseJson: true
+    });
+  };
+
   var removeSchedule = function(key)
   {
     trace("removeSchedule called: " + key);
@@ -724,6 +820,8 @@ VIACOM.Schedule.Controller = (function () {
     'onPlayerVideoStarted' : onPlayerVideoStarted,
     'setSchedule' : setSchedule,
     'loadSchedule' : loadSchedule,
+    'newScheduleFromSearchResults' : newScheduleFromSearchResults,
+    'loadSearchResults' : loadSearchResults,
     'removeSchedule' : removeSchedule,
     'newContext' : newContext,
     'cloneContext' : cloneContext,
@@ -735,6 +833,7 @@ VIACOM.Schedule.Controller = (function () {
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
+    'seek' : seek,
     'guide' : guide,
     'findPlaylistMeta' : findPlaylistMeta,
     'describe' : describe,

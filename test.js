@@ -130,7 +130,15 @@ function setLocalSchedule(schedule)
 
   var context = controller.newContext(schedule);
   controller.sync(context);
+
   App.playSchedule(context, App.player);
 
   slideSchedule(0);
+}
+
+function setLocalSearchResults(results)
+{
+  var controller = App.scheduleController;      
+
+  setLocalSchedule(controller.newScheduleFromSearchResults(results));
 }
