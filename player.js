@@ -1,4 +1,4 @@
-var Player = {uri: null, playlistUri: null, duration: 0, offset: 0, playing: false,
+var Player = {uri: null, playlistUri: null, duration: 0, adDuration: 0, adsEnabled: true, adUri: null, offset: 0, playing: false,
 				stepCallback: null, videoStartedCallback: true,
 				lastTick: 0};
 
@@ -7,7 +7,9 @@ Player.stop = function ()
 	this.uri = null;
 	this.playlistUri = null;
 	this.duration = 0;
-	this.adDuration = 0;
+    this.adDuration = 0;
+    this.adsEnabled = true;
+    this.adUri = null;
 	this.offset = 0;
 	this.playing = false;
 	this.lastTick = 0;
@@ -40,7 +42,17 @@ Player.loadVideo = function (uri, duration)
 
 Player.setAdDuration = function (duration)
 {
-	this.adDuration = duration;
+    this.adDuration = duration;
+};
+
+Player.setAdsEnabled = function (enabled)
+{
+    this.adsEnabled = enabled;
+};
+
+Player.setAdUri = function (uri)
+{
+    this.adUri = uri;
 };
 
 Player.seekToOffset = function (offset)

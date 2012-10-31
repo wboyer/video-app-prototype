@@ -107,20 +107,20 @@ VIACOM.Schedule.Controller = (function () {
       if (((timeUntilBlockStart == 0) && hasLoopedBlock) || 
           ((timeUntilBlockStart < duration * 1000) && (hasLoopedBlock || !block.dfe)))
       {
-        if (b + 1 < blocks.length) {
+        var saveBlockIndex = b;
+        
+        if (b + 1 < blocks.length)
           b += 1;
+        else
+          while ((b > 0) && (blocks[b].start == 0))
+            b -= 1;
+        
+        if (b != saveBlockIndex) {
+          i = 0;
+          block = blocks[b];
           hasLoopedBlock = false;
           done = false;
         }
-        else
-          while ((b > 0) && (blocks[b].start == 0)) {
-            b -= 1;
-            hasLoopedBlock = false;
-            done = false;
-          }
-        
-        i = 0;
-        block = blocks[b];
       }
     }
 
@@ -491,9 +491,20 @@ VIACOM.Schedule.Controller = (function () {
       player.loadVideo(videoUri, duration);
     }
 
-    if (context.adsEnabled)
-      player.setAdDuration(adDuration);
+    var adsEnabled = context.adsEnabled;
+    
+    if (adsEnabled) {
+      var adUri = this.findAdUri(context);
+      if (adUri) {
+        player.setAdUri(adUri);
+        player.setAdDuration(adDuration);
+      }
+      else
+        adsEnabled = false;
+    }
 
+    player.setAdsEnabled(adsEnabled);
+        
     if (context.offset > 0)
       player.seekToOffset(context.offset);
 
@@ -502,6 +513,27 @@ VIACOM.Schedule.Controller = (function () {
     return context;
   };
 
+  var findAdUri = function (context)
+  {
+    var items = context.schedule.blocks[context.blockIndex].items;
+    var i = context.itemIndex;
+    
+    if ((items[i].hidden != "post") && ((i == 0) || (items[i-1].hidden != "pre")))
+    {
+      while ((i < items.length) && (items[i].hidden == "pre"))
+        i += 1;
+
+      if (i < items.length)
+        if (!items[i].hidden)
+          return items[i].videoUri;
+        else
+          if (items[i].hidden == "playlist")
+            return items[i].playlistUri;
+    }
+
+    return null;
+  };
+  
   var guide = function (schedule, fromTime, toTime, callback)
   {
     var context = this.newContext(schedule);
@@ -883,6 +915,7 @@ VIACOM.Schedule.Controller = (function () {
     'seek' : seek,
     'pull' : pull,
     'guide' : guide,
+    'findAdUri' : findAdUri,
     'findPlaylistMeta' : findPlaylistMeta,
     'describe' : describe,
     'addListener' : addListener,
