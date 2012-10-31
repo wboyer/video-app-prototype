@@ -102,21 +102,25 @@ VIACOM.Schedule.Controller = (function () {
 
       // If we've played the current block once, and the next block has a floating start time, OR if both the following are true:
       //  - The duration of the current item and the "auto" items following it is greater than the time until the next block starts.
-      //  - We've played the current block, or it not prohibit finishing early if we haven't.
+      //  - We've played the current block, or that block doesn't prohibit finishing early if we haven't.
       // ...then step to the next block.
       if (((timeUntilBlockStart == 0) && hasLoopedBlock) || 
           ((timeUntilBlockStart < duration * 1000) && (hasLoopedBlock || !block.dfe)))
       {
-        if (b + 1 < blocks.length)
+        if (b + 1 < blocks.length) {
           b += 1;
+          hasLoopedBlock = false;
+          done = false;
+        }
         else
-          while ((b > 0) && (blocks[b].start == 0))
+          while ((b > 0) && (blocks[b].start == 0)) {
             b -= 1;
+            hasLoopedBlock = false;
+            done = false;
+          }
         
         i = 0;
         block = blocks[b];
-        hasLoopedBlock = false;
-        done = false;
       }
     }
 
