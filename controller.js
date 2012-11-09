@@ -42,8 +42,8 @@ VIACOM.Schedule.Controller = (function () {
   };
 
   // private
-  // Step to a particular point in time
-  var stepToTime = function (context, time)
+  // Check whether to step to a new block, based on the current time.
+  var stepToNewBlock = function (context, time)
   {
     var schedule = context.schedule;
 
@@ -70,32 +70,52 @@ VIACOM.Schedule.Controller = (function () {
         hasLoopedBlock = true;
       }
 
-      // if there is at least one more block
+      var duration = 0;        
+      var timeUntilBlockStart = 0;
+
+      // if there's a block following this one that might need to start now
       if (b + 1 < blocks.length) {
-
         var nextBlock = blocks[b + 1];
-        var timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
-        // if next block is appt block, mssl is overridden
-        var mssl = nextBlock.mssl;
-        if (nextBlock.appt)
-          mssl = 0;
+        if (nextBlock.start > 0) {
+          timeUntilBlockStart = nextBlock.start * 1000 - timeOffset;
 
-        // total duration = item duration + ad duration
-        var duration = items[i].duration + items[i].adDuration;
+          // if next block is appt block, mssl is overridden
+          var mssl = nextBlock.mssl;
+          if (nextBlock.appt)
+            mssl = 0;
 
-        // if the next item is in the same playlist and it's an auto playlist 
-        // (i.e., the player handles stepping), add up the durations
-        // of the items in that playlist
-        for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++)
-          duration += items[j].duration + items[j].adDuration;
+          // mssl gives us more time before the next block needs to start
+          if (mssl >= 0)
+            timeUntilBlockStart += mssl * 1000;
+          
+          // total duration = item duration + ad duration
+          duration += items[i].duration + items[i].adDuration;
 
-        // 1. Is the duration of the current block minus the mssl of the next block (i.e., the minimum time to finish the block)
-        //    greater than the time until the next block?
-        // 2. Has the the block looped or does the block prohibit finishing early?
-        //    If both of these are true, then continue to next block
-        if ((mssl >= 0) && ((duration - mssl) * 1000 > timeUntilBlockStart) && (hasLoopedBlock || !block.dfe)) {
+          // if the next item is in the same playlist and it's an auto playlist 
+          // (i.e., the player handles stepping), add up the durations
+          // of the items in that playlist
+          for (var j = i + 1; (j < items.length) && (items[i].playlistUri == items[j].playlistUri) && items[j].auto; j++)
+            duration += items[j].duration + items[j].adDuration;
+        }
+      }
+
+      // If we've played the current block once, and the next block has a floating start time, OR if both the following are true:
+      //  - The duration of the current item and the "auto" items following it is greater than the time until the next block starts.
+      //  - We've played the current block, or that block doesn't prohibit finishing early if we haven't.
+      // ...then step to the next block.
+      if (((timeUntilBlockStart == 0) && hasLoopedBlock) || 
+          ((timeUntilBlockStart < duration * 1000) && (hasLoopedBlock || !block.dfe)))
+      {
+        var saveBlockIndex = b;
+        
+        if (b + 1 < blocks.length)
           b += 1;
+        else
+          while ((b > 0) && (blocks[b].start == 0))
+            b -= 1;
+        
+        if (b != saveBlockIndex) {
           i = 0;
           block = blocks[b];
           hasLoopedBlock = false;
@@ -108,7 +128,7 @@ VIACOM.Schedule.Controller = (function () {
     context.offset = 0;
     context.adsEnabled = true;
 
-    // have we stepped to the next block?
+    // have we stepped to a new block?
     if (b != context.blockIndex)
       context.hasLoopedBlock = false;
     else
@@ -150,8 +170,7 @@ VIACOM.Schedule.Controller = (function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
-      // step forward to the beginning
-      this.stepToTime(context, time);
+      this.stepToNewBlock(context, time);
 
       // catch blocks with no duration
       if (context.hasLoopedBlock && (time == schedule.startTime + schedule.blocks[context.blockIndex].start * 1000))
@@ -224,8 +243,7 @@ VIACOM.Schedule.Controller = (function () {
 
     var items = context.schedule.blocks[context.blockIndex].items;
 
-    trace('here');
-
+    // Skip "auto" items that the Player should have stepped to on its own.
     if (playerCanStepThroughPlaylist) {
       while ((i < items.length) && (items[context.itemIndex].playlistUri == items[i].playlistUri) && items[i].auto)
         i += 1;
@@ -235,7 +253,7 @@ VIACOM.Schedule.Controller = (function () {
 
     context.itemIndex = i;
 
-    this.stepToTime(context, this.now());
+    this.stepToNewBlock(context, this.now());
     
     return context;
   };
@@ -388,6 +406,7 @@ VIACOM.Schedule.Controller = (function () {
 
       if (videoUri && (item.videoUri == videoUri))
         if (item.playlistUri == playlistUri)
+          // bug here; must jump(), not just return
           return true;
         else {
           matchingBlockIndex = context.blockIndex;
@@ -396,6 +415,7 @@ VIACOM.Schedule.Controller = (function () {
       else
         if (!videoUri)
           if (item.playlistUri == playlistUri)
+            // bug here; must jump(), not just return
             return true;
     }
     while ((context.blockIndex != initialBlockIndex) || (context.itemIndex != initialItemIndex));
@@ -406,6 +426,30 @@ VIACOM.Schedule.Controller = (function () {
     }
     else
       return false;
+  };
+  
+  var pull = function (context, videoUri, playlistUri)
+  {
+    var initialBlockIndex = context.blockIndex;
+    var initialItemIndex = context.itemIndex;
+
+    if (this.seek(context, videoUri, playlistUri) && (context.blockIndex == initialBlockIndex))
+    {
+      var items = context.schedule.blocks[context.blockIndex].items;
+      var itemToPull = items[context.itemIndex];
+
+      for (var i = context.itemIndex; i > 0; i--)
+        items[i] = items[i-1];
+
+      items[0] = itemToPull;
+
+      return true;
+    }
+
+    context.blockIndex = initialBlockIndex;
+    context.itemIndex = initialItemIndex;
+
+    return false;
   };
   
   var onPlayerVideoStarted = function (context, uri)
@@ -429,29 +473,41 @@ VIACOM.Schedule.Controller = (function () {
 
     var item = context.schedule.blocks[context.blockIndex].items[context.itemIndex];
 
-    var uri = item.videoUri;
+    var videoUri = item.videoUri;
     var playlistUri = item.playlistUri;
+    
     var duration = (item.duration + item.adDuration) * 1000;
     var adDuration = item.adDuration * 1000;
 
     if (playlistUri) {
       player.config(playlistUri);
-      if (!uri || item.auto) {
+      if (!videoUri || item.auto) {
         player.loadPlaylist(playlistUri);
-        if (uri)
-          player.seekToPlaylistVideo(uri, duration);
+        if (videoUri)
+          player.seekToPlaylistVideo(videoUri, duration);
       }
       else
-        player.loadVideo(uri, duration);
+        player.loadVideo(videoUri, duration);
     }
     else {
-      player.config(uri);
-      player.loadVideo(uri, duration);
+      player.config(videoUri);
+      player.loadVideo(videoUri, duration);
     }
 
-    if (context.adsEnabled)
-      player.setAdDuration(adDuration);
+    var adsEnabled = context.adsEnabled;
+    
+    if (adsEnabled) {
+      var adUri = this.findAdUri(context);
+      if (adUri) {
+        player.setAdUri(adUri);
+        player.setAdDuration(adDuration);
+      }
+      else
+        adsEnabled = false;
+    }
 
+    player.setAdsEnabled(adsEnabled);
+        
     if (context.offset > 0)
       player.seekToOffset(context.offset);
 
@@ -460,6 +516,27 @@ VIACOM.Schedule.Controller = (function () {
     return context;
   };
 
+  var findAdUri = function (context)
+  {
+    var items = context.schedule.blocks[context.blockIndex].items;
+    var i = context.itemIndex;
+    
+    if ((items[i].hidden != "post") && ((i == 0) || (items[i-1].hidden != "pre")))
+    {
+      while ((i < items.length) && (items[i].hidden == "pre"))
+        i += 1;
+
+      if (i < items.length)
+        if (!items[i].hidden)
+          return items[i].videoUri;
+        else
+          if (items[i].hidden == "playlist")
+            return items[i].playlistUri;
+    }
+
+    return null;
+  };
+  
   var guide = function (schedule, fromTime, toTime, callback)
   {
     var context = this.newContext(schedule);
@@ -543,7 +620,7 @@ VIACOM.Schedule.Controller = (function () {
       i -= 1;
     }
 
-    if ((i >= 0) && items[i].meta && items[i].meta.video) {      
+    if ((i >= 0) && !items[i].hidden && items[i].meta && items[i].meta.video) {      
       duration += items[i].duration;
       videoMeta = items[i].meta.video;
     }
@@ -834,12 +911,14 @@ VIACOM.Schedule.Controller = (function () {
     'timeUntilBlockStart' : timeUntilBlockStart,
     'sync' : sync,
     'step' : step,
-    'stepToTime' : stepToTime,
+    'stepToNewBlock' : stepToNewBlock,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
     'seek' : seek,
+    'pull' : pull,
     'guide' : guide,
+    'findAdUri' : findAdUri,
     'findPlaylistMeta' : findPlaylistMeta,
     'describe' : describe,
     'addListener' : addListener,
