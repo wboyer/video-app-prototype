@@ -20,6 +20,7 @@ VIACOM.Schedule.Controller = (function () {
       this.wait = 0;
       this.adsEnabled = false;
       this.hasLoopedBlock = false;
+      this.justPlayedPrestitial = false;
     };
 
     if (spec) {
@@ -30,6 +31,7 @@ VIACOM.Schedule.Controller = (function () {
       this.wait = spec.wait;
       this.adsEnabled = spec.adsEnabled;
       this.hasLoopedBlock = spec.hasLoopedBlock;
+      this.justPlayedPrestitial = spec.justPlayedPrestitial;
     }
     else
       this.reset();
@@ -118,6 +120,7 @@ VIACOM.Schedule.Controller = (function () {
         if (b != saveBlockIndex) {
           i = 0;
           block = blocks[b];
+          items = block.items;
           hasLoopedBlock = false;
           done = false;
         }
@@ -128,6 +131,15 @@ VIACOM.Schedule.Controller = (function () {
     context.offset = 0;
     context.adsEnabled = true;
 
+    // disable ads after "pre" and before "post" items
+    if (context.justPlayedPrestitial || (items[i].hidden == "post"))
+      context.adsEnabled = false;
+
+    // remember that we're playing a "pre" item so that we can suppress items before the next item
+    context.justPlayedPrestitial = false;
+    if (items[i].hidden == "pre")
+      context.justPlayedPrestitial = true;
+    
     // have we stepped to a new block?
     if (b != context.blockIndex)
       context.hasLoopedBlock = false;
