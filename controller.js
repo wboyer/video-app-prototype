@@ -135,7 +135,7 @@ VIACOM.Schedule.Controller = (function () {
     if (context.justPlayedPrestitial || (items[i].hidden == "post"))
       context.adsEnabled = false;
 
-    // remember that we're playing a "pre" item so that we can suppress items before the next item
+    // remember that we're playing a "pre" item so that later we can suppress ads before the next item
     context.justPlayedPrestitial = false;
     if (items[i].hidden == "pre")
       context.justPlayedPrestitial = true;
