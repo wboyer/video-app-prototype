@@ -18,17 +18,21 @@ function init()
 
     if (App.activeScheduleContext) {
       var controller = App.scheduleController;      
+      var activeSession = App.activeSession;
+      
       var now = controller.now();
 
       var context = App.activeScheduleContext;
 
-      var liveContext = controller.cloneContext(context);
-      controller.sync(liveContext);
-      var item =  controller.getCurrentItem(liveContext);
+      var liveSession = App.liveSession;
+
+      var liveContext = liveSession.context;
+      liveSession.sync();
+      var item =  liveSession.getCurrentItem();
       
       UI.markScheduleOffset(scheduleDiv, "t_m_s", "marker_sync", liveContext.blockIndex, liveContext.itemIndex, (item.duration + item.adDuration) * 1000, liveContext.offset);
 
-      item = controller.getCurrentItem(context);
+      item = activeSession.getCurrentItem();
       UI.markScheduleOffset(scheduleDiv, "t_m_c", "marker_current", context.blockIndex, context.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
       App.player.onInterval(now);
@@ -128,10 +132,14 @@ function setLocalSchedule(schedule)
   
   controller.setSchedule("local", schedule);
 
-  var context = controller.newContext(schedule);
-  controller.sync(context);
+   var session =  VIACOM.Schedule.PlayoutSession();
+   session.init(schedule, controller);
 
-  App.playSchedule(context, App.player);
+
+  //var context = controller.newContext(schedule);
+  session.sync(context);
+
+  App.playSchedule(session.context, App.player);
 
   slideSchedule(0);
 }

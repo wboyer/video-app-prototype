@@ -1,41 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="text/javascript" src="util.js"></script>
-  <script src="http://media.mtvnservices.com/player/api/2.2.3.js"></script>
-  <script type="text/javascript" src="clock.js"></script> 
-  <script type="text/javascript" src="cors.js"></script>
-  <script type="text/javascript" src="controller.js"></script>
-  <script type="text/javascript" src="preview.js"></script>
+<script type="text/javascript" src="util.js"></script>
+<script src="http://media.mtvnservices.com/player/api/2.2.3.js"></script>
+<script type="text/javascript" src="clock.js"></script>
+<script type="text/javascript" src="cors.js"></script>
+<script type="text/javascript" src="playoutSession.js"></script>
+<script type="text/javascript" src="playoutController.js"></script>
+<script type="text/javascript" src="preview.js"></script>
 </head>
 <body>
-  <div id="player"></div>
-    <script type="text/javascript">
-    var  getParameterByName = function(name)
-    {
-      name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-      var regexS = "[\\?&]" + name + "=([^&#]*)";
-      var regex = new RegExp(regexS);
-      var results = regex.exec(window.location.search);
-      if(results == null)
-        return "";
-      else
-        return decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+	<div id="player">Loading Player. Standby.</div>
 
-    var channelId, scheduleId, startTime, thePlayer;
-    
-    channelId = getParameterByName('channel');
-    scheduleId = getParameterByName('schedule');
-    startTime = new Date(getParameterByName('start'));
+	<script type="text/javascript">
+		var getParameterByName = function(name) {
+			name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+			var regexS = "[\\?&]" + name + "=([^&#]*)";
+			var regex = new RegExp(regexS);
+			var results = regex.exec(window.location.search);
+			if (results == null)
+				return "";
+			else
+				return decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
 
+		var channelId, scheduleId, startTime, thePlayer;
 
-    VIACOM.Schedule.Preview.load(channelId, scheduleId, startTime, thePlayer);
+		channelId = getParameterByName('channel');
+		scheduleId = getParameterByName('schedule');
+		startTime = new Date(getParameterByName('start'));
 
-
+		theController = VIACOM.Schedule.Preview.load(channelId, scheduleId, startTime,
+				thePlayer);
+				
+		function skipForward(){
+			VIACOM.Schedule.Preview.skipForward();
+		}
+		function skipBackward(){
+			VIACOM.Schedule.Preview.skipBackward();
+		}
+	</script>
 
   
-  </script>
+		<div id="controls" class="controls">
+			<a onclick="skipBackward();">&larr;Skip Backward</a> |
+			<a onclick="playPause(this);">Pause</a> |
+			<a onclick="skipForward();">Skip Forward&rarr;</a> |
+			<a onclick="sync();">Go Live</a>
+		</div>
 
 </body>
 </html>

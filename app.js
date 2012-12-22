@@ -11,22 +11,25 @@ var App = {
 
   App.init = function ()
   {
-    this.scheduleController = VIACOM.Schedule.Controller; 
+    this.scheduleController = VIACOM.Schedule.PlayoutController; 
 
     this.player = Object.create(Player);
 
+    //???
     this.player.videoStartedCallback = function (uri) {
-      VIACOM.Schedule.Controller.onPlayerVideoStarted(App.activeScheduleContext, uri);
+      App.activeSession.onPlayerVideoStarted(App.activeScheduleContext, uri);
     };
 
+    //???
     this.player.stepCallback = function () {
-      App.playSchedule(VIACOM.Schedule.Controller.step(App.activeScheduleContext, App.player.canStepThroughPlaylist()));
+      App.activeSession.step(App.activeScheduleContext, App.player.canStepThroughPlaylist());
+      App.playSchedule(App.activeSession);
     };
 
     // Register for "ready" event
     this.scheduleController.addListener('Ready', function() {
-      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/cc-exampple.php', function (context) {
-        App.playSchedule(context);
+      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/cc-exampple.php', function (session) {
+        App.playSchedule(session);
         UI.displaySchedule(App, document.getElementById("schedule"));
       });
     });
@@ -54,63 +57,78 @@ var App = {
     this.scheduleController.addListener('Live', this.handleLive);
   };
 
-  App.playSchedule = function (context) {
+  App.playSchedule = function (session) {
     trace("App.playSchedule");
     var controller = this.scheduleController;
 
-    this.activeScheduleContext = context;
+    this.activeScheduleContext = session.context;
+    this.activeSession = session;
+
+    this.liveSession = VIACOM.Schedule.PlayoutSession();
+    this.liveSession.init(this.activeSession.context.schedule, controller);
     this.nextUpContext = null;
     this.nextApptBlock = null;
 
-    if (context.wait > 0) {
+    if (session.context.wait > 0) {
       this.player.stop();
       this.waitStart = this.scheduleController.now();
     }
     else {
      trace("telling the controller to play");
-     controller.play(context, this.player);
+     this.activeSession.play(this.player);
     }
   };
 
   App.skipForward = function () {
-    this.playSchedule(this.scheduleController.skipForward(this.activeScheduleContext));
+    this.activeSession.skipForward();
+    this.playSchedule(this.activeSession);
   };
 
   App.skipBackward = function () {
-    this.playSchedule(this.scheduleController.skipBackward(this.activeScheduleContext));
+    this.activeSession.skipBackward();
+    this.playSchedule(this.activeSession);
   };
 
   App.jumpToItem = function (blockIndex, itemIndex) {
-    var context = this.scheduleController.newContext(this.activeScheduleContext.schedule);
-    this.playSchedule(this.scheduleController.jump(context, blockIndex, itemIndex));
+    //var context = this.scheduleController.newContext(this.activeScheduleContext.schedule);
+    this.activeSession.jump(blockIndex, itemIndex);
+    this.playSchedule(this.activeSession);
   };
 
   App.sync = function () {
-    this.playSchedule(this.scheduleController.sync(this.activeScheduleContext));
+    this.activeSession.sync();
+    this.playSchedule(this.activeSession);
   };
 
   App.onInterval = function () {
     var controller = this.scheduleController;
-    var context = this.activeScheduleContext;
+    var context = this.activeSession.context;
     var schedule = context.schedule;
+    var liveSession =  VIACOM.Schedule.PlayoutSession();
+    liveSession.init(schedule, controller);
+    var liveNextSession =  VIACOM.Schedule.PlayoutSession();
+    liveNextSession.init(schedule, controller);
+
     
     var now = controller.now();
 
-    if (this.activeScheduleContext) {
+    if (this.activeSession) {
       // display a "waiting" message
       if (context.wait > 0) {
         this.waitRemaining = this.waitStart + context.wait - now;
         if (this.waitRemaining <= 0) {
           context.wait = 0;
-          this.playSchedule(context);
+          this.playSchedule(this.activeSession);
         }
       }
 
       // display an "on air now" and "on air next" messages
       if ((now - this.onAirNowStart) > 10000) {
-        this.onAirNowContext = controller.getLiveContext(context);
-        this.onAirNextContext = controller.cloneContext(this.onAirNowContext);
-        controller.skipForward(this.onAirNextContext);
+        liveSession.sync();
+        liveNextSession.sync();
+        liveNextSession.skipForward();
+        this.onAirNowContext = liveSession.context;
+        this.onAirNextContext = liveNextSession.context;
         this.onAirNowStart = now;
       }
 
@@ -128,13 +146,14 @@ var App = {
           // the one currently playing, then put up a "next up" message.
           var secondsToPlay = Math.floor((this.player.duration - this.player.offset) / 1000);
           if (secondsToPlay == 9) {
-            controller.describe(context,
+            this.activeSession.describe(
                 function(startTime, videoMeta, playlistMeta, duration)
                 {
                   var currentVideoMeta = videoMeta;
-                  var nextUpContext = controller.getNextUpContext(context);
+                  var nextUpSession = VIACOM.Schedule.PlayoutSession();
+                  nextUpSession.init(App.activeSession.context.schedule, controller);
 
-                  controller.describe(nextUpContext,
+                  nextUpSession.describe(
                       function(startTime, videoMeta, playlistMeta, duration)
                       {
                         if (videoMeta != currentVideoMeta) {
@@ -160,7 +179,7 @@ var App = {
         for (var a = 0; a < schedule.apptBlocks.length; a++)
         {
           var blockIndex = schedule.apptBlocks[a];
-          var secondsUntilAppt = Math.floor(controller.timeUntilBlockStart(schedule, blockIndex) / 1000);
+          var secondsUntilAppt = Math.floor(this.activeSession.timeUntilBlockStart(schedule, blockIndex) / 1000);
           if (
             ((secondsUntilAppt < 3600) && (secondsUntilAppt >= 3599)) ||
               ((secondsUntilAppt < 1800) && (secondsUntilAppt >= 1799)) ||
