@@ -407,23 +407,23 @@ VIACOM.Schedule.PlayoutSession = function () {
 
   var seek = function (videoUri, playlistUri)
   {
-    var initialBlockIndex = context.blockIndex;
-    var initialItemIndex = context.itemIndex;
+    var initialBlockIndex = this.context.blockIndex;
+    var initialItemIndex = this.context.itemIndex;
 
     var matchingBlockIndex = -1;
     var matchingItemIndex = -1;
 
     do {
-      this.skipForward(context);
-      var item = this.getCurrentItem(context);
+      this.skipForward();
+      var item = this.getCurrentItem();
 
       if (videoUri && (item.videoUri == videoUri))
         if (item.playlistUri == playlistUri)
           // bug here; must jump(), not just return
           return true;
         else {
-          matchingBlockIndex = context.blockIndex;
-          matchingItemIndex = context.itemIndex;
+          matchingBlockIndex = this.context.blockIndex;
+          matchingItemIndex = this.context.itemIndex;
         }
       else
         if (!videoUri)
@@ -431,10 +431,10 @@ VIACOM.Schedule.PlayoutSession = function () {
             // bug here; must jump(), not just return
             return true;
     }
-    while ((context.blockIndex != initialBlockIndex) || (context.itemIndex != initialItemIndex));
+    while ((this.context.blockIndex != initialBlockIndex) || (this.context.itemIndex != initialItemIndex));
 
     if (matchingBlockIndex != -1) {
-      this.jump(context, matchingBlockIndex, matchingItemIndex);
+      this.jump(matchingBlockIndex, matchingItemIndex);
       return true;
     }
     else
@@ -562,8 +562,8 @@ VIACOM.Schedule.PlayoutSession = function () {
 
     while (time < toTime)
     {
-      this.describe(context, callback);
-      this.skipForward(context);
+      this.describe(callback);
+      this.skipForward();
 
       if ((context.blockIndex == initialBlockIndex) && (context.itemIndex == initialItemIndex))
         break;

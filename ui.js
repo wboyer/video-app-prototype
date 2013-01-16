@@ -120,7 +120,7 @@ UI.updatePlayer = function (player, videoDiv)
 UI.displayOnAirNow = function(app, onAirNowDiv) {
   var innerHTML = "";
    
-   app.scheduleController.describe(app.onAirNowContext,
+   app.activeSession.describe(
        function(startTime, videoMeta, playlistMeta, duration) {
          if (videoMeta)
            innerHTML += "Live Now: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
@@ -134,7 +134,7 @@ UI.displayOnAirNow = function(app, onAirNowDiv) {
 UI.displayOnAirNext = function(app, onAirNextDiv) {
   var innerHTML = "";
    
-   app.scheduleController.describe(app.onAirNextContext,
+   app.liveNextSession.describe(
        function(startTime, videoMeta, playlistMeta, duration) {
          if (videoMeta)
              innerHTML += "Live Later: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
@@ -160,7 +160,7 @@ UI.displayNextUp = function(app, nextUpDiv) {
 		nextUpDiv.style["visibility"] = "visible";
 		var innerHTML = "";
 		
-		app.scheduleController.describe(app.nextUpContext,
+		app.liveNextSession.describe(
 		    function(startTime, videoMeta, playlistMeta, duration) {
 		    if (videoMeta)
 		      innerHTML += "Next Up: " + videoMeta.title1 + " (" + videoMeta.uri + ")";
@@ -179,7 +179,7 @@ UI.displayNextAppt = function(app, nextApptDiv, now) {
 	if (app.nextApptBlock) {
 		nextApptDiv.style["visibility"] = "visible";
 		var schedule = app.activeScheduleContext.schedule;
-		var timeUntilApptStart = app.scheduleController.timeUntilBlockStart(schedule, app.nextApptBlock);
+		var timeUntilApptStart = app.activeSession.timeUntilBlockStart(schedule, app.nextApptBlock);
 		
 		if (timeUntilApptStart < 0)
 			nextApptDiv.innerHTML = "Live Now: " + schedule.blocks[app.nextApptBlock].items[0].videoUri;

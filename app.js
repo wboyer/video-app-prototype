@@ -69,6 +69,9 @@ var App = {
     this.nextUpContext = null;
     this.nextApptBlock = null;
 
+    this.liveNextSession =  VIACOM.Schedule.PlayoutSession();
+    this.liveNextSession.init(this.activeSession.context.schedule, controller);
+
     if (session.context.wait > 0) {
       this.player.stop();
       this.waitStart = this.scheduleController.now();
