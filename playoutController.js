@@ -7,12 +7,11 @@ VIACOM.Schedule.PlayoutController = (function () {
 
   var Cors = VIACOM.Cors;
 
-  var schedules = {}, latestSchedules = {}, clock = null;
+  var schedules = {}, clock = null;
 
   var now = function ()
   {
-    var theTimeIs = clock.getCurrentTime();
-    return theTimeIs;
+    return clock.getCurrentTime();
   };
 
   // Data structure to store event listeners. Key is event name, value is an array
@@ -157,6 +156,33 @@ VIACOM.Schedule.PlayoutController = (function () {
     return schedule;
   };
   
+  var newScheduleFromPlaylist = function(playlist)
+  {
+    var schedule = {};
+
+    var blocks = [];
+    schedule.blocks = blocks;
+
+    var block = {};
+    blocks[0] = block;
+
+    var items = [];
+    block.items = items;
+    
+    for (var i = 0; i < playlist.videos.length; i++) {
+      var video = playlist.videos[i];
+
+      var item = {};
+      item.meta = {};
+
+      items[items.length] = item;
+      item.meta.video = video;
+      item.videoUri = video.uri;
+    }
+    
+    return schedule;
+  };
+  
   var setSchedule = function(key, schedule)
   {
     schedule.key = key;
@@ -187,8 +213,8 @@ VIACOM.Schedule.PlayoutController = (function () {
       }
     }
     
-    schedules[key] = schedule;
-    latestSchedules[key] = schedule;
+    if (key)
+      schedules[key] = schedule;
   };
   
   var loadSchedule = function(key, url, callback)
@@ -202,10 +228,6 @@ VIACOM.Schedule.PlayoutController = (function () {
         controller.setSchedule(key, schedule);
         var session = VIACOM.Schedule.PlayoutSession();
         callback(session.init(schedule, controller));
-        //old
-        //var context = controller.newContext(schedule);
-        //controller.sync(context);
-        //callback(context);
       },
       failure: function() { trace("Could not get schedule for " + key + " from " + url); },
       timeout: function() { trace("Schedule GET request timeout for " + key + " from " + url); },
@@ -213,21 +235,38 @@ VIACOM.Schedule.PlayoutController = (function () {
     });
   };
 
-  var loadSearchResults = function(key, url, callback)
+  var loadSearchResults = function(url, callback)
   {
     var controller = this;
     
     Cors.get(url, {
       success: function(results) { 
-        trace("Results loaded for " + key + " from " + url);
+        trace("Search results loaded from " + url);
         var schedule = controller.newScheduleFromSearchResults(results);
-        controller.setSchedule(key, schedule);
-        var context = controller.newContext(schedule);
-        controller.sync(context);
-        callback(context);
+        controller.setSchedule(null, schedule);
+        var session = VIACOM.Schedule.PlayoutSession();
+        callback(session.init(schedule, controller));
       },
-      failure: function() { trace("Could not get schedule for " + key + " from " + url); },
-      timeout: function() { trace("Schedule GET request timeout for " + key + " from " + url); },
+      failure: function() { trace("Could not get search results for " + key + " from " + url); },
+      timeout: function() { trace("Search results GET request timeout for " + key + " from " + url); },
+      parseJson: true
+    });
+  };
+
+  var loadPlaylist = function(url, callback)
+  {
+    var controller = this;
+    
+    Cors.get(url, {
+      success: function(results) { 
+        trace("Playlist loaded from " + url);
+        var schedule = controller.newScheduleFromPlaylist(results);
+        controller.setSchedule(null, schedule);
+        var session = VIACOM.Schedule.PlayoutSession();
+        callback(session.init(schedule, controller));
+      },
+      failure: function() { trace("Could not GET playlist from " + url); },
+      timeout: function() { trace("Playlist GET request timeout from " + url); },
       parseJson: true
     });
   };
@@ -237,7 +276,6 @@ VIACOM.Schedule.PlayoutController = (function () {
     trace("removeSchedule called: " + key);
 
     schedules[key] = null;
-    latestSchedules[key] = null;    
     scheduleEventRegistry[key] = null;
   };
   
@@ -246,8 +284,11 @@ VIACOM.Schedule.PlayoutController = (function () {
     'loadSchedule' : loadSchedule,
     'newScheduleFromSearchResults' : newScheduleFromSearchResults,
     'loadSearchResults' : loadSearchResults,
+    'newScheduleFromPlaylist' : newScheduleFromPlaylist,
+    'loadPlaylist' : loadPlaylist,
     'removeSchedule' : removeSchedule,
     'addListener' : addListener,
+    'addScheduleListener' : addScheduleListener,
     'now' : now,
     'setup' : setup
   };
