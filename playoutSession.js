@@ -279,7 +279,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     return this.context;
   };
 
-  var skipForward = function ()
+  var skipForward = function (skipPlaylists)
   {
     //trace('skipForward');
 
@@ -295,14 +295,14 @@ VIACOM.Schedule.PlayoutSession = function () {
     else {
       var playlistUri = items[i].playlistUri;
       
-      if (items[i].hidden == "playlist")
-        while ((i < items.length) && (items[i].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
+      if ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist")))
+        while ((i < items.length) && (items[i].playlistUri == playlistUri) && ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist"))))
           i += 1;
       else {
         while ((i < items.length) && (items[i].hidden == "pre"))
           i += 1;
         
-        if ((i < items.length) && !items[i].hidden)
+        if ((i < items.length) && (!items[i].hidden || (items[i].hidden == "playlist")))
           i += 1;
 
         while ((i < items.length) && (items[i].hidden == "post"))
@@ -322,7 +322,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     return this.context;
   };
 
-  var skipBackward = function ()
+  var skipBackward = function (skipPlaylists)
   {
     //trace('skipBackward');
 
@@ -335,14 +335,14 @@ VIACOM.Schedule.PlayoutSession = function () {
 
     var playlistUri = items[i].playlistUri;
     
-    if (items[i].hidden == "playlist")
-      while ((i >= 0) && (items[i].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
+    if ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist")))
+      while ((i >= 0) && (items[i].playlistUri == playlistUri) && ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist"))))
         i -= 1;
     else {
       while ((i >= 0) && (items[i].hidden == "post"))
         i -= 1;
 
-      if ((i >= 0) && !items[i].hidden)
+      if ((i >= 0) && (!items[i].hidden || (items[i].hidden == "playlist")))
         i -= 1;
 
       while ((i >= 0) && (items[i].hidden == "pre"))
@@ -361,7 +361,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     }
 
     var playlistUri = items[i].playlistUri;
-    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && (items[i].hidden == "playlist"))
+    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist"))))
       i -= 1;
 
     while ((i >= 0) && items[i].hidden == "post")
@@ -540,10 +540,10 @@ VIACOM.Schedule.PlayoutSession = function () {
         i += 1;
 
       if (i < items.length)
-        if (!items[i].hidden)
+        if (!items[i].hidden || (items[i].hidden == "playlist"))
           return items[i].videoUri;
         else
-          if (items[i].hidden == "playlist")
+          if (items[i].hidden == "episode")
             return items[i].playlistUri;
     }
 
@@ -563,7 +563,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     while (time < toTime)
     {
       this.describe(callback);
-      this.skipForward();
+      this.skipForward(true);
 
       if ((context.blockIndex == initialBlockIndex) && (context.itemIndex == initialItemIndex))
         break;
@@ -593,14 +593,14 @@ VIACOM.Schedule.PlayoutSession = function () {
       return null;
   };
   
-  var describe = function (callback)
+  var describe = function (callback, skipPlaylists)
   {
     context = this.cloneContext(this.context);
 
     var blocks = context.schedule.blocks;
     
     // first skip forward
-    this.skipForward();
+    this.skipForward(skipPlaylists);
 
     // now skip backward manually, accumulating duration and looking for metadata along the way
     var b = context.blockIndex;
@@ -623,7 +623,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     var videoMeta = null;
     var playlistMeta = null;
     
-    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && (items[i].hidden == "playlist")) {
+    while ((i > 0) && (items[i-1].playlistUri == playlistUri) && ((items[i].hidden == "episode") || (skipPlaylists && (items[i].hidden == "playlist")))) {
       duration += items[i].duration;
       i -= 1;
     }
@@ -633,7 +633,7 @@ VIACOM.Schedule.PlayoutSession = function () {
       i -= 1;
     }
 
-    if ((i >= 0) && !items[i].hidden && items[i].meta && items[i].meta.video) {      
+    if ((i >= 0) && (!items[i].hidden || (!skipPlaylists && (items[i].hidden == "playlist"))) && items[i].meta && items[i].meta.video) {      
       duration += items[i].duration;
       videoMeta = items[i].meta.video;
     }
