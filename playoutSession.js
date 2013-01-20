@@ -183,7 +183,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
-      this.stepToNewBlock(context, time);
+      this.stepToNewBlock(this.context, time);
 
       // catch blocks with no duration
       if (this.context.hasLoopedBlock && (time == schedule.startTime + schedule.blocks[this.context.blockIndex].start * 1000))
@@ -216,7 +216,7 @@ VIACOM.Schedule.PlayoutSession = function () {
               this.context.offset = now + duration - time;
               this.context.adsEnabled = false;
               if (this.context.offset < adDuration) {
-                this.context.wait = adDuration - context.offset;
+                this.context.wait = adDuration - this.context.offset;
                 this.context.offset = adDuration;
               }
             }
@@ -275,8 +275,8 @@ VIACOM.Schedule.PlayoutSession = function () {
   {
     trace('stepForward');
     this.step(playerCanStepThroughPlaylist);
-    fireScheduleEvent(context.schedule.key, 'Step'); 
-    return context;
+    fireScheduleEvent(this.context.schedule.key, 'Step'); 
+    return this.context;
   };
 
   var skipForward = function ()
@@ -417,19 +417,19 @@ VIACOM.Schedule.PlayoutSession = function () {
       this.skipForward();
       var item = this.getCurrentItem();
 
-      if (videoUri && (item.videoUri == videoUri))
+      if (videoUri && (item.videoUri == videoUri)) {
+        matchingBlockIndex = this.context.blockIndex;
+        matchingItemIndex = this.context.itemIndex;
         if (item.playlistUri == playlistUri)
-          // bug here; must jump(), not just return
-          return true;
-        else {
-          matchingBlockIndex = this.context.blockIndex;
-          matchingItemIndex = this.context.itemIndex;
-        }
+          break;
+      }
       else
         if (!videoUri)
-          if (item.playlistUri == playlistUri)
-            // bug here; must jump(), not just return
-            return true;
+          if (item.playlistUri == playlistUri) {
+            matchingBlockIndex = this.context.blockIndex;
+            matchingItemIndex = this.context.itemIndex;
+            break;
+          }
     }
     while ((this.context.blockIndex != initialBlockIndex) || (this.context.itemIndex != initialItemIndex));
 
@@ -443,15 +443,15 @@ VIACOM.Schedule.PlayoutSession = function () {
   
   var pull = function (videoUri, playlistUri)
   {
-    var initialBlockIndex = context.blockIndex;
-    var initialItemIndex = context.itemIndex;
+    var initialBlockIndex = this.context.blockIndex;
+    var initialItemIndex = this.context.itemIndex;
 
-    if (this.seek(context, videoUri, playlistUri) && (context.blockIndex == initialBlockIndex))
+    if (this.seek(this.context, videoUri, playlistUri) && (this.context.blockIndex == initialBlockIndex))
     {
-      var items = context.schedule.blocks[context.blockIndex].items;
-      var itemToPull = items[context.itemIndex];
+      var items = this.context.schedule.blocks[this.context.blockIndex].items;
+      var itemToPull = items[this.context.itemIndex];
 
-      for (var i = context.itemIndex; i > 0; i--)
+      for (var i = this.context.itemIndex; i > 0; i--)
         items[i] = items[i-1];
 
       items[0] = itemToPull;
@@ -477,7 +477,7 @@ VIACOM.Schedule.PlayoutSession = function () {
         break;
       }
 
-    return context;
+    return this.context;
   };
 
   var play = function (player)
@@ -574,14 +574,14 @@ VIACOM.Schedule.PlayoutSession = function () {
 
   var findPlaylistMeta = function ()
   {
-    context = this.cloneContext(context);
+    context = this.cloneContext(this.context);
     var initialItem = this.getCurrentItem(context);
     var item = initialItem;
 
     var playlistUri = item.playlistUri;
 
     while ((!item.meta || !item.meta.playlist) && (playlistUri == item.playlistUri)) {
-      this.skipBackward(context);
+      this.skipBackward();
       item = this.getCurrentItem(context);
       if (item == initialItem)
         break;
@@ -600,7 +600,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     var blocks = context.schedule.blocks;
     
     // first skip forward
-    this.skipForward(context);
+    this.skipForward();
 
     // now skip backward manually, accumulating duration and looking for metadata along the way
     var b = context.blockIndex;
@@ -614,7 +614,7 @@ VIACOM.Schedule.PlayoutSession = function () {
       else
         b = blocks.length - 1;
 
-      items = blocks[b].items
+      items = blocks[b].items;
       i = items.length - 1;
     }
 
@@ -648,7 +648,7 @@ VIACOM.Schedule.PlayoutSession = function () {
 
     // if we didn't find playlist metadata, continue to skip backward until we find it
     if (!playlistMeta) {
-      this.skipBackward(context);
+      this.skipBackward();
       playlistMeta = this.findPlaylistMeta(context);
     }
     
@@ -790,6 +790,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     'sync' : sync,
     'step' : step,
     'stepToNewBlock' : stepToNewBlock,
+    'stepForward' : stepForward,
     'skipForward' : skipForward,
     'skipBackward' : skipBackward,
     'jump' : jump,
@@ -800,6 +801,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     'findPlaylistMeta' : findPlaylistMeta,
     'describe' : describe,
     'addListener' : addListener,
+    'addScheduleListener' : addScheduleListener,
     'getCurrentItem' : currentItem,
     'getNextUpContext' : nextUpContext,
     'getLiveContext' : liveContext,
