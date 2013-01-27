@@ -553,14 +553,16 @@ VIACOM.Schedule.PlayoutSession = function () {
   var guide = function (schedule, fromTime, toTime, callback)
   {
     var context = this.newContext(schedule);
-    this.sync(context, fromTime);
+
+    if (fromTime)
+      this.sync(context, fromTime);
 
     var initialBlockIndex = context.blockIndex;
     var initialItemIndex = context.itemIndex;
     
     var time = this.blockStart(schedule, initialBlockIndex);
 
-    while (time < toTime)
+    while ((fromTime == 0) || time < toTime)
     {
       this.describe(callback);
       this.skipForward(true);
