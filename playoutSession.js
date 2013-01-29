@@ -209,7 +209,7 @@ VIACOM.Schedule.PlayoutSession = function () {
 
           time += duration;
 
-          if (time >= now) {
+          if (block.dll || (time >= now)) {
             if (block.dll || item.dll)
               time -= duration;
             else {
