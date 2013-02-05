@@ -603,16 +603,18 @@ VIACOM.Schedule.PlayoutSession = function () {
 
   var describe = function (callback, skipPlaylists)
   {
-    context = this.cloneContext(this.context);
 
-    var blocks = context.schedule.blocks;
+    var tempSession =  this.clone();//VIACOM.Schedule.PlayoutSession();
+    tempSession.init(this.context.schedule, this.controller);
+
+    var blocks =  tempSession.context.schedule.blocks;
     
     // first skip forward
-    this.skipForward(skipPlaylists);
+    tempSession.skipForward(skipPlaylists);
 
     // now skip backward manually, accumulating duration and looking for metadata along the way
-    var b = context.blockIndex;
-    var i = context.itemIndex - 1;
+    var b =  tempSession.context.blockIndex;
+    var i =  tempSession.context.itemIndex - 1;
 
     var items = blocks[b].items;
     
@@ -656,13 +658,13 @@ VIACOM.Schedule.PlayoutSession = function () {
 
     // if we didn't find playlist metadata, continue to skip backward until we find it
     if (!playlistMeta) {
-      this.skipBackward();
-      playlistMeta = this.findPlaylistMeta(context);
+       tempSession.skipBackward();
+      playlistMeta =  tempSession.findPlaylistMeta(tempSession.context);
     }
     
     var startTime = 0;
     if (i == 0)
-      startTime = this.blockStart(context.schedule, context.blockIndex);
+      startTime =  tempSession.blockStart(tempSession.context.schedule,  tempSession.context.blockIndex);
 
     callback(startTime, videoMeta, playlistMeta, duration);
   };
@@ -786,6 +788,14 @@ VIACOM.Schedule.PlayoutSession = function () {
     }
   };
 
+  var clone = function()
+  {
+    var newSession =  VIACOM.Schedule.PlayoutSession();
+    newSession.init(this.context.schedule, this.controller);
+    newSession.context = new ScheduleContext(this.context);
+    return newSession;
+  };
+
   
   return {
     'init' : init,
@@ -814,7 +824,8 @@ VIACOM.Schedule.PlayoutSession = function () {
     'getCurrentItemIsHidden' : currentItemIsHidden,
     'getNextUpContext' : nextUpContext,
     'getLiveContext' : liveContext,
-    'context' : context
+    'context' : context,
+    'clone' : clone
   };
 
 };

@@ -22,7 +22,7 @@ function init()
       
       var now = controller.now();
 
-      var context = App.activeScheduleContext;
+      var context = activeSession.context;
 
       var liveSession = App.liveSession;
 
@@ -137,9 +137,9 @@ function setLocalSchedule(schedule)
 
 
   //var context = controller.newContext(schedule);
-  session.sync(context);
+  session.sync();
 
-  App.playSchedule(session.context, App.player);
+  App.playSchedule(session);
 
   slideSchedule(0);
 }
