@@ -601,6 +601,15 @@ VIACOM.Schedule.PlayoutSession = function () {
     return ((item.hidden == "pre") || (item.hidden == "post") || (item.hidden == "episode") || (skipPlaylists && (item.hidden == "playlist")));
   };
 
+  var currentItemIsSameAsSession = function (session)
+  {
+    var item = this.getCurrentItem();
+    var otherItem = session.getCurrentItem();
+
+    return (((!item.playlistUri && !otherItem.playlistUri) || (item.playlistUri == otherItem.playlistUri)) &&
+            ((!item.videoUri && !otherItem.videoUri) || (item.videoUri == otherItem.videoUri)));
+  };
+
   var describe = function (callback, skipPlaylists)
   {
     context = this.cloneContext(this.context);
@@ -812,6 +821,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     'addScheduleListener' : addScheduleListener,
     'getCurrentItem' : currentItem,
     'getCurrentItemIsHidden' : currentItemIsHidden,
+    'getCurrentItemIsSameAsSession' : currentItemIsSameAsSession,
     'getNextUpContext' : nextUpContext,
     'getLiveContext' : liveContext,
     'context' : context
