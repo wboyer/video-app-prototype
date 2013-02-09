@@ -17,18 +17,19 @@ var App = {
 
     //???
     this.player.videoStartedCallback = function (uri) {
-      App.activeSession.onPlayerVideoStarted(App.activeScheduleContext, uri);
+      App.activeSession.onPlayerVideoStarted(uri);
     };
 
     //???
     this.player.stepCallback = function () {
-      App.activeSession.step(App.activeScheduleContext, App.player.canStepThroughPlaylist());
+      App.activeSession.step(App.player.canStepThroughPlaylist());
       App.playSchedule(App.activeSession);
     };
 
     // Register for "ready" event
     this.scheduleController.addListener('Ready', function() {
       App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/cc-exampple.php', function (session) {
+        session.sync();
         App.playSchedule(session);
         UI.displaySchedule(App, document.getElementById("schedule"));
       });
@@ -127,11 +128,11 @@ var App = {
 
       // display an "on air now" and "on air next" messages
       if ((now - this.onAirNowStart) > 10000) {
-        liveSession.sync();
-        liveNextSession.sync();
-        liveNextSession.skipForward();
-        this.onAirNowContext = liveSession.context;
-        this.onAirNextContext = liveNextSession.context;
+        this.liveSession.sync();
+        this.liveNextSession.sync();
+        this.liveNextSession.skipForward();
+        this.onAirNowContext = this.liveSession.context;
+        this.onAirNextContext = this.liveNextSession.context;
         this.onAirNowStart = now;
       }
 
