@@ -414,7 +414,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     var matchingItemIndex = -1;
 
     do {
-      this.skipForward();
+      this.step();
       var item = this.getCurrentItem();
 
       if (videoUri && (item.videoUri == videoUri)) {
