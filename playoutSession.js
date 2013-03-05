@@ -610,6 +610,12 @@ VIACOM.Schedule.PlayoutSession = function () {
             ((!item.videoUri && !otherItem.videoUri) || (item.videoUri == otherItem.videoUri)));
   };
 
+  var currentItemIsLastInSchedule = function ()
+  {
+    var blocks = this.context.schedule.blocks;
+    return (this.context.blockIndex == (blocks.length - 1)) && (this.context.itemIndex == (blocks[this.context.blockIndex].items.length - 1));
+  };
+
   var describe = function (callback, skipPlaylists)
   {
 
@@ -832,6 +838,7 @@ VIACOM.Schedule.PlayoutSession = function () {
     'getCurrentItem' : currentItem,
     'getCurrentItemIsHidden' : currentItemIsHidden,
     'getCurrentItemIsSameAsSession' : currentItemIsSameAsSession,
+    'getCurrentItemIsLastInSchedule' : currentItemIsLastInSchedule,
     'getNextUpContext' : nextUpContext,
     'getLiveContext' : liveContext,
     'context' : context,
