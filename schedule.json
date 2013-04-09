@@ -1,0 +1,1529 @@
+{
+   "startTime":1362492000000,
+   "now":0,
+   "blocks":[
+      {
+         "start":0,
+         "dll":false,
+         "dfe":false,
+         "msse":0,
+         "mssl":0,
+         "appt":false,
+         "items":[
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:2565712e-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":null,
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Aziz Ansari",
+                     "title2":"LL Cool J's Platinum Workout",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/extras\/aziz_ucb\/aziz_dvdextra_03_v6.jpg",
+                     "rating":null,
+                     "id":"4315w1",
+                     "uri":"mgid:arc:video:comedycentral.com:2565712e-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":99,
+               "videoUri":"mgid:arc:video:comedycentral.com:0e5909c8-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":null,
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Arj Barker",
+                     "title2":"Arj Barker - Conceited Google",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_10_1022\/j_ccp_10_1022_06_v6.jpg",
+                     "rating":null,
+                     "id":"g8jt7w",
+                     "uri":"mgid:arc:video:comedycentral.com:0e5909c8-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":219,
+               "videoUri":"mgid:arc:video:comedycentral.com:118ccddc-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Roz G",
+                     "title2":"Roz G - Large and in Charge",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_pbl\/j_pbl_07_0706\/j_pbl_07_0706_02_v6.jpg",
+                     "rating":null,
+                     "id":"n9xbjv",
+                     "uri":"mgid:arc:video:comedycentral.com:118ccddc-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  },
+                  "playlist":{
+                     "title1":"SUP - The Munchies AXE SPONSOR (TEST)",
+                     "title2":null,
+                     "thumbnail":"",
+                     "rating":null,
+                     "id":"1rbl6q",
+                     "uri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+                     "type":null,
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":98,
+               "videoUri":"mgid:arc:video:comedycentral.com:122441b2-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Johnny Lampert",
+                     "title2":"Johnny Lampert - War on Terror",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_pbl\/j_pbl_09_0910\/j_pbl_09_0910_03_v6.jpg",
+                     "rating":null,
+                     "id":"88y1om",
+                     "uri":"mgid:arc:video:comedycentral.com:122441b2-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":71,
+               "videoUri":"mgid:arc:video:comedycentral.com:125e2986-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Wendy Liebman",
+                     "title2":"Wendy Liebman - Don't Do Drugs",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_pco\/j_pco_01_0107\/j_pco_01_0107_10_v6.jpg",
+                     "rating":null,
+                     "id":"gy21cu",
+                     "uri":"mgid:arc:video:comedycentral.com:125e2986-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":209,
+               "videoUri":"mgid:arc:video:comedycentral.com:149fce20-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Greer Barnes",
+                     "title2":"Greer Barnes - Los Angeles",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tdm\/j_tdm_02_0214\/j_tdm_02_0214_05_v6.jpg",
+                     "rating":null,
+                     "id":"d7sggf",
+                     "uri":"mgid:arc:video:comedycentral.com:149fce20-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":72,
+               "videoUri":"mgid:arc:video:comedycentral.com:183c89c4-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Greer Barnes",
+                     "title2":"Greer Barnes - Marijuana",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/ccp\/season_13\/episode_1318\/j_ccp_13_1318_02_v6.jpg",
+                     "rating":null,
+                     "id":"m4wdai",
+                     "uri":"mgid:arc:video:comedycentral.com:183c89c4-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":166,
+               "videoUri":"mgid:arc:video:comedycentral.com:36d80f7a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Sheng Wang",
+                     "title2":"Sheng Wang - Powerful Drug",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_15_1505\/j_ccp_15_1505_06_V6.jpg",
+                     "rating":"General Audience",
+                     "id":"wm4du8",
+                     "uri":"mgid:arc:video:comedycentral.com:36d80f7a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":110,
+               "videoUri":"mgid:arc:video:comedycentral.com:12ec48ba-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jonathan Corbett",
+                     "title2":"Jonathan Corbett - Drinking",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_sho\/j_sho_01_0113\/j_sho_01_0113_09_v6.jpg",
+                     "rating":null,
+                     "id":"lvvlsj",
+                     "uri":"mgid:arc:video:comedycentral.com:12ec48ba-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":184,
+               "videoUri":"mgid:arc:video:comedycentral.com:0f7ae0ec-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Greer Barnes",
+                     "title2":"Greer Barnes - Stoned",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/j_cju\/j_cju_02_0209\/j_cju_02_0209_05_v6.jpg",
+                     "rating":null,
+                     "id":"yheoq9",
+                     "uri":"mgid:arc:video:comedycentral.com:0f7ae0ec-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":180,
+               "videoUri":"mgid:arc:video:comedycentral.com:0c608056-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Andy Kindler",
+                     "title2":"Andy Kindler - Legal Marijuana",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_10_1005\/j_ccp_10_1005_02_v6.jpg",
+                     "rating":null,
+                     "id":"gj84sj",
+                     "uri":"mgid:arc:video:comedycentral.com:0c608056-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":81,
+               "videoUri":"mgid:arc:video:comedycentral.com:8aa0d1a6-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Rory Scovel",
+                     "title2":"Rory Scovel - Pot Apple",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/shows\/live_at_gotham\/video\/season2\/exclusives\/208_scovel_pod_m3.jpg",
+                     "rating":null,
+                     "id":"a980i6",
+                     "uri":"mgid:arc:video:comedycentral.com:8aa0d1a6-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":165,
+               "videoUri":"mgid:arc:video:comedycentral.com:043c2c40-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Katt Williams",
+                     "title2":"Katt Williams - Medicinal Marijuana",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/katt_williams\/pimp_chronicles_1\/williams_pimpchronicles_weed_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"bgwii4",
+                     "uri":"mgid:arc:video:comedycentral.com:043c2c40-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":99,
+               "videoUri":"mgid:arc:video:comedycentral.com:190925b0-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - Drag Queens",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/ccp\/season_13\/episode_1322\/j_ccp_13_1322_02_v6.jpg",
+                     "rating":"TV-14",
+                     "id":"g9gl7t",
+                     "uri":"mgid:arc:video:comedycentral.com:190925b0-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":129,
+               "videoUri":"mgid:arc:video:comedycentral.com:a5246cc2-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - Blacking Out",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/motherload\/franchises\/cc_park\/ccpark_mulaney_drinking_m3.jpg",
+                     "rating":"General Audience",
+                     "id":"w7cv3f",
+                     "uri":"mgid:arc:video:comedycentral.com:a5246cc2-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":165,
+               "videoUri":"mgid:arc:video:comedycentral.com:a5240304-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:8af0fd3e-bc00-4f3a-a639-c2dd4e1dbc47",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - Email Spying",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/motherload\/franchises\/cc_park\/ccpark_mulaney_blackout_m3.jpg",
+                     "rating":"General Audience",
+                     "id":"ecnr5n",
+                     "uri":"mgid:arc:video:comedycentral.com:a5240304-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":256,
+               "videoUri":"mgid:arc:video:comedycentral.com:9a1ec7e6-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"",
+                     "title2":"Ask Carlos - Sex, Sucking, and Videotape",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/shows\/mind_of_mencia\/video\/mencia_m3_askcarlos4.jpg",
+                     "rating":"General Audience",
+                     "id":"rp4o51",
+                     "uri":"mgid:arc:video:comedycentral.com:9a1ec7e6-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  },
+                  "playlist":{
+                     "title1":"SUP - Latino Loco (TEST)",
+                     "title2":null,
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/v_images\/lag_208_iglesias_v6.jpg",
+                     "rating":null,
+                     "id":"islzrm",
+                     "uri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+                     "type":null,
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":119,
+               "videoUri":"mgid:arc:video:comedycentral.com:1a989d48-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Gene Pompa",
+                     "title2":"Gene Pompa - Chicano to the Bone",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/paul_rodriguez\/rodriguez_rehab_chicano_v6.jpg",
+                     "rating":null,
+                     "id":"ltgfnp",
+                     "uri":"mgid:arc:video:comedycentral.com:1a989d48-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":119,
+               "videoUri":"mgid:arc:video:comedycentral.com:42ef62b8-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Gabriel Iglesias",
+                     "title2":"Gabriel Iglesias - Catchy Names",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/gabe_iglesias\/j_sur_01_0102_clip02_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"k3gq5q",
+                     "uri":"mgid:arc:video:comedycentral.com:42ef62b8-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:f8b10a94-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"George Lopez",
+                     "title2":"George Lopez - Spanglish",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/shows\/specials\/stand-up\/lopez_americasmexican_spanglish_v8.jpg",
+                     "rating":null,
+                     "id":"fd7cz4",
+                     "uri":"mgid:arc:video:comedycentral.com:f8b10a94-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":119,
+               "videoUri":"mgid:arc:video:comedycentral.com:1a99119c-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Paul Rodriguez",
+                     "title2":"Paul Rodriguez - Pick Up Test",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/paul_rodriguez\/rodriguez_rehab_age_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"qokg26",
+                     "uri":"mgid:arc:video:comedycentral.com:1a99119c-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":129,
+               "videoUri":"mgid:arc:video:comedycentral.com:29e79c86-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Mo Mandel",
+                     "title2":"Mo Mandel - Cultural Music",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_14_1411\/j_ccp_14_1411_08_v6.jpg",
+                     "rating":"TV-14",
+                     "id":"lf88m9",
+                     "uri":"mgid:arc:video:comedycentral.com:29e79c86-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":119,
+               "videoUri":"mgid:arc:video:comedycentral.com:21862062-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Gabriel Iglesias",
+                     "title2":"Gabriel Iglesias - Faking Arrest For Your Family",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/gabe_iglesias\/not_fat_not_fluffy\/iglesias_fluffy_05_v6.jpg",
+                     "rating":null,
+                     "id":"vna80i",
+                     "uri":"mgid:arc:video:comedycentral.com:21862062-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":177,
+               "videoUri":"mgid:arc:video:comedycentral.com:190832fe-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - Subway Station Chase",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/ccp\/season_13\/episode_1322\/j_ccp_13_1322_01_v6.jpg",
+                     "rating":null,
+                     "id":"uykiqr",
+                     "uri":"mgid:arc:video:comedycentral.com:190832fe-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":185,
+               "videoUri":"mgid:arc:video:comedycentral.com:1498fad2-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"David Cross",
+                     "title2":"David Cross - Sorry, Charlie",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tdm\/j_tdm_02_0212\/j_tdm_02_0212_08_v6.jpg",
+                     "rating":null,
+                     "id":"ms6gcy",
+                     "uri":"mgid:arc:video:comedycentral.com:1498fad2-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":166,
+               "videoUri":"mgid:arc:video:comedycentral.com:09b9bf8e-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Dave Attell",
+                     "title2":"Dave Attell - Sex",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_02_0207\/j_ccp_02_0207_09_v6.jpg",
+                     "rating":null,
+                     "id":"wsuzwx",
+                     "uri":"mgid:arc:video:comedycentral.com:09b9bf8e-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":172,
+               "videoUri":"mgid:arc:video:comedycentral.com:3283f06a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Nick Swardson",
+                     "title2":"Nick Swardson - Power Orgies",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tbi\/j_tbi_01_0103\/j_tbi_01_0103_preview_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"pr1ewm",
+                     "uri":"mgid:arc:video:comedycentral.com:3283f06a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":115,
+               "videoUri":"mgid:arc:video:comedycentral.com:0e542b92-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Caparulo",
+                     "title2":"John Caparulo - Would You Do That?",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_10_1020\/j_ccp_10_1020_10_v6.jpg",
+                     "rating":null,
+                     "id":"utqc94",
+                     "uri":"mgid:arc:video:comedycentral.com:0e542b92-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":122,
+               "videoUri":"mgid:arc:video:comedycentral.com:32e2ffba-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Doug Benson",
+                     "title2":"Nick Kroll - Tweet-Off",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/shows\/benson_interruption\/video\/j_tbi_01_0103_05_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"05qmcl",
+                     "uri":"mgid:arc:video:comedycentral.com:32e2ffba-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":158,
+               "videoUri":"mgid:arc:video:comedycentral.com:24143882-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:9fd7dcdb-e559-4949-97fb-f3e44c5bf43c",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Nick Kroll",
+                     "title2":"The Hot List - Nick Kroll - Character Work",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/extras\/hot_list\/hotlist_kroll_v6.jpg",
+                     "rating":null,
+                     "id":"ezisd7",
+                     "uri":"mgid:arc:video:comedycentral.com:24143882-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:27d8408a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Kristen Schaal",
+                     "title2":"Kristen Schaal - Inside the Mattress",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/shows\/john_oliver\/video_images\/j_jol_01_0106_11_v6.jpg",
+                     "rating":null,
+                     "id":"sysdim",
+                     "uri":"mgid:arc:video:comedycentral.com:27d8408a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  },
+                  "playlist":{
+                     "title1":"SUP - Women in Comedy (TEST)",
+                     "title2":null,
+                     "thumbnail":"",
+                     "rating":null,
+                     "id":"s54huz",
+                     "uri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+                     "type":null,
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":99,
+               "videoUri":"mgid:arc:video:comedycentral.com:2e78bb0e-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Whitney Cummings",
+                     "title2":"Whitney Cummings - Copying Porn Moves",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/whitney_cummings\/whitney_mondayshot_05_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"945u8p",
+                     "uri":"mgid:arc:video:comedycentral.com:2e78bb0e-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":119,
+               "videoUri":"mgid:arc:video:comedycentral.com:a5280f62-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Amy Schumer",
+                     "title2":"Amy Schumer - Pretty",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/motherload\/franchises\/cc_park\/ccpark_schumer_bus_m3.jpg",
+                     "rating":"General Audience",
+                     "id":"f1n8aa",
+                     "uri":"mgid:arc:video:comedycentral.com:a5280f62-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":176,
+               "videoUri":"mgid:arc:video:comedycentral.com:13fb962a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Margaret Cho",
+                     "title2":"Margaret Cho - Asian American",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tal\/j_tal_01_0149\/j_tal_01_0149_06_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"t0p9sk",
+                     "uri":"mgid:arc:video:comedycentral.com:13fb962a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":117,
+               "videoUri":"mgid:arc:video:comedycentral.com:147fc56c-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jessica Bern",
+                     "title2":"Jessica Bern - Summer Jobs",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tdm\/j_tdm_02_0206\/j_tdm_02_0206_02_v6.jpg",
+                     "rating":null,
+                     "id":"gs1u1e",
+                     "uri":"mgid:arc:video:comedycentral.com:147fc56c-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":163,
+               "videoUri":"mgid:arc:video:comedycentral.com:13fb02a0-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Margaret Cho",
+                     "title2":"Margaret Cho - Being Korean",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tal\/j_tal_01_0149\/j_tal_01_0149_05_v6.jpg",
+                     "rating":null,
+                     "id":"9g2urk",
+                     "uri":"mgid:arc:video:comedycentral.com:13fb02a0-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":138,
+               "videoUri":"mgid:arc:video:comedycentral.com:0bb1a18a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Frank Caliendo",
+                     "title2":"Frank Caliendo - Scooby Doo",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_08_0817\/j_ccp_08_0817_04_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"tmhl1r",
+                     "uri":"mgid:arc:video:comedycentral.com:0bb1a18a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":133,
+               "videoUri":"mgid:arc:video:comedycentral.com:47227c7e-1b70-11e1-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Pablo Francisco",
+                     "title2":"Pablo Francisco - The Expendables",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/pablo_francisco\/pablo_outthere_15_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"grjus5",
+                     "uri":"mgid:arc:video:comedycentral.com:47227c7e-1b70-11e1-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":83,
+               "videoUri":"mgid:arc:video:comedycentral.com:9b2013f2-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"David Cross",
+                     "title2":"David Cross - Prayer",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/shows\/last_laugh\/videos\/lastlaugh_cross_preview_m3.jpg",
+                     "rating":"General Audience",
+                     "id":"pbrcio",
+                     "uri":"mgid:arc:video:comedycentral.com:9b2013f2-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":85,
+               "videoUri":"mgid:arc:video:comedycentral.com:258a19ca-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Arj Barker",
+                     "title2":"Arj Barker - Minneapolis, Minnesota",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/arj_barker\/barker_lyao_lakes_v6.jpg",
+                     "rating":null,
+                     "id":"4xbyy7",
+                     "uri":"mgid:arc:video:comedycentral.com:258a19ca-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":142,
+               "videoUri":"mgid:arc:video:comedycentral.com:4120a794-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Michael Ian Black",
+                     "title2":"Michael Ian Black - Strangers Don't Find Me Funny",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/michael_ian_black\/ianblack_veryfamous_01_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"j01kg8",
+                     "uri":"mgid:arc:video:comedycentral.com:4120a794-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":117,
+               "videoUri":"mgid:arc:video:comedycentral.com:16e428d4-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Kevin Hart",
+                     "title2":"Kevin Hart - The Gym",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/kevin_hart\/hart_grownlittleman_gym_v6.jpg",
+                     "rating":null,
+                     "id":"8sv552",
+                     "uri":"mgid:arc:video:comedycentral.com:16e428d4-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":113,
+               "videoUri":"mgid:arc:video:comedycentral.com:2533a7f2-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Chris Rock",
+                     "title2":"Chris Rock - Tracker",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/chris_rock\/rock_killthemessenger_tracker_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"5sr9g4",
+                     "uri":"mgid:arc:video:comedycentral.com:2533a7f2-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":131,
+               "videoUri":"mgid:arc:video:comedycentral.com:4f5e94e5-9d42-4fcd-b54c-33aa96a5cd0e",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - High School Party",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/john_mulaney\/mulaney_newintown_13_640x360.jpg ",
+                     "rating":"General Audience",
+                     "id":"g3ej69",
+                     "uri":"mgid:arc:video:comedycentral.com:4f5e94e5-9d42-4fcd-b54c-33aa96a5cd0e",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:97d74d8c-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Rick Gutierrez",
+                     "title2":"Rick Gutierrez - Young People Don't Know D*ck",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/gabe_iglesias\/j_sur_01_0101_clip05_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"7x0sfl",
+                     "uri":"mgid:arc:video:comedycentral.com:97d74d8c-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":150,
+               "videoUri":"mgid:arc:video:comedycentral.com:0e53514a-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Caparulo",
+                     "title2":"John Caparulo - Type B Personality",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_10_1020\/j_ccp_10_1020_08_v6.jpg",
+                     "rating":null,
+                     "id":"tgj5x0",
+                     "uri":"mgid:arc:video:comedycentral.com:0e53514a-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":89,
+               "videoUri":"mgid:arc:video:comedycentral.com:2b1ce3b8-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Reggie Watts",
+                     "title2":"Reggie Watts - Different Cultures",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/reggie_watts\/watts_whyshit_cultures_v6.jpg",
+                     "rating":null,
+                     "id":"0l0fp7",
+                     "uri":"mgid:arc:video:comedycentral.com:2b1ce3b8-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":120,
+               "videoUri":"mgid:arc:video:comedycentral.com:2168da98-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Gabriel Iglesias",
+                     "title2":"Gabriel Iglesias- The Sixth Level of Fat",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/gabe_iglesias\/not_fat_not_fluffy\/iglesias_fluffy_02_v6.jpg",
+                     "rating":null,
+                     "id":"32b85n",
+                     "uri":"mgid:arc:video:comedycentral.com:2168da98-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":104,
+               "videoUri":"mgid:arc:video:comedycentral.com:6d0bd2d3-2178-46c2-8a96-1cb9f2aebadc",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jo Koy",
+                     "title2":"Jo Koy - Last Warning",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/jo_koy\/lights\/j_jkl_01_0101_13_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"yjsyyv",
+                     "uri":"mgid:arc:video:comedycentral.com:6d0bd2d3-2178-46c2-8a96-1cb9f2aebadc",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:27d4f524-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Nick Kroll",
+                     "title2":"Nick Kroll - Cats Are Terrible",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/shows\/john_oliver\/video_images\/j_jol_01_0106_05_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"qvz9m8",
+                     "uri":"mgid:arc:video:comedycentral.com:27d4f524-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":206,
+               "videoUri":"mgid:arc:video:comedycentral.com:81dc3d8c-390f-4fed-9f70-b4ef8f6c1d12",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Patton Oswalt",
+                     "title2":"Patton Oswalt - Acknowledging Beliefs",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com \/images\/jokes_vertical\/video\/specials\/patton_oswalt\/Finest Hour\/p_pfh_01_0101_07_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"xv7ng0",
+                     "uri":"mgid:arc:video:comedycentral.com:81dc3d8c-390f-4fed-9f70-b4ef8f6c1d12",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":92,
+               "videoUri":"mgid:arc:video:comedycentral.com:12c072bc-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Arj Barker",
+                     "title2":"Arj Barker - Irish Soap",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_sho\/j_sho_01_0105\/j_sho_01_0105_03_v6.jpg",
+                     "rating":null,
+                     "id":"s0tmsp",
+                     "uri":"mgid:arc:video:comedycentral.com:12c072bc-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":123,
+               "videoUri":"mgid:arc:video:comedycentral.com:25331e22-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Chris Rock",
+                     "title2":"Chris Rock - Crazy Time",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/chris_rock\/rock_killthemessenger_election_bleep_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"12irk2",
+                     "uri":"mgid:arc:video:comedycentral.com:25331e22-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:3bfdab0e-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Pete Holmes",
+                     "title2":"Pete Holmes - Google in Your Pocket",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_jol\/j_jol_02_0204\/j_jol_02_0204_12_V6.jpg",
+                     "rating":"General Audience",
+                     "id":"br5kw5",
+                     "uri":"mgid:arc:video:comedycentral.com:3bfdab0e-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:9e47b7c4-ed00-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jeffrey Ross",
+                     "title2":"Jeffrey Ross - Uncensored",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/shows\/roast\/shatner\/videos\/uncensored\/uncensored_ross_m3.jpg",
+                     "rating":"Mature",
+                     "id":"o8sqaq",
+                     "uri":"mgid:arc:video:comedycentral.com:9e47b7c4-ed00-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":128,
+               "videoUri":"mgid:arc:video:comedycentral.com:2e79b37e-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Whitney Cummings",
+                     "title2":"Whitney Cummings - Obsessed With \"Twilight\"",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/whitney_cummings\/whitney_mondayshot_06_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"tp01fe",
+                     "uri":"mgid:arc:video:comedycentral.com:2e79b37e-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":163,
+               "videoUri":"mgid:arc:video:comedycentral.com:13fb02a0-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Margaret Cho",
+                     "title2":"Margaret Cho - Being Korean",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tal\/j_tal_01_0149\/j_tal_01_0149_05_v6.jpg",
+                     "rating":null,
+                     "id":"9g2urk",
+                     "uri":"mgid:arc:video:comedycentral.com:13fb02a0-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":73,
+               "videoUri":"mgid:arc:video:comedycentral.com:086df041-8a95-400b-a9f1-e0519687903f",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jo Koy",
+                     "title2":"Jo Koy - Bitch Slap",
+                     "thumbnail":"http:\/\/2.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/jo_koy\/lights\/j_jkl_01_0101_08_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"ls83jy",
+                     "uri":"mgid:arc:video:comedycentral.com:086df041-8a95-400b-a9f1-e0519687903f",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":93,
+               "videoUri":"mgid:arc:video:comedycentral.com:14cd3388-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Chris Case",
+                     "title2":"Chris Case - Not Shaving",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_tdm\/j_tdm_02_0226\/j_tdm_02_0226_04_v6.jpg",
+                     "rating":null,
+                     "id":"txtniv",
+                     "uri":"mgid:arc:video:comedycentral.com:14cd3388-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":0,
+               "videoUri":"mgid:arc:video:comedycentral.com:194cade4-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jeff Foxworthy",
+                     "title2":"Jeff Foxworthy - Educating Larry",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/shows\/roast\/larrythecableguy\/videos\/roast\/roast_ltcb_show2_foxworthy_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"00t2ft",
+                     "uri":"mgid:arc:video:comedycentral.com:194cade4-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":37,
+               "videoUri":"mgid:arc:video:comedycentral.com:1b118078-fa53-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Noe Gonzalez",
+                     "title2":"Noe Gonzalez - Little Man",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/gabe_iglesias\/j_sur_01_104_clip03_preview_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"n2z9ea",
+                     "uri":"mgid:arc:video:comedycentral.com:1b118078-fa53-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":133,
+               "videoUri":"mgid:arc:video:comedycentral.com:1b030836-fa53-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Craig Ferguson",
+                     "title2":"Craig Ferguson - Sex Education in Scotland",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/craig_ferguson\/dtnbs\/ferguson_dtntbs_nosexed_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"ay0kf1",
+                     "uri":"mgid:arc:video:comedycentral.com:1b030836-fa53-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":178,
+               "videoUri":"mgid:arc:video:comedycentral.com:d2225076-7c51-43ba-a46a-0fdb9b08c144",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Patton Oswalt",
+                     "title2":"Patton Oswalt - Spirit Cave",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/patton_oswalt\/Finest Hour\/p_pfh_01_0101_12_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"jsrg5k",
+                     "uri":"mgid:arc:video:comedycentral.com:d2225076-7c51-43ba-a46a-0fdb9b08c144",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":140,
+               "videoUri":"mgid:arc:video:comedycentral.com:c1322855-dbf1-43ae-87b7-7dd630a371f6",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Paul F. Tompkins",
+                     "title2":"Paul F. Tompkins - Expected to Steal",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/paul_f_tompkins\/Laboring\/p_plu_01_0101_08_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"my12jp",
+                     "uri":"mgid:arc:video:comedycentral.com:c1322855-dbf1-43ae-87b7-7dd630a371f6",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":74,
+               "videoUri":"mgid:arc:video:comedycentral.com:019b0c78-9e34-42f2-b270-5002ece02e2e",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"John Mulaney",
+                     "title2":"John Mulaney - On the Phone With Blockbuster Video",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/john_mulaney\/mulaney_newintown_04_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"k1iu23",
+                     "uri":"mgid:arc:video:comedycentral.com:019b0c78-9e34-42f2-b270-5002ece02e2e",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":194,
+               "videoUri":"mgid:arc:video:comedycentral.com:32c0c652-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Nick Swardson",
+                     "title2":"Nick Swardson - Costumes & Fundraising",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/shows\/benson_interruption\/video\/j_tbi_01_0103_02_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"my18t2",
+                     "uri":"mgid:arc:video:comedycentral.com:32c0c652-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":133,
+               "videoUri":"mgid:arc:video:comedycentral.com:296c132c-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Amy Schumer",
+                     "title2":"Amy Schumer - Blackout Drunk",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/j_ccp\/j_ccp_14_1407\/j_ccp_14_1407_02_v6.jpg",
+                     "rating":null,
+                     "id":"nclmsw",
+                     "uri":"mgid:arc:video:comedycentral.com:296c132c-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":133,
+               "videoUri":"mgid:arc:video:comedycentral.com:2e7704bc-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Whitney Cummings",
+                     "title2":"Whitney Cummings - Emotional Ninjas",
+                     "thumbnail":"http:\/\/4.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/whitney_cummings\/whitney_mondayshot_02_v6.jpg",
+                     "rating":"General Audience",
+                     "id":"mffbxv",
+                     "uri":"mgid:arc:video:comedycentral.com:2e7704bc-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            },
+            {
+               "duration":108,
+               "videoUri":"mgid:arc:video:comedycentral.com:27f65750-ed01-11e0-aca6-0026b9414f30",
+               "playlistUri":"mgid:arc:videoplaylist:comedycentral.com:40acdeb1-f317-44c5-8d0f-93ef0e8a5f8e",
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Mike Epps",
+                     "title2":"Mike Epps - Obama's Walk",
+                     "thumbnail":"http:\/\/3.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/mike_epps\/epps_underrated_4_slate_v6.jpg",
+                     "rating":null,
+                     "id":"4vh0up",
+                     "uri":"mgid:arc:video:comedycentral.com:27f65750-ed01-11e0-aca6-0026b9414f30",
+                     "type":"clip",
+                     "liveStartDate":null,
+                     "liveEndDate":null
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "start":1375920000,
+         "dll":false,
+         "dfe":false,
+         "msse":0,
+         "mssl":0,
+         "appt":true,
+         "items":[
+            {
+               "duration":7200,
+               "videoUri":"mgid:arc:video:comedycentral.com:50acc984-5a2b-4ca0-9775-99df1a8e670b",
+               "playlistUri":null,
+               "dll":false,
+               "auto":false,
+               "hidden":null,
+               "meta":{
+                  "video":{
+                     "title1":"Jo Koy",
+                     "title2":"Jo Koy - Last Warning",
+                     "thumbnail":"http:\/\/1.images.comedycentral.com\/images\/jokes_vertical\/video\/specials\/jo_koy\/lights\/j_jkl_01_0101_13_640x360.jpg",
+                     "rating":"General Audience",
+                     "id":"603oxv",
+                     "uri":"mgid:arc:video:comedycentral.com:50acc984-5a2b-4ca0-9775-99df1a8e670b",
+                     "type":"Live",
+                     "liveStartDate":"2013-08-07 20:00:00",
+                     "liveEndDate":"2013-08-07 22:00:00"
+                  }
+               }
+            }
+         ]
+      }
+   ]
+}

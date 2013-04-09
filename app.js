@@ -2,6 +2,7 @@ var trace = VIACOM.Schedule.Util.trace;
 
 var App = {
   player: null,
+  actualPlayer: null,
   scheduleController: null, activeScheduleContext: null,
   waitStart: 0, waitRemaining: 0,
   nextUpContext: null, nextUpMsgStart: 0,
@@ -13,12 +14,19 @@ var App = {
   {
     this.scheduleController = VIACOM.Schedule.PlayoutController; 
 
+    this.actualPlayer = new MTVNPlayer.Player("video", {uri:"mgid:cms:video:nick.com:920786"});
+    
+    //this.actualPlayer.on("ready",function(event){
+    //  this.player.ready = true;
+    //});
     this.player = Object.create(Player);
 
     //???
     this.player.videoStartedCallback = function (uri) {
       App.activeSession.onPlayerVideoStarted(uri);
     };
+
+    this.player.actualPlayer = this.actualPlayer;
 
     //???
     this.player.stepCallback = function () {
@@ -28,7 +36,9 @@ var App = {
 
     // Register for "ready" event
     this.scheduleController.addListener('Ready', function() {
-      App.scheduleController.loadSchedule('remote', 'http://plateng.mtvi.com/apsv/scheduler/feeds/cc-exampple.php', function (session) {
+      //App.scheduleController.loadSchedule('remote', 'http://controller.dev:8888/schedule.json', function (session) {
+      //App.scheduleController.loadSchedule('remote', 'http://controller.dev:8888/gt.schedule.json', function (session) {
+      App.scheduleController.loadSchedule('remote', 'http://controller.dev:8888/cc.schedule.json', function (session) {
         session.sync();
         App.playSchedule(session);
         UI.displaySchedule(App, document.getElementById("schedule"));

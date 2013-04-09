@@ -47,6 +47,7 @@ VIACOM.Schedule.Controller = (function () {
   // Check whether to step to a new block, based on the current time.
   var stepToNewBlock = function (context, time)
   {
+    trace('controller stepToNewBlock');
     var schedule = context.schedule;
 
     var timeOffset = time - schedule.startTime;
@@ -182,6 +183,7 @@ VIACOM.Schedule.Controller = (function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
+      trace('controller sync step');
       this.stepToNewBlock(context, time);
 
       // catch blocks with no duration
@@ -264,7 +266,7 @@ VIACOM.Schedule.Controller = (function () {
 
 
     context.itemIndex = i;
-
+    trace('controller step' );
     this.stepToNewBlock(context, this.now());
     
     return context;

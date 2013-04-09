@@ -34,7 +34,7 @@ VIACOM.Schedule.Preview = ( function() {
       theController.loadSchedule('remote', 'http://schedule.mtvnservices-q.mtvi.com/api/v1/' + channelId + '/schedule.json?view=controller&version=' + scheduleId, function (session) {
         trace("Controller Ready, Schedule loaded.");
         activeSession = session;
-
+        trace('preview stepToNewBlock');
         activeSession.stepToNewBlock(start.getTime());
         var firstItem = activeSession.getCurrentItem();
 

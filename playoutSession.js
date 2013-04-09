@@ -48,6 +48,8 @@ VIACOM.Schedule.PlayoutSession = function () {
   // Check whether to step to a new block, based on the current time.
   var stepToNewBlock = function (time)
   {
+    trace('stepToNewBlock!');
+    return;
     var schedule = this.context.schedule;
 
     var timeOffset = time - schedule.startTime;
@@ -169,6 +171,7 @@ VIACOM.Schedule.PlayoutSession = function () {
   // Sync ScheduleContext with what is live now if possible
   var sync = function (now)
   {
+    //trace('sync');
     var schedule = this.context.schedule;
 
     if (!now)
@@ -183,6 +186,10 @@ VIACOM.Schedule.PlayoutSession = function () {
     var time = schedule.startTime + schedule.blocks[0].start * 1000;
 
     while (true) {
+      if (schedule.startTime === 0 ) {
+        return;
+      }
+      trace('syncStep');
       this.stepToNewBlock(this.context, time);
 
       // catch blocks with no duration
@@ -480,37 +487,24 @@ VIACOM.Schedule.PlayoutSession = function () {
     return this.context;
   };
 
-  var play = function (player)
-  {
-    trace('play');
+  // now that the player is loaded and ready we can call play on it
+  var startPlayback = function(player, session){
+    trace("startPlayback");
+    if (session.context.offset > 0){
+      player.seekToOffset(session.context.offset);
+    }
+    player.play();
+  }
 
-    var item = this.context.schedule.blocks[this.context.blockIndex].items[this.context.itemIndex];
-
-    var videoUri = item.videoUri;
-    var playlistUri = item.playlistUri;
-    
+  // sets up ads if appropriate
+  var setupPlayerAds = function(player, session){
+    trace("setupPlayerAds");
+    var item = session.context.schedule.blocks[session.context.blockIndex].items[session.context.itemIndex];
     var duration = (item.duration + item.adDuration) * 1000;
     var adDuration = item.adDuration * 1000;
-
-    if (playlistUri) {
-      player.config(playlistUri);
-      if (!videoUri || item.auto) {
-        player.loadPlaylist(playlistUri);
-        if (videoUri)
-          player.seekToPlaylistVideo(videoUri, duration);
-      }
-      else
-        player.loadVideo(videoUri, duration);
-    }
-    else {
-      player.config(videoUri);
-      player.loadVideo(videoUri, duration);
-    }
-
-    var adsEnabled = this.context.adsEnabled;
-    
+    var adsEnabled = session.context.adsEnabled;
     if (adsEnabled) {
-      var adUri = this.findAdUri();
+      var adUri = session.findAdUri();
       if (adUri) {
         player.setAdUri(adUri);
         player.setAdDuration(adDuration);
@@ -520,12 +514,67 @@ VIACOM.Schedule.PlayoutSession = function () {
     }
 
     player.setAdsEnabled(adsEnabled);
-        
-    if (this.context.offset > 0)
-      player.seekToOffset(this.context.offset);
+    
+    // TODO: none of the above functions exist in the player currently, if we add them we may need to add callbacks
+    startPlayback(player, session);   
+  }
 
-    player.play();
+  //TODO: clean up logic here
+  // calls loadPlaylist/Video and sets a callback
+  var setupPlayerVideos = function(player, session){
+    trace("setupPlayerVideos");
+    var item = session.context.schedule.blocks[session.context.blockIndex].items[session.context.itemIndex];
+    var videoUri = item.videoUri;
+    var playlistUri = item.playlistUri;
+    var duration = (item.duration + item.adDuration) * 1000;
+    if (playlistUri){
+      if (!videoUri || item.auto) {
+        player.loadPlaylist(playlistUri, session, setupPlayerAds);
+        if (videoUri){
+          player.seekToPlaylistVideo(videoUri, duration, session, setupPlayerAds);
+        }
+      }
+      else {
+        player.loadVideo(videoUri, duration, session, setupPlayerAds);
+      }
+    }
+    else {
+      player.loadVideo(videoUri, duration, session, setupPlayerAds);
+    }
+    
+  }
 
+  // calls config and sets up callbacks for loading videos/playlists
+  var configurePlayer = function(player, session){
+    trace("configurePlayer");
+    var item = session.context.schedule.blocks[session.context.blockIndex].items[session.context.itemIndex];
+    var videoUri = item.videoUri;
+    var playlistUri = item.playlistUri;
+    
+    if (playlistUri) {
+      // if the player is ready then call config and wait for the config to complete
+      player.config(playlistUri, session, setupPlayerVideos);
+    }
+    else {
+      player.config(videoUri, session, setupPlayerVideos);
+    }
+  }
+
+  // TODO: need to make sure player is ready before calling this
+  var play = function (player)
+  {
+    var self = this;
+    if (player.actualPlayer.ready){
+      trace('play');
+      configurePlayer(player, this);
+    }
+    else {
+      trace('player not ready, waiting...')
+      player.actualPlayer.one("ready",function(event){
+        player.ready = true;
+        configurePlayer(player, self);
+      });
+    }    
     return this.context;
   };
 

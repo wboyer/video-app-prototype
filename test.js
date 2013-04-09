@@ -36,7 +36,7 @@ function init()
       UI.markScheduleOffset(scheduleDiv, "t_m_c", "marker_current", context.blockIndex, context.itemIndex, (item.duration + item.adDuration) * 1000, App.player.offset);
 
       App.player.onInterval(now);
-      UI.updatePlayer(App.player, videoDiv);
+      //UI.updatePlayer(App.player, videoDiv);
 
       App.onInterval(now);
       UI.displayOnAirNow(App, document.getElementById("onAirNow"));
